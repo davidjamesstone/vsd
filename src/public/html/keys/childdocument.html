@@ -1,0 +1,7 @@
+<div class="form-group">
+  <label for="ref" class="col-sm-2 control-label">Ref</label>
+  <div class="col-sm-10">
+    <select ng-model="def.ref" id="ref" ng-options="schema.id as schema.name for schema in model.availableChildDocumentRefs()" class="form-control input-sm">
+    </select>
+  </div>
+</div>

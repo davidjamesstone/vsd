@@ -1,0 +1,12 @@
+{
+  "name": "vsd",
+  "version": "0.0.0",
+  "authors": [
+    "David Stone <davidjamesstone@gmail.com>"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "angular": "~1.2.25",
+    "angular-ui-ace": "bower"
+  }
+}

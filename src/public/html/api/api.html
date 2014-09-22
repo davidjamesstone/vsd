@@ -1,0 +1,33 @@
+
+<!-- Templates -->
+<script type="text/ng-template" id="route.html">
+  <a ui-sref="api.controller.route({ controllerId: route.controller.id, routeId: route.id })">{{ route.description }}</a>
+</script>
+
+<script type="text/ng-template" id="controller.html">
+  <strong><a ui-sref="api.controller({ controllerId: controller.id })">{{ controller.name }}</a></strong>
+  <ul>
+    <li class="route" ng-repeat="route in controller.routes" ng-include="'route.html'">
+    </li>
+    <li class="controller" ng-repeat="controller in controller.controllers" ng-include="'controller.html'">
+    </li>
+  <ul>
+</script>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-3 col-md-2 sidebar">
+      <ul class="api">
+        <li class="" ng-repeat="controller in [api.controller]" ng-include="'controller.html'">
+        </li>
+      </ul>
+    </div>
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+      <button type="button" ui-sref="api.diagram" class="btn btn-info">View Diagram</button>
+      <div class="row">
+        <div ui-view class="col-md-6"></div>
+        <div ui-view="secondary" class="col-md-6"></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>DBUI</title>
+
+  <!-- Global Styles -->
+  <link rel="stylesheet" href="/public/css/build.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+
+</head>
+
+<body ng-app="app" ng-controller="AppCtrl">
+
+<div ng-view></div>
+<div ui-view></div>
+
+<a href="#/key/id" class="btn btn-primary hide">Egg</a>
+
+  <!-- Templates -->
+  <script type="text/ng-template" id="key.html">
+    <a ng-click="setEditKey(key)">{{key.name}}</a><span class="pull-right"><span ng-show="key.def.required" class="text-danger">&nbsp;*&nbsp;</span>&nbsp;{{key.typeAsString()}}</span>
+    <div ng-if="key.isNested()" ng-repeat="keys in [key.isNestedTypeArray() ? key.def.def.keys : key.def.keys]" ng-include="'keys.html'">
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="keys.html">
+    <ul>
+      <li class="clearfix" ng-repeat="key in keys.items" ng-include="'key.html'" ng-controller="KeyCtrl">
+      </li>
+    <ul>
+  </script>
+
+  <!-- Model Toolbar -->
+  <button type="button" class=" hide btn btn-primary" ng-click="addSchema()">Add Schema</button>
+  <button type="button" class=" hide btn btn-primary" ng-disabled="errors().length">Save Model</button>
+
+  <!-- Model Name -->
+  <div class="form-group hide">
+    <label for="modelname" class="col-sm-2 control-label">Model Name</label>
+    <div class="col-sm-10">
+      <input type="text" id="modelname" ng-model="model.name" class="form-control" required />
+    </div>
+  </div>
+
+  <!-- Validation Errors -->
+  <div ng-if="errors().length">
+    <ul>
+      <li ng-repeat="err in errors()">
+        {{err.message}}
+      </li>
+    </ul>
+  </div>
+
+  <div class="row hide">
+
+    <!-- Schema Panels -->
+    <div class="col-md-6">
+
+      <div id="{{ schema.id }}" ng-repeat="schema in model.schemas" class="panel panel-primary">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <a href="#" ng-click="setEditSchema(schema)">{{schema.name}}</a>
+          </div>
+        </div>
+        <div class="panel-body" ng-repeat="keys in [schema.keys]" ng-include="'keys.html'">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Edit Schema Panel -->
+    <div ng-if="editSchema" class="col-md-6">
+      <div class="editor">
+
+        <div class="panel panel-default">
+
+          <div class="panel-heading">
+            <!-- Breadcrumb -->
+            <div class="panel-title">
+              <ol class="breadcrumb">
+                <li ng-repeat="path in editSchema.path().slice(1)" ng-class="{ active: $last }">
+                  <span ng-if="$first || $last">{{path.name}}</span>
+                  <a style="c1olor: inherit;" ng-if="!($first || $last)" ng-click="setEditKey(path)" href="#">{{path.name}}</a>
+                </li>
+              </ol>
+            </div>
+          </div>
+
+
+          <div class="panel-body">
+            <!-- Schema Form -->
+            <form class="form-horizontal">
+
+              <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">Name</label>
+                <div class="col-sm-10">
+                  <input type="text" name="name" ng-model="editSchema.name" class="form-control input-sm" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" negate ng-model="editSchema.installed" ng-disabled="editSchema.isSchemaReferenced()" />Child Schema
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Schema Children -->
+              <div class="form-group">
+                <label class="col-sm-2 control-label">Children</label>
+                <div class="col-sm-10">
+                  <ul class="nested-keys">
+                    <li ng-repeat="key in editSchema.keys.items"><a ng-click="setEditKey(key)">{{key.name}}</a>
+                    </li>
+                  </ul>
+                  <button type="button" class="btn btn-default btn-xs" ng-click="addKey(editSchema.keys)">Add child key</button>
+                </div>
+              </div>
+
+              <hr>
+
+              <div ng-if="editSchema.isSchemaReferenced()">
+                <!-- References -->
+                <h6>References</h6>
+                <ul class="list-inline small">
+                  <li ng-repeat="key in editSchema.schemaReferences()"><a ng-click="setEditKey(key)" class="text-muted">{{key.name}}</a>
+                  </li>
+                </ul>
+                <hr>
+              </div>
+
+              <div class="clearfix">
+
+                <button type="button" class="btn btn-danger btn-xs pull-right" tooltip="Schema [{{editSchema.name}}] cannot be deleted. First remove all references." tooltip-placement="top" ng-click="deleteSchema(editSchema)" ng-disabled="model.isSchemaReferenced(editSchema)">
+                  <i class="fa fa-trash"></i> Delete Schema
+                </button>
+              </div>
+
+              <div class="alert alert-info" ng-if="editSchema.isSchemaReferenced()">
+                <small>Schema [{{editSchema.name}}] cannot be deleted. To Delete this schema, first remove all keys that reference it.</small>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Edit Key Panel -->
+    <div ng-if="editKey" class="col-md-6" ng-controller="EditKeyCtrl">
+      <div class="editor">
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="panel-title">
+              <ol class="breadcrumb">
+                <li ng-repeat="path in editKey.path().slice(1)" ng-class="{ active: $last }">
+                  <span ng-if="$last">{{path.name}}</span>
+                  <a ng-if="$first" ng-click="setEditSchema(path)" href="#">{{path.name}}</a>
+                  <a ng-if="!($first || $last)" ng-click="setEditKey(path)" href="#">{{path.name}}</a>
+                </li>
+              </ol>
+            </div>
+          </div>
+          <div class="panel-body">
+
+
+
+            <!-- Key Editor Form -->
+            <form class="form-horizontal">
+
+
+              <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">Name</label>
+                <div class="col-sm-10">
+                  <div class="input-group">
+                    <input type="text" id="name" ng-model="editKey.name" class="form-control" required />
+
+                    <!-- Key Actions Button Group -->
+                    <div class="input-group-btn">
+                      <button type="button" class="btn btn-default btn-x1s" ng-click="moveKeyUp(editKey)" tooltip="Move key [{{editKey.name}}] up" tooltip-placement="top" tooltip-append-to-body="true"><i class="fa fa-arrow-up"></i>
+                      </button>
+                      <button type="button" class="btn btn-default btn-x1s" ng-click="moveKeyDown(editKey)" tooltip="Move key [{{editKey.name}}] down" tooltip-placement="top" tooltip-append-to-body="true"><i class="fa fa-arrow-down"></i>
+                      </button>
+                      <button type="button" class="btn btn-default btn-x1s" ng-click="addKey(editKey.keys, editKey)" tooltip="Add key below [{{ editKey.name }}]" tooltip-placement="left" tooltip-append-to-body="true"><i class="fa fa-plus"></i>
+                      </button>
+                      <button type="button" class="btn btn-default btn-x1s dropdown-toggle" data-toggle="dropdown" tooltip="More actions" tooltip-placement="left" tooltip-append-to-body="true">
+                        <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu pull-right" role="menu">
+                        <li><a ng-click="addKey(editKey.keys, editKey)">Add key below [{{ editKey.name }}]</a>
+                        </li>
+                        <li><a ng-click="addKey(editKey.keys, editKey, true)">Add key above [{{ editKey.name }}]</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a ng-click="deleteKey(editKey)" href="#">Delete key [{{ editKey.name }}]</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="description" class="col-sm-2 control-label">Description</label>
+                <div class="col-sm-10">
+                  <textarea id="description" ng-model="editKey.description" class="form-control input-sm"></textarea>
+                </div>
+              </div>
+
+              <div class="clearfix">
+                <a href="#" ng-click="isCollapsed = !isCollapsed" class="pull-right">{{ isCollapsed ? 'more' : 'less'  }}</a>
+              </div>
+
+              <div ng-show="!isCollapsed">
+                <hr>
+                <div class="form-group">
+                  <label for="type" class="col-sm-2 control-label">Type</label>
+                  <div class="col-sm-10">
+                    <select id="type" ng-model="type" ng-options="type for type in model.staticTypes" class="form-control input-sm">
+                    </select>
+                  </div>
+                </div>
+
+                <div ng-repeat="def in [editKey.def]" ng-include="'/public/html/keys/' + editKey.type.toLowerCase() + '.html'"></div>
+
+              </div>
+            </form>
+
+          </div>
+          <div class="panel-footer">
+
+            <!-- Siblings -->
+            <h6>Siblings</h6>
+            <ul class="list-inline small">
+              <li ng-repeat="key in editKey.siblings()"><a ng-click="setEditKey(key)" class="text-muted">{{key.name}}</a>
+              </li>
+            </ul>
+
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular-route.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
+
+  <script src="/public/js/build.js"></script>
+
+</body>
+
+</html>

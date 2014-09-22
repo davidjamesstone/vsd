@@ -1,0 +1,121 @@
+<div ng-if="!controller">Controller Not Found</div>
+
+<div ng-if="controller" class="panel panel-default">
+
+  <div class="panel-heading">
+    <div class="panel-title">
+      <ol class="breadcrumb">
+        <li ng-repeat="ascendent in controller.ascendents">
+          <a ui-sref="api.controller({ controllerId: ascendent.id })">{{ ascendent.name }}</a>
+        </li>
+        <li class="active">
+          <span>{{ controller.name }}</span>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="panel-body">
+
+    <form class="form-horizontal">
+
+  <tabset justified="true">
+
+    <tab heading="Detail" active="tabs[0].active" select="selectTab(0)">
+
+      <!-- Controller Url -->
+      <div class="form-group">
+        <label for="name" class="col-sm-2 control-label">Name</label>
+        <div class="col-sm-10">
+          <input type="text" id="name" ng-model="controller.name" class="form-control" focus="true" required ng-pattern1="model.pathRegexValidate" />
+        </div>
+      </div>
+
+      <!-- Controller Url -->
+      <div class="form-group">
+        <label for="baseUrl" class="col-sm-2 control-label">Base Url</label>
+        <div class="col-sm-10">
+          <input type="text" id="baseUrl" ng-model="controller.baseUrl" class="form-control" required ng-pattern1="model.pathRegexValidate" />
+        </div>
+      </div>
+
+      <!-- Controller Description -->
+      <div class="form-group">
+        <label for="description" class="col-sm-2 control-label">Description</label>
+        <div class="col-sm-10">
+          <textarea id="description" ng-model="controller.description" class="form-control"></textarea>
+        </div>
+      </div>
+
+      <!-- Controller Children -->
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Children</label>
+        <div class="col-sm-10">
+          <ul class="nested-keys">
+            <li ng-repeat="child in controller.controllers">
+              <a ui-sref="api.controller({ controllerId: child.id })">{{ child.name }}</a>
+            </li>
+          </ul>
+          <button type="button" ng-click="addController()" class="btn btn-primary btn-xs" tooltip="Add controller to [{{ controller.name }}]" tooltip-placement="top" tooltip-append-to-body="false">Add child controller</button>
+        </div>
+      </div>
+
+      <button type="button" ng-click="deleteController(controller)" class="btn btn-danger btn-xs pull-right" ng-disabled="!controller.controller">Delete Controller</button>
+
+    </tab>
+
+    <tab heading="Routes" active="tabs[1].active" select="selectTab(1)">
+
+      <!-- Keys List Group -->
+      <ul class="list-group">
+        <li class="list-group-item" ng-repeat="route in controller.routes">
+          <a ui-sref="api.controller.route({ routeId: route.id })">{{ route.description }}</a>
+        </li>
+      </ul>
+      <button type="button" ng-click="addRoute()" class="btn btn-primary btn-xs pull-right" tooltip="Add route to [{{ controller.name }}]" tooltip-placement="top" tooltip-append-to-body="false">Add Route</button>
+
+    </tab>
+
+    <tab heading="Code" active="tabs[2].active" select="selectTab(2)">
+      <div ui-ace="{
+        useWrapMode : false,
+        showGutter: false,
+        mode: 'javascript',
+        require: ['ace/ext/language_tools'],
+        advanced: {
+          enableSnippets: true,
+          enableBasicAutocompletion: true,
+          enableLiveAutocompletion: true
+        }
+      }" ng-model="controller.code"></div>
+    </tab>
+
+    <tab heading="Middleware" active="tabs[3].active" select="selectTab(3)">Short Labeled Justified content</tab>
+  </tabset>
+
+    <!-- Children -->
+    <ul class=" hide list-inline small">
+      <li ng-repeat="child in controller.allControllers">
+        <a ui-sref="api.controller({ controllerId: child.id })">{{ child.name }}</a>
+      </li>
+    </ul>
+
+    </form>
+
+  </div>
+
+  <div class="panel-footer">
+
+
+        <!-- Children -->
+        <ul class="list-inline small">
+          <li ng-repeat="child in controller.allControllers">
+            <a ng-if="child !== controller" ui-sref="api.controller({ controllerId: child.id })">{{child.name}}</a>
+            <span ng-if="child === controller" class="text-muted">{{child.name}}</span>
+          </li>
+        </ul>
+
+  </div>
+
+
+</div>

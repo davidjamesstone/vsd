@@ -1,0 +1,897 @@
+
+
+<li class="controller" ng-repeat="controller in [api.controller.controllers]">
+  <a ng-click1="gotoPath(schema)">{{ schema.name }}</a>
+  <div ng-repeat="keys in [schema.keys]" ng-include="'keys.html'">
+  </div>
+  <hr>
+</li>
+<ul class="api">
+  <li class="route" ng-repeat="route in api.routes">
+    <a ui-sref="api.route({ routeId: route.id })">{{ route.url }}</a>
+  </li>
+</ul>
+
+
+// .state('db.path', {
+//   url: '/*path',
+//   controllerProvider: function($stateParams) {
+//     var path = $stateParams.path.split('/');
+//     var ctrlName;
+//
+//     if (path.length === 1) {
+//       ctrlName = 'ModelCtrl';
+//     } else {
+//       ctrlName = (path.length === 2 ? 'Schema' : 'Key') + 'Ctrl';
+//     }
+//     return ctrlName;
+//   },
+//   templateUrl: function($stateParams) {
+//     var path = $stateParams.path.split('/');
+//     var tplName;
+//
+//     if (path.length === 1) {
+//       tplName = '/html/model.html';
+//     } else {
+//       tplName = path.length === 2 ? '/html/schema.html' : '/html/key.html';
+//     }
+//     return tplName;
+//   };
+
+
+
+
+
+
+
+
+
+
+
+var utils = require('../utils');
+var db = require('../models/db');
+var dagre = require('dagre');
+
+app.controller('ModelCtrl', ['$scope', '$http', '$state', '$modal', 'dialog', '$timeout', 'modelPromise',
+  function($scope, $http, $state, $modal, $dialog, $timeout, modelPromise) {
+
+    var model = Object.create(db);
+    model.initialize(modelPromise.data);
+
+    window.model = model; // todo: remove
+
+    $scope.model = model;
+
+    // scope data
+    $scope.data = {
+      isCollapsed: true
+    };
+
+
+    $timeout(autoLayout);
+
+
+    $scope.gotoPath = function(obj) {
+
+      var isModel = false;
+      var isSchema = !obj.type;
+
+      if (isModel) {
+
+        $state.go('db.model', {
+          //path: obj.path ? obj.path().map(function(p) { return p.name; }).join('/') : ''
+          path: obj.schema ? [obj.schema.id, obj.id].join('/') : obj.id
+        });
+
+      } else if (isSchema) {
+
+        $state.go('db.model.schema', {
+          schemaId: obj.id
+        });
+
+      } else {
+
+        $state.go('db.model.schema.key', {
+          keyId: obj.id
+        });
+
+      }
+
+
+    };
+
+    var idempotentialize = function(f) {
+      var previous;
+      var f_idempotent = function() {
+        var ret = f();
+        if (angular.equals(ret, previous)) {
+          ret = previous;
+        }
+        previous = ret;
+        return ret;
+      };
+      return f_idempotent;
+    };
+
+    $scope.errors = idempotentialize(function() {
+      return model.errors();
+    });
+
+    $scope.addSchema = function() {
+
+      var schema = model.createSchema();
+      schema.initialize({
+        id: ('' + Math.random()).replace(/\D/g, ''),
+        name: 'NewSchema',
+        installed: true,
+        keys: {
+          items: [{
+            'name': 'FirstKey',
+            'type': 'String',
+            'def': {
+              'required': true
+            }
+          }]
+        }
+      });
+
+      model.insertSchema(schema);
+
+      $scope.gotoPath(schema);
+    };
+
+    $scope.deleteSchema = function(schema) {
+
+      $dialog.confirm({
+        title: 'Delete schema',
+        message: 'Are you sure you want to delete schema [' + schema.dotPath() + ']?'
+      }).then(function() {
+        // if ($scope.editSchema === schema) {
+        //   $scope.editSchema = null;
+        // }
+        schema.db.removeSchema(schema);
+
+        // go to model root
+        $scope.gotoPath(schema.db);
+
+      });
+    };
+
+    $scope.addKey = function(keys, sibling, insertAbove) {
+      var data = {
+        id: utils.getuid(),
+        name: 'KeyName',
+        type: 'String',
+        def: {}
+      };
+
+      var key;
+      if (sibling) {
+        var siblingIndex = sibling.keys.items.indexOf(sibling);
+        var index = insertAbove ? siblingIndex : ++siblingIndex;
+        key = keys.insertKey(data, index);
+      } else {
+        key = keys.addKey(data);
+      }
+
+      $scope.gotoPath(key);
+    };
+
+    $scope.deleteKey = function(key) {
+      $dialog.confirm({
+        title: 'Delete key',
+        message: 'Are you sure you want to delete key [' + key.dotPath() + ']?'
+      }).then(function() {
+
+        key.keys.deleteKey(key);
+
+        // go to key parent schema
+        $scope.gotoPath(key.keys.schema);
+      });
+    };
+
+    $scope.moveKeyUp = function(key) {
+      var items = key.keys.items;
+      var index = items.indexOf(key);
+      items.move(index, --index);
+    };
+
+    $scope.moveKeyDown = function(key) {
+      var items = key.keys.items;
+      var index = items.indexOf(key);
+      items.move(index, ++index);
+    };
+
+    $scope.setEditKey = function(key) {
+      $scope.editKey = key;
+      $scope.editSchema = null;
+    };
+
+    $scope.setEditSchema = function(schema) {
+      $scope.editKey = null;
+      $scope.editSchema = schema;
+    };
+
+    function autoLayout() {
+      var g = new dagre.Digraph();
+      var edges = [];
+      var el;
+      // $('.schema').each(function() {
+      //     var $this = $(this);
+      //     var id = $(this).attr('id');
+      //     g.addNode(id, {
+      //         label: id,
+      //         width: $this.width(),
+      //         height: $this.height()
+      //     });
+      //     $this.find('.key-header[data-ref]').each(function() {
+      //         edges.push([$(this).data('ref'), id]);
+      //     });
+      // });
+
+      for (var i = 0; i < model.schemas.length; i++) {
+        var schema = model.schemas[i];
+        var id = schema.id;
+        // el = document.getElementById(id);
+        // el.style.position = 'absolute';
+        // var style = window.getComputedStyle(el, null);
+
+        g.addNode(id, {
+          label: id,
+          // width: parseFloat(style.width),
+          // height: parseFloat(style.height)
+        });
+
+        var schemaReferences = schema.schemaReferences();
+        for (var j = 0; j < schemaReferences.length; j++) {
+          edges.push([schemaReferences[j].keys.schema.id, id]);
+        }
+
+      }
+
+
+      for (var k = 0; k < edges.length; k++) {
+        g.addEdge(null, edges[k][0], edges[k][1]);
+      }
+
+      var layout = dagre.layout().nodeSep(20).edgeSep(5).rankSep(20).run(g);
+      // var layout = dagre.layout().run(g);
+      layout.eachNode(function(u, value) {
+
+        // el = document.getElementById(u);
+        // el.style.top = value.y + 'px';
+        // el.style.left = value.x + 'px';
+        // el.style.width = '200px';
+        // el.style.height = '300px';
+        // el.style.overflow = 'hidden';
+
+      });
+    }
+
+  }
+]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.controller('EditKeyCtrl', ['$scope', 'dialog',
+  function($scope, $dialog) {
+
+    var key = $scope.editKey;
+
+    $scope.type = key.type;
+    $scope.isCollapsed = true;
+
+    $scope.$watch('editKey', function(newValue, oldValue) {
+      if (newValue === oldValue) {
+        return;
+      }
+      key = newValue;
+
+      $scope.type = key.type;
+    });
+
+    $scope.$watch('type', function(newValue, oldValue) {
+      if (newValue === oldValue || newValue === key.type) {
+        return;
+      }
+
+      $dialog.confirm({
+        title: 'Modify key type',
+        message: 'Are you sure you want to modify key [' + key.name + ']?'
+      }).then(function() {
+
+        // redefine key type
+        var type = newValue;
+        var newDef = type === 'Array' ? {
+          type: type,
+          def: {
+            oftype: 'String',
+            def: {}
+          }
+        } : {
+          type: type,
+          def: {}
+        };
+
+        // redefine key def
+        key.type = type;
+        key.define(newDef);
+
+
+      }, function() {
+        $scope.type = oldValue;
+      });
+
+    });
+
+  }
+]);
+
+app.controller('KeyCtrl', ['$scope', 'dialog',
+  function($scope, $dialog) {
+
+    var key = $scope.key;
+
+    $scope.type = key.type;
+
+    $scope.$watch('type', function(newValue, oldValue) {
+      if (newValue === oldValue) {
+        return;
+      }
+
+      $dialog.confirm({
+        title: 'Modify key type',
+        message: 'Are you sure you want to modify key [' + key.name + ']?'
+      }).then(function() {
+
+        // redefine key type
+        var type = newValue;
+        var newDef = type === 'Array' ? {
+          type: type,
+          def: {
+            oftype: 'String',
+            def: {}
+          }
+        } : {
+          type: type,
+          def: {}
+        };
+
+        // redefine key def
+        key.type = type;
+        key.define(newDef);
+
+      }, function() {
+        //key.type = oldValue;
+      });
+
+    });
+
+  }
+
+]);
+
+
+
+  <div class="input-group-btn hide">
+
+  <div class="btn-group">
+    <button type="button" class="btn btn-default btn-x1s" ng-click="addKey(editKey.keys, editKey)" tooltip="Add key below [{{ editKey.name }}]" tooltip-placement="left" tooltip-append-to-body="true">Add key</button>
+    <button type="button" class="btn btn-default btn-x1s dropdown-toggle" data-toggle="dropdown" tooltip="More actions" tooltip-placement="left" tooltip-append-to-body="true">
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+      <li><a ng-click="addKey(editKey.keys, editKey)">Add key below [{{ editKey.name }}]</a></li>
+      <li><a ng-click="addKey(editKey.keys, editKey, true)">Add key above [{{ editKey.name }}]</a></li>
+      <li class="divider"></li>
+      <li><a ng-click="deleteKey(editKey)" href="#">Delete key [{{ editKey.name }}]</a></li>
+    </ul>
+  </div>
+  </div>
+
+
+
+
+        <!-- Nested Type Children
+        <div ng-if="editKey.isNestedType()" class="well">
+          <h6>Children</h6>
+          <ul>
+            <li ng-repeat="key in editKey.def.keys.items"><a ng-click="setEditKey(key)">{{key.name}}</a></li>
+          </ul>
+          <button type="button" class="btn btn-default" ng-click="addKey(editKey.def.keys)">Add key</button>
+        </div>-->
+
+        <!-- Array Of Nested Type Children
+        <div ng-if="editKey.isNestedTypeArray()" class="well">
+          <h6>Children</h6>
+          <ul>
+            <li ng-repeat="key in editKey.def.def.keys.items"><a ng-click="setEditKey(key)" href="#">{{key.name}}</a></li>
+          </ul>
+          <button type="button" class="btn btn-default" ng-click="addKey(editKey.def.def.keys)">Add key</button>
+        </div>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>DBUI</title>
+
+  <!-- Global Styles -->
+  <link rel="stylesheet" href="/public/css/build.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
+</head>
+
+<body ng-app="app" ng-controller="AppCtrl">
+
+<div ng-view></div>
+<div ui-view></div>
+
+<a href="#/key/id" class="btn btn-primary hide">Egg</a>
+
+  <!-- Templates -->
+  <script type="text/ng-template" id="key.html">
+    <a ng-click="setEditKey(key)">{{key.name}}</a><span class="pull-right"><span ng-show="key.def.required" class="text-danger">&nbsp;*&nbsp;</span>&nbsp;{{key.typeAsString()}}</span>
+    <div ng-if="key.isNested()" ng-repeat="keys in [key.isNestedTypeArray() ? key.def.def.keys : key.def.keys]" ng-include="'keys.html'">
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="keys.html">
+    <ul>
+      <li class="clearfix" ng-repeat="key in keys.items" ng-include="'key.html'" ng-controller="KeyCtrl">
+      </li>
+    <ul>
+  </script>
+
+  <!-- Model Toolbar -->
+  <button type="button" class=" hidebtn btn-primary" ng-click="addSchema()">Add Schema</button>
+  <button type="button" class=" hidebtn btn-primary" ng-disabled="errors().length">Save Model</button>
+
+  <!-- Model Name -->
+  <div class="form-group hide">
+    <label for="modelname" class="col-sm-2 control-label">Model Name</label>
+    <div class="col-sm-10">
+      <input type="text" id="modelname" ng-model="model.name" class="form-control" required />
+    </div>
+  </div>
+
+  <!-- Validation Errors -->
+  <div ng-if="errors().length">
+    <ul>
+      <li ng-repeat="err in errors()">
+        {{err.message}}
+      </li>
+    </ul>
+  </div>
+
+  <div class="row hide">
+
+    <!-- Schema Panels -->
+    <div class="col-md-6">
+
+      <div id="{{ schema.id }}" ng-repeat="schema in model.schemas" class="panel panel-primary">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <a href="#" ng-click="setEditSchema(schema)">{{schema.name}}</a>
+          </div>
+        </div>
+        <div class="panel-body" ng-repeat="keys in [schema.keys]" ng-include="'keys.html'">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Edit Schema Panel -->
+    <div ng-if="editSchema" class="col-md-6">
+      <div class="editor">
+
+        <div class="panel panel-default">
+
+          <div class="panel-heading">
+            <!-- Breadcrumb -->
+            <div class="panel-title">
+              <ol class="breadcrumb">
+                <li ng-repeat="path in editSchema.path().slice(1)" ng-class="{ active: $last }">
+                  <span ng-if="$first || $last">{{path.name}}</span>
+                  <a style="c1olor: inherit;" ng-if="!($first || $last)" ng-click="setEditKey(path)" href="#">{{path.name}}</a>
+                </li>
+              </ol>
+            </div>
+          </div>
+
+
+          <div class="panel-body">
+            <!-- Schema Form -->
+            <form class="form-horizontal">
+
+              <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">Name</label>
+                <div class="col-sm-10">
+                  <input type="text" name="name" ng-model="editSchema.name" class="form-control input-sm" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" negate ng-model="editSchema.installed" ng-disabled="editSchema.isSchemaReferenced()" />Child Schema
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Schema Children -->
+              <div class="form-group">
+                <label class="col-sm-2 control-label">Children</label>
+                <div class="col-sm-10">
+                  <ul class="nested-keys">
+                    <li ng-repeat="key in editSchema.keys.items"><a ng-click="setEditKey(key)">{{key.name}}</a>
+                    </li>
+                  </ul>
+                  <button type="button" class="btn btn-default btn-xs" ng-click="addKey(editSchema.keys)">Add child key</button>
+                </div>
+              </div>
+
+              <hr>
+
+              <div ng-if="editSchema.isSchemaReferenced()">
+                <!-- References -->
+                <h6>References</h6>
+                <ul class="list-inline small">
+                  <li ng-repeat="key in editSchema.schemaReferences()"><a ng-click="setEditKey(key)" class="text-muted">{{key.name}}</a>
+                  </li>
+                </ul>
+                <hr>
+              </div>
+
+              <div class="clearfix">
+
+                <button type="button" class="btn btn-danger btn-xs pull-right" tooltip="Schema [{{editSchema.name}}] cannot be deleted. First remove all references." tooltip-placement="top" ng-click="deleteSchema(editSchema)" ng-disabled="model.isSchemaReferenced(editSchema)">
+                  <i class="fa fa-trash"></i> Delete Schema
+                </button>
+              </div>
+
+              <div class="alert alert-info" ng-if="editSchema.isSchemaReferenced()">
+                <small>Schema [{{editSchema.name}}] cannot be deleted. To Delete this schema, first remove all keys that reference it.</small>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Edit Key Panel -->
+    <div ng-if="editKey" class="col-md-6" ng-controller="EditKeyCtrl">
+      <div class="editor">
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="panel-title">
+              <ol class="breadcrumb">
+                <li ng-repeat="path in editKey.path().slice(1)" ng-class="{ active: $last }">
+                  <span ng-if="$last">{{path.name}}</span>
+                  <a ng-if="$first" ng-click="setEditSchema(path)" href="#">{{path.name}}</a>
+                  <a ng-if="!($first || $last)" ng-click="setEditKey(path)" href="#">{{path.name}}</a>
+                </li>
+              </ol>
+            </div>
+          </div>
+          <div class="panel-body">
+
+
+
+            <!-- Key Editor Form -->
+            <form class="form-horizontal">
+
+
+              <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">Name</label>
+                <div class="col-sm-10">
+                  <div class="input-group">
+                    <input type="text" id="name" ng-model="editKey.name" class="form-control" required />
+
+                    <!-- Key Actions Button Group -->
+                    <div class="input-group-btn">
+                      <button type="button" class="btn btn-default btn-x1s" ng-click="moveKeyUp(editKey)" tooltip="Move key [{{editKey.name}}] up" tooltip-placement="top" tooltip-append-to-body="true"><i class="fa fa-arrow-up"></i>
+                      </button>
+                      <button type="button" class="btn btn-default btn-x1s" ng-click="moveKeyDown(editKey)" tooltip="Move key [{{editKey.name}}] down" tooltip-placement="top" tooltip-append-to-body="true"><i class="fa fa-arrow-down"></i>
+                      </button>
+                      <button type="button" class="btn btn-default btn-x1s" ng-click="addKey(editKey.keys, editKey)" tooltip="Add key below [{{ editKey.name }}]" tooltip-placement="left" tooltip-append-to-body="true"><i class="fa fa-plus"></i>
+                      </button>
+                      <button type="button" class="btn btn-default btn-x1s dropdown-toggle" data-toggle="dropdown" tooltip="More actions" tooltip-placement="left" tooltip-append-to-body="true">
+                        <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu pull-right" role="menu">
+                        <li><a ng-click="addKey(editKey.keys, editKey)">Add key below [{{ editKey.name }}]</a>
+                        </li>
+                        <li><a ng-click="addKey(editKey.keys, editKey, true)">Add key above [{{ editKey.name }}]</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a ng-click="deleteKey(editKey)" href="#">Delete key [{{ editKey.name }}]</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="description" class="col-sm-2 control-label">Description</label>
+                <div class="col-sm-10">
+                  <textarea id="description" ng-model="editKey.description" class="form-control input-sm"></textarea>
+                </div>
+              </div>
+
+              <div class="clearfix">
+                <a href="#" ng-click="isCollapsed = !isCollapsed" class="pull-right">{{ isCollapsed ? 'more' : 'less'  }}</a>
+              </div>
+
+              <div ng-show="!isCollapsed">
+                <hr>
+                <div class="form-group">
+                  <label for="type" class="col-sm-2 control-label">Type</label>
+                  <div class="col-sm-10">
+                    <select id="type" ng-model="type" ng-options="type for type in model.staticTypes" class="form-control input-sm">
+                    </select>
+                  </div>
+                </div>
+
+                <div ng-repeat="def in [editKey.def]" ng-include="'/public/html/keys/' + editKey.type.toLowerCase() + '.html'"></div>
+
+              </div>
+            </form>
+
+          </div>
+          <div class="panel-footer">
+
+            <!-- Siblings -->
+            <h6>Siblings</h6>
+            <ul class="list-inline small">
+              <li ng-repeat="key in editKey.siblings()"><a ng-click="setEditKey(key)" class="text-muted">{{key.name}}</a>
+              </li>
+            </ul>
+
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular-route.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
+
+  <script src="/public/js/build.js"></script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$scope.gotoModel = function(schema) {
+  $state.go('model');
+};
+
+$scope.gotoSchema = function(schema) {
+  $state.go('model.path', {
+    path: schema.name
+  });
+};
+
+$scope.gotoKey = function(key) {
+  var path = key.slashPath();
+  path = path.substr(path.indexOf('/') + 1);
+  $state.go('model.path', {
+    path: path
+  });
+};
+
+var idempotentialize = function(f) {
+  var previous;
+  var f_idempotent = function() {
+    var ret = f();
+    if (angular.equals(ret, previous)) {
+      ret = previous;
+    }
+    previous = ret;
+    return ret;
+  };
+  return f_idempotent;
+};
+
+$scope.errors = idempotentialize(function() {
+  return model.errors();
+});
+
+$scope.addSchema = function() {
+
+  var schema = model.createSchema();
+  schema.initialize({
+    id: ('' + Math.random()).replace(/\D/g, ''),
+    name: '<New Name>',
+    installed: true,
+    keys: {
+      items: [{
+        'name': '<New Name>',
+        'type': 'String',
+        'def': {
+          'required': true
+        }
+      }]
+    }
+  });
+
+
+  model.insertSchema(schema);
+};
+
+$scope.deleteSchema = function(schema) {
+
+  $dialog.confirm({
+    title: 'Delete schema',
+    message: 'Are you sure you want to delete schema [' + schema.dotPath() + ']?'
+  }).then(function() {
+    if ($scope.editSchema === schema) {
+      $scope.editSchema = null;
+    }
+    schema.db.removeSchema(schema);
+  });
+};
+
+$scope.addKey = function(keys, sibling, insertAbove) {
+  var data = {
+    name: '<New Name>',
+    type: 'String',
+    def: {}
+  };
+
+  var newkey;
+  if (sibling) {
+    var siblingIndex = sibling.keys.items.indexOf(sibling);
+    var index = insertAbove ? siblingIndex : ++siblingIndex;
+    newkey = keys.insertKey(data, index);
+  } else {
+    newkey = keys.addKey(data);
+  }
+
+  $scope.gotoKey(newkey);
+};
+
+$scope.deleteKey = function(key) {
+  $dialog.confirm({
+    title: 'Delete key',
+    message: 'Are you sure you want to delete key [' + key.dotPath() + ']?'
+  }).then(function() {
+    // if ($scope.editKey === key) {
+    //   $scope.editKey = null;
+    // }
+    key.keys.deleteKey(key);
+  });
+};
+
+$scope.moveKeyUp = function(key) {
+  var items = key.keys.items;
+  var index = items.indexOf(key);
+  items.move(index, --index);
+};
+
+$scope.moveKeyDown = function(key) {
+  var items = key.keys.items;
+  var index = items.indexOf(key);
+  items.move(index, ++index);
+};
+
+$scope.setEditKey = function(key) {
+  $scope.editKey = key;
+  $scope.editSchema = null;
+};
+
+$scope.setEditSchema = function(schema) {
+  $scope.editKey = null;
+  $scope.editSchema = schema;
+};
+
+function autoLayout() {
+  var g = new dagre.Digraph();
+  var edges = [];
+  var el;
+  // $('.schema').each(function() {
+  //     var $this = $(this);
+  //     var id = $(this).attr('id');
+  //     g.addNode(id, {
+  //         label: id,
+  //         width: $this.width(),
+  //         height: $this.height()
+  //     });
+  //     $this.find('.key-header[data-ref]').each(function() {
+  //         edges.push([$(this).data('ref'), id]);
+  //     });
+  // });
+
+  for (var i = 0; i < model.schemas.length; i++) {
+    var schema = model.schemas[i];
+    var id = schema.id;
+    el = document.getElementById(id);
+    el.style.position = 'absolute';
+    var style = window.getComputedStyle(el, null);
+
+    g.addNode(id, {
+      label: id,
+      width: parseFloat(style.width),
+      height: parseFloat(style.height)
+    });
+
+    var schemaReferences = schema.schemaReferences();
+    for (var j = 0; j < schemaReferences.length; j++) {
+      edges.push([schemaReferences[j].keys.schema.id, id]);
+    }
+
+  }
+
+
+  for (var k = 0; k < edges.length; k++) {
+    g.addEdge(null, edges[k][0], edges[k][1]);
+  }
+
+  var layout = dagre.layout().nodeSep(20).edgeSep(5).rankSep(20).run(g);
+  // var layout = dagre.layout().run(g);
+  layout.eachNode(function(u, value) {
+
+    el = document.getElementById(u);
+    el.style.top = value.y + 'px';
+    el.style.left = value.x + 'px';
+    // el.style.width = '200px';
+    // el.style.height = '300px';
+    // el.style.overflow = 'hidden';
+
+  });
+}
