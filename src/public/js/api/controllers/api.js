@@ -37,185 +37,263 @@ app.controller('ApiCtrl', ['$scope', '$state', 'dialog', 'apiPromise',
       });
     };
 
-    $state.go('api.controller', {
-      controllerId: api.controller.id
+    $state.go('api.route', {
+      routeId: api.root.id
     });
 
+    $scope.routes = [api.root];
   }
 ]);
 
-function Route(controller, id, verb, url, description) {
-  this.controller = controller;
-  this.id = id;
-  this.verb = verb;
-  this.url = url;
-  this.description = description;
-}
-Route.prototype.verbs = ['ALL', 'GET', 'POST', 'PUT', 'DELETE'];
-Object.defineProperties(Route.prototype, {
-  description: {
-    get: function() {
-      return this.verb.toUpperCase() + ' ' + this.url;
-    }
-  }
-});
 
-function Controller(controller, id, name, baseUrl, code) {
-  this.controller = controller;
-  this.id = id;
-  this.name = name;
-  this.baseUrl = baseUrl;
-  this.code = code;
-  this.routes = [];
-  this.controllers = [];
-  this.middleware = [];
+/*
+ * Route Constructor Function
+ */
+function Route(data) {
+  this.id = data.id || utils.getuid();
+  this.parent = data.parent;
+  this.path = data.path;
+  this.actions = data.actions instanceof Action ? [data.actions] : (data.actions || []);
+  this.routes = data.routes || [];
+  this.handlers = data.handlers || [];
 }
-Controller.prototype.addRoute = function(verb, url) {
-  // var handlers = Array.prototype.slice.call(arguments).splice(2);
-  // var routePipeline = new RoutePipeline(handlers);
-  var route = new Route(this, utils.getuid(), verb || 'GET', url || this.basePath);
+Route.prototype.addChild = function(path, actions) {
+  var route = new Route({
+    id: utils.getuid(),
+    parent: this,
+    path: path,
+    actions: actions
+  });
   this.routes.push(route);
   return route;
 };
-Controller.prototype.removeRoute = function(route) {
-  var index = this.routes.indexOf(route);
-  if (index !== -1) {
-    this.routes.splice(index, 1);
-  }
+Route.prototype.addAction = function(verb, handlers) {
+  var action = new Action({
+    id: utils.getuid(),
+    route: this,
+    verb: 'GET',
+    handlers: handlers
+  });
+  this.actions.push(action);
+  return action;
 };
-Controller.prototype.addController = function(name, baseUrl, code) {
-  var controller = new Controller(this, utils.getuid(), name, baseUrl, code);
-  this.controllers.push(controller);
-  return controller;
-};
-Controller.prototype.removeController = function(controller) {
-  var index = this.controllers.indexOf(controller);
-  if (index !== -1) {
-    this.controllers.splice(index, 1);
-  }
-};
-Controller.prototype.addMiddleware = function(id, name, baseUrl, code) {
-  // var middleware = new Middleware(name, handler);
-  // this._middleware.push(middleware);
-  // return middleware;
-};
-Object.defineProperties(Controller.prototype, {
-  allControllers: {
+Object.defineProperties(Route.prototype, {
+  ancestors: {
     get: function() {
-      var controllers = [].concat(this);
-      this.controllers.forEach(function(controller) {
-        Array.prototype.push.apply(controllers, controller.allControllers);
-      });
-      return controllers;
-    }
-  },
-  ascendents: {
-    get: function() {
-      var ascendents = [], c = this;
+      var ancestors = [],
+        r = this;
 
-      while (c.controller) {
-        ascendents.unshift(c.controller);
-        c = c.controller;
+      while (r.parent) {
+        ancestors.push(r.parent);
+        r = r.parent;
       }
 
-      return ascendents;
+      return ancestors;
     }
   },
-  basePath: {
+  descendants: {
     get: function() {
-      var paths = [];
+      var descendants = [].concat(this.children);
 
-      function check(c) {
-        if (c) {
-          paths.push(c.baseUrl || '');
-          check(c.controller);
-        }
-        return c ? c.baseUrl : null;
+      for (var i = 0; i < this.children.length; i++) {
+        Array.prototype.push.apply(descendants, this.children[i].descendants);
       }
-      check(this);
 
-      paths.reverse();
+      return descendants;
+    }
+  },
+  isRoot: {
+    get: function() {
+      return !this.hasAncestors;
+    }
+  },
+  hasAncestors: {
+    get: function() {
+      return !!this.ancestors.length;
+    }
+  },
+  hasDecendents: {
+    get: function() {
+      return !!this.descendants.length;
+    }
+  },
+  children: {
+    get: function() {
+      return this.routes;
+    }
+  },
+  hasChildren: {
+    get: function() {
+      return !!this.children.length;
+    }
+  },
+  hasActions: {
+    get: function() {
+      return !!this.actions.length;
+    }
+  },
+  url: {
+    get: function() {
+      var parts = [this.path];
 
-      return path.join.apply(path, paths);
+      for (var i = 0; i < this.ancestors.length; i++) {
+        parts.unshift(this.ancestors[i].path);
+      }
+
+      if (parts.length > 1 && parts[0] === '/') {
+        parts.splice(0, 1);
+      }
+
+      return parts.join('');
     }
   }
 });
-Object.defineProperties(Controller.prototype, {
-  allRoutes: {
-    get: function() {
-      var routes = [].concat(this.routes);
-      this.controllers.forEach(function(controller) {
-        Array.prototype.push.apply(routes, controller.allRoutes);
-      });
-      return routes;
-    }
-  }
-});
 
-function Api(id, name, controller) {
-  this.id = id;
-  this.name = name;
-  this.controller = controller;
-  this.middleware = [];
+/*
+ * Action Constructor Function
+ */
+function Action(data) {
+  this.route = data.route;
+  this.id = data.id || utils.getuid();
+  this.verb = data.verb;
+  this.handlers = data.handlers instanceof Handler ? [data.handlers] : (data.handlers || []);;
 }
-Api.prototype.findController = function(id) {
-  return this.controllers.find(function(controller) {
-    return controller.id === id;
-  });
+Action.prototype.verbs = ['ALL', 'GET', 'POST', 'PUT', 'DELETE'];
+Action.prototype.addHandler = function(data) {
+  var handler = new Handler(data);
+  this.handlers.push(handler);
+  return handler;
 };
-Api.prototype.findRoute = function(id) {
-  return this.routes.find(function(route) {
-    return route.id === id;
-  });
-};
-Object.defineProperties(Api.prototype, {
-  controllers: {
+Object.defineProperties(Action.prototype, {
+  hasHandlers: {
     get: function() {
-      return this.controller.allControllers;
+      return !!this.handlers.length;
     }
   }
 });
+
+/*
+ * Handler Constructor Function
+ */
+function Handler(data) {
+  this.id = data.id || utils.getuid();
+  this.name = data.name;
+  this.code = data.code;
+}
+
+
+/*
+ * Handler Constructor Function
+ */
+function Api(name, route) {
+  this.name = name;
+  this.root = route;
+}
+Api.prototype.findRoute = function(id) {
+  return this.routes.find(function(item) {
+    return item.id === id;
+  });
+};
 Object.defineProperties(Api.prototype, {
   routes: {
     get: function() {
-      return this.controller.allRoutes;
+      return [this.root].concat(this.root.descendants);
     }
   }
 });
 
-var homeCtrl = new Controller(null, utils.getuid(), 'Home');
-var api = new Api(utils.getuid(), 'test', homeCtrl);
 
-homeCtrl.addRoute('GET', '/');
-homeCtrl.addRoute('GET', '/about-us');
-homeCtrl.addRoute('GET', '/contact-us');
-homeCtrl.addRoute('POST', '/contact-us');
+var requiresAuthentication = new Handler({
+  name: 'requiresAuthentication',
+  code: "function(req, res, next) { next(req.query.authme ? null : new Error('Unauthorized')); }"
+});
 
-var userController = homeCtrl.addController('User', '/user', " \
-var express = require('express');\n \
-var http = require('http');\n \
-var path = require('path');\n \
-var favicon = require('static-favicon');\n \
-var httpLogger = require('morgan');\n \
-\n \
-function hello() {}");
+var homeRoute = new Route({
+  path: '/',
+  actions: new Action({
+    verb: 'GET',
+    handlers: new Handler({
+      name: 'getHomePage',
+      code: 'function(req, res) { req.send("getHomePage"); }'
+    })
+  })
+});
 
-userController.addRoute('GET', '/user/:id');
-userController.addRoute('ALL', '/user/:id/*');
-userController.addRoute('POST', '/user');
-userController.addRoute('PUT', '/user/:id');
+homeRoute.addChild('/ping', new Action({
+  verb: 'GET',
+  handlers: new Handler({
+    name: 'getPingPage',
+    code: 'function(req, res) { req.send("pong"); }'
+  })
+}));
+
+var user = homeRoute.addChild('/user', [new Action({
+    verb: 'ALL',
+    handlers: requiresAuthentication
+  }),
+  new Action({
+    verb: 'GET',
+    handlers: new Handler({
+      name: 'getUserPage',
+      code: 'function(req, res) { req.send("getUserPage"); }'
+    })
+  })
+]);
+
+var authUsers = new Action({
+  verb: 'ALL',
+  handlers: requiresAuthentication
+});
+
+var loadUser = new Action({
+  verb: 'ALL',
+  handlers: new Handler({
+    name: 'loadUser',
+    code: 'function(req, res, next) { req.user = { name: "fred" }; next(); }'
+  })
+});
+
+var putUser = new Action({
+  verb: 'PUT',
+  handlers: [new Handler({
+    name: 'saveUser',
+    code: 'function(req, res) { req.send("saveUser"); }'
+  })]
+});
+
+var deleteUser = new Action({
+  verb: 'DELETE',
+  handlers: new Handler({
+    name: 'deleteUser',
+    code: 'function(req, res) { req.send("deleteUser"); }'
+  })
+});
 
 
-var userPhotosCtrl = userController.addController('User Photos', '/:id/photos');
-userPhotosCtrl.addRoute('GET', '/user/:id/photos');
-userPhotosCtrl.addRoute('POST', '/user/:id/photos');
-userPhotosCtrl.addRoute('PUT', '/user/:id/photos/:id');
+var authenticateUsers = user.addChild('/*', [authUsers]);
+
+var userid = user.addChild('/:id', [loadUser, putUser, deleteUser]);
+
+userid.addChild('/videos');
 
 
-var orderController = homeCtrl.addController('Order', '/order');
-orderController.addRoute('GET', '/order/:id');
-orderController.addRoute('ALL', '/order/:id/*');
-orderController.addRoute('POST', '/order');
-orderController.addRoute('PUT', '/order/:id');
+var contactus = homeRoute.addChild('/contact-us', [new Action({
+    verb: 'GET',
+    handlers: new Handler({
+      name: 'getContactUsPage',
+      code: 'function(req, res) { req.send("getContactUsPage"); }'
+    })
+  }),
+  new Action({
+    verb: 'POST',
+    handlers: new Handler({
+      name: 'postContactUsPage',
+      code: 'function(req, res) { req.send("postContactUsPage"); }'
+    })
+  })
+]);
+
+var api = new Api('demo', homeRoute);
+
 
 window.api = api;

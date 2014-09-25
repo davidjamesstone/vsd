@@ -4,7 +4,7 @@
 
   <div class="panel-heading">
     <div class="panel-title">
-      {{ route.url }}
+      {{ route.name }}
     </div>
   </div>
 
@@ -23,13 +23,17 @@
 
       <!-- Route Url -->
       <div class="form-group">
-        <label for="path" class="col-sm-2 control-label">Path</label>
+        <label for="url" class="col-sm-2 control-label">Url</label>
         <div class="col-sm-10">
-          <input type="text" id="path" ng-model="route.path" class="form-control" focus="true" required ng-pattern1="model.pathRegexValidate" />
-          <small>{{ route.url }}</small>
+          <input type="text" id="url" ng-model="route.url" class="form-control" focus="true" required ng-pattern1="model.pathRegexValidate" />
         </div>
       </div>
 
+      <ul class="pipeline">
+        <li class="handler" ng-repeat="handler in route.handlers">
+          <textarea id="handler" behave ng-model="handler" class="form-control input-sm"></textarea>
+        </li>
+      </ul>
       <!-- Route Description -->
       <div class="form-group">
         <label for="description" class="col-sm-2 control-label">Route Description</label>
@@ -37,24 +41,6 @@
           <textarea id="description" ng-model="route.description" class="form-control input-sm"></textarea>
         </div>
       </div>
-
-      <!-- Route Children -->
-      <div class="form-group">
-        <label for="description" class="col-sm-2 control-label">Children</label>
-        <div class="col-sm-10">
-          <ul class="nested-keys">
-            <li class="" ng-repeat="child in route.children">
-              <a ui-sref="api.route({ routeId: child.id })">{{ child.url }}</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <ul class="pipeline">
-        <li class="action" ng-repeat="action in route.actions">
-          {{action.verb}}
-        </li>
-      </ul>
 
       <div ui-ace="{
         useWrapMode : false,

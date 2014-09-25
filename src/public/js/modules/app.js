@@ -79,10 +79,10 @@ app.config(function($stateProvider, $locationProvider, $urlRouterProvider) {
         controller: 'ApiDiagramCtrl',
         templateUrl: '/html/api/diagram.html'
       })
-      .state('api.controller', {
-        url: '/:controllerId',
-        controller: 'ApiControllerCtrl',
-        templateUrl: '/html/api/controller.html'
+      .state('api.route', {
+        url: '/:routeId',
+        controller: 'ApiRouteCtrl',
+        templateUrl: '/html/api/route.html'
       })
       .state('api.controller.route', {
         url: '/:routeId',

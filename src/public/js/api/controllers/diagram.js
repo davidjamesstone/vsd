@@ -42,7 +42,7 @@ app.controller('ApiDiagramCtrl', ['$scope', '$state', '$stateParams',
         }
         for (j = 0; j < controller.routes.length; j++) {
           o.children.push({
-            name: controller.routes[j].description
+            name: controller.routes[j].name
           });
         }
       }

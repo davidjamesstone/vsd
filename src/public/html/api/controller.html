@@ -69,7 +69,7 @@
       <!-- Keys List Group -->
       <ul class="list-group">
         <li class="list-group-item" ng-repeat="route in controller.routes">
-          <a ui-sref="api.controller.route({ routeId: route.id })">{{ route.description }}</a>
+          <a ui-sref="api.controller.route({ routeId: route.id })">{{ route.name }}</a>
         </li>
       </ul>
       <button type="button" ng-click="addRoute()" class="btn btn-primary btn-xs pull-right" tooltip="Add route to [{{ controller.name }}]" tooltip-placement="top" tooltip-append-to-body="false">Add Route</button>
@@ -77,6 +77,7 @@
     </tab>
 
     <tab heading="Code" active="tabs[2].active" select="selectTab(2)">
+
       <div ui-ace="{
         useWrapMode : false,
         showGutter: false,
@@ -88,6 +89,7 @@
           enableLiveAutocompletion: true
         }
       }" ng-model="controller.code"></div>
+
     </tab>
 
     <tab heading="Middleware" active="tabs[3].active" select="selectTab(3)">Short Labeled Justified content</tab>
