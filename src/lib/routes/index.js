@@ -1,4 +1,5 @@
 exports.home = function(req, res) {
+  console.log('asdsada')
   res.sendfile('main.html');
 };
 

@@ -1,0 +1,18 @@
+<div class="fs-finder">
+
+  <div ng-repeat="col in finder.cols">
+    <ng-if condition="">
+
+    <a ng-repeat="data in col | filter: notModules | orderBy : ['-isDirectory', 'name']" ng-right-click="rightClickNode($event, data)" ng-click="clickNode($event, data);" ng-class="{ active: finder.isHighlighted(data) }">
+      <i ng-class="finder.getIconClassName(data)"></i>&nbsp;{{data.name}}
+      <i ng-if="data.isDirectory" class="fa fa-angle-right right-chevron"></i>
+    </a>
+  </div>
+
+  <div ng-if="finder.active && !finder.active.isDirectory">
+    {{ finder.active.name }}
+  </div>
+</div>
+
+
+<div ui-view></div>

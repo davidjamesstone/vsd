@@ -1,0 +1,15 @@
+<h1 class="page-header">Routes</h1>
+
+<script type="text/ng-template" id="route.html">
+  <a ui-sref="api.route.item({ routeId: route.id })">{{ route.url }}</a>
+  <ul ng-if="route.hasActions || route.hasChildren">
+    <li class="route" ng-repeat="route in route.children" ng-include="'route.html'">
+    </li>
+  <ul>
+</script>
+
+<a ui-sref="api.route.home()">Routes</a>
+<ul class="routes">
+  <li class="" ng-repeat="route in routes" ng-include="'route.html'">
+  </li>
+</ul>

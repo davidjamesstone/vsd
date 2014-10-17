@@ -1,0 +1,49 @@
+<div ng-if="!route">Route Not Found</div>
+
+<div ng-if="route">
+
+    <h4 class="page-header">Route: {{ route.url }}</h4>
+
+    <form class="form-horizontal">
+
+
+      <!-- Route Path -->
+      <div class="form-group form-group-sm">
+        <label for="path" class="col-sm-2 control-label">Path</label>
+        <div class="col-sm-10">
+          <input type="text" id="path" ng-model="route.path" class="form-control" focus="true" required ng-pattern1="model.pathRegexValidate" />
+          <div class="help-block">{{ route.url }}</div>
+        </div>
+      </div>
+
+      <!-- Route Description -->
+      <div class="form-group form-group-sm">
+        <label for="description" class="col-sm-2 control-label">Description</label>
+        <div class="col-sm-10">
+          <textarea id="description" ng-model="route.description" class="form-control input-sm"></textarea>
+        </div>
+      </div>
+
+
+      <!-- Route Actions -->
+      <h5 class="sub-header">Actions</h5>
+      <div class="list-group">
+        <a class="action list-group-item" ng-repeat="action in route.actions" ui-sref="api.route.item.action({ actionId: action.id })">{{action.verb}}</a>
+      </div>
+
+      <button type="button" ng-click="addAction()" class="btn btn-primary btn-xs">Add Action</button>
+
+      <!-- Route Children -->
+      <h5 class="sub-header">Children</h5>
+      <div class="list-group">
+        <a class="route list-group-item" ng-repeat="child in route.children" ui-sref="api.route.item({ routeId: child.id })">{{child.path}}</a>
+      </div>
+
+      <button type="button" ng-click="addChild()" class="btn btn-primary btn-xs">Add Child</button>
+      <button type="button" ng-click="addChildResource()" class="btn btn-primary btn-xs">Add Child Resource</button>
+
+      <button type="button" ng-click="deleteRoute(route)" ng-show="!route.isRoot" class="btn btn-danger btn-xs pull-right">Delete Route</button>
+
+    </form>
+
+</div>

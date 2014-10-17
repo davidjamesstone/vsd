@@ -1,15 +1,16 @@
 var express = require('express');
 var http = require('http');
-// var path = require('path');
+var path = require('path');
 // var favicon = require('static-favicon');
 // var httpLogger = require('morgan');
 // var cookieParser = require('cookie-parser');
 // var bodyParser = require('body-parser');
-// var routes = require('./lib/routes');
+var routes = require('./lib/routes');
 // var middleware = require('./lib/middleware');
-// // var sockets = require('./lib/sockets');
+var sockets = require('./lib/sockets');
+
 //
-// var app = express();
+var app = express();
 //
 // /*
 //  *  Configure express application
@@ -33,15 +34,15 @@ var http = require('http');
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded());
 //
-// app.use(express.static(path.join(__dirname, 'public'), {
-//   maxAge: 300000
-// }));
+app.use(express.static(path.join(__dirname, 'public'), {
+  maxAge: 300000
+}));
 // app.use(middleware.cacheHeader);
 //
 // /*
 //  * Register routes
 //  */
-// app.get('/', routes.home);
+app.get('/', routes.home);
 // app.get('/graph', routes.graph);
 // //app.get('/run-db', routes.runDb);
 // // app.get('/header/:workspaceId', routes.header);
@@ -97,19 +98,19 @@ var http = require('http');
 // app.use(middleware._404);
 // app.use(middleware._500);
 
-var app = express();
-
-app.route('/events')
-.all(function(req, res, next) {
-  // runs for all HTTP verbs first
-  // think of it as route specific middleware!
-  console.log('all');
-  next();
-})
-.get(function(req, res, next) {console.log('get0'); next(); }, function(req, res) {
-  console.log('get1');
-  res.send('ok');
-});
+// var app = express();
+//
+// app.route('/events')
+// .all(function(req, res, next) {
+//   // runs for all HTTP verbs first
+//   // think of it as route specific middleware!
+//   console.log('all');
+//   next();
+// })
+// .get(function(req, res, next) {console.log('get0'); next(); }, function(req, res) {
+//   console.log('get1');
+//   res.send('ok');
+// });
 
 /*
  * Initialize Server
@@ -119,7 +120,7 @@ var server = http.Server(app);
 /*
  * Register socket endpoints
  */
-// sockets(server);
+sockets(server);
 
 
 module.exports = server;

@@ -1,0 +1,39 @@
+<div ng-if="!handler">Handler Not Found</div>
+
+<div ng-if="handler">
+
+  <h4 class="page-header">{{ handler.name }}</h4>
+
+  <form class="form-horizontal">
+
+    <!-- Handler Path -->
+    <div class="form-group form-group-sm">
+      <label for="name" class="col-sm-2 control-label">Name</label>
+      <div class="col-sm-10">
+        <input type="text" id="name" ng-model="handler.name" class="form-control" focus="true" required ng-pattern1="model.pathRegexValidate" />
+        <div class="help-block">{{ handler.path }}</div>
+      </div>
+    </div>
+
+    <!-- Handler Description -->
+    <div class="form-group form-group-sm">
+      <label for="description" class="col-sm-2 control-label">Description</label>
+      <div class="col-sm-10">
+        <textarea id="description" ng-model="handler.description" class="form-control"></textarea>
+      </div>
+    </div>
+  </form>
+
+  <div ui-ace="{
+        useWrapMode : false,
+        showGutter: false,
+        mode: 'javascript',
+        require: ['ace/ext/language_tools'],
+        advanced: {
+          enableSnippets: true,
+          enableBasicAutocompletion: true,
+          enableLiveAutocompletion: true
+        }
+      }" ng-model="handler.code"></div>
+
+</div>

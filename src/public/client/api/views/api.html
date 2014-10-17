@@ -1,0 +1,62 @@
+<!-- Templates -->
+<script type="text/ng-template" id="handler.html">
+  <a ui-sref1="api.route.item({ routeId: route.id })" title="{{ handler.code }}">{{ handler.name }}</a>
+</script>
+
+<script type="text/ng-template" id="action.html">
+  <a ui-sref1="api.controller.route({ controllerId: route.controller.id, routeId: route.id })"><small>{{ action.verb.toUpperCase() }}</small></a>
+  <ul ng-if="false" ng1-if="action.hasHandlers">
+    <li class="handler" ng-repeat="handler in action.handlers" ng-include="'handler.html'">
+    </li>
+  <ul>
+</script>
+
+<script type="text/ng-template" id="controller.html">
+  <a ui-sref="api.controller.item({ controllerId: controller.id })">{{ controller.name }}</a>
+  <ul ng-if="controller.hasHandlers">
+    <li class="route" ng-repeat="handler in controller.handlers">
+      <a ui-sref="api.controller.item.handler({ controllerId: controller.id, handlerId: handler.id })">{{ handler.name }}</a>
+    </li>
+  </ul>
+</script>
+
+
+<script type="text/ng-template" id="route.html">
+  <a ui-sref="api.route.item({ routeId: route.id })">{{ route.url }}</a>
+  <ul ng-if="route.hasActions || route.hasChildren">
+    <li class="action" ng-repeat="action in route.actions" ng-include="'action.html'">
+    </li>
+    <li class="route" ng-repeat="route in route.children" ng-include="'route.html'">
+    </li>
+  </ul>
+</script>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-3 col-md-2 sidebar">
+      <ul class="api tree">
+        <li>
+          <a ui-sref="api.controller.home">Controllers</a>
+          <ul class="controllers">
+            <li ng-repeat="controller in controllers" ng-include="'controller.html'">
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a ui-sref="api.route.home">Routes</a>
+          <ul class="routes">
+            <li ng-repeat="route in routes" ng-include="'route.html'">
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+      <button type="button" ui-sref="api.diagram" class="btn btn-info">View Diagram</button>
+      <div class="row">
+        <div ui-view class="col-md-6"></div>
+        <div ui-view="secondary" class="col-md-6"></div>
+      </div>
+    </div>
+  </div>
+</div>

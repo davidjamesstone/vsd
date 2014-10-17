@@ -1,0 +1,17 @@
+<h1 class="page-header">Controllers</h1>
+
+<script type="text/ng-template" id="controller.html">
+  <a ui-sref="api.controller.item({ controllerId: controller.id })">{{ controller.name }}</a>
+  <ul ng-if="controller.hasHandlers">
+    <li class="handler" ng-repeat="handler in controller.handlers">
+      <a ui-sref="api.controller.item.handler({ controllerId: controller.id, handlerId: handler.id })">{{ handler.name }}</a>
+    </li>
+  <ul>
+</script>
+
+<ul class="controllers">
+  <li class="" ng-repeat="controller in controllers" ng-include="'controller.html'">
+  </li>
+</ul>
+
+<button type="button" ng-click="addController()" class="btn btn-primary btn-xs pull-right">Add Controller</button>
