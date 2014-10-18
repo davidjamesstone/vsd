@@ -9,40 +9,39 @@ module.exports = function($stateProvider, $locationProvider, $urlRouterProvider)
   // For any unmatched url, redirect to /
   $urlRouterProvider.otherwise('/');
 
-  function registerStates($stateProvider) {
-    $stateProvider
-      .state('app', {
-        abstract: true,
-        controller: 'AppCtrl',
-        templateUrl: '/client/app/views/index.html',
-        resolve: {
-          fsPromise: ['$q',
-            function($q) {
-              var deferred = $q.defer();
-              filesystem.on('connection', function() {
-                deferred.resolve(filesystem);
-              });
-              return deferred.promise;
-            }
-          ],
-          fsWatcherPromise: ['$q',
-            function($q) {
-              var deferred = $q.defer();
-              watcher.on('connection', function() {
-                deferred.resolve(watcher);
-              });
-              return deferred.promise;
-            }
-          ]
-        }
-      })
-      .state('app.home', {
-        url: '',
-        templateUrl: '/client/app/views/app.html',
-      });
-  }
+  $stateProvider
+    .state('app', {
+      abstract: true,
+      controller: 'AppCtrl',
+      templateUrl: '/client/app/views/index.html',
+      resolve: {
+        fsPromise: ['$q',
+          function($q) {
+            var deferred = $q.defer();
+            filesystem.on('connection', function() {
+              deferred.resolve(filesystem);
+            });
+            return deferred.promise;
+          }
+        ],
+        fsWatcherPromise: ['$q',
+          function($q) {
+            var deferred = $q.defer();
+            watcher.on('connection', function() {
+              deferred.resolve(watcher);
+            });
+            return deferred.promise;
+          }
+        ]
+      }
+    })
+    .state('app.home', {
+      url: '',
+      templateUrl: '/client/app/views/app.html',
+    });
 
   function registerDbStates($stateProvider) {
+
     $stateProvider
       .state('db', {
         url: '/db',
@@ -185,12 +184,7 @@ module.exports = function($stateProvider, $locationProvider, $urlRouterProvider)
           }
         }
       });
+
   }
-
-
-  // Now set up the states
-  registerStates($stateProvider);
-  // registerDbStates($stateProvider);
-  // registerApiStates($stateProvider);
 
 };

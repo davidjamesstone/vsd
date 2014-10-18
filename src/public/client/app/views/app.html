@@ -210,7 +210,8 @@
         <ng-include src="'/client/fs/views/finder.html'" ng-controller="FsFinderCtrl"></ng-include>
       </div>
       <div class="box-footer">
-        <a ui-sref="app.finder"><small>{{model.tree.path}}</small></a>
+        <a ui-sref="app.fs.finder"><small>{{model.tree.path}}</small></a>
+        <a ui-sref="app.fs.dir({ path: encodePath(model.tree.path) })"><small>{{model.tree.path}}</small></a>
       </div>
     </div>
 

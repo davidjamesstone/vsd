@@ -3,7 +3,7 @@
   <div ng-repeat="col in finder.cols">
     <ng-if condition="">
 
-    <a ng-repeat="data in col | filter: notModules | orderBy : ['-isDirectory', 'name']" ng-right-click="rightClickNode($event, data)" ng-click="clickNode($event, data);" ng-class="{ active: finder.isHighlighted(data) }">
+    <a ng-repeat="data in col | filter: notModules | orderBy : ['-isDirectory', 'name']" ng-right-click="rightClickNode($event, data)" ng-click="clickNode(data);" ng-class="{ active: finder.isHighlighted(data) }">
       <i ng-class="finder.getIconClassName(data)"></i>&nbsp;{{data.name}}
       <i ng-if="data.isDirectory" class="fa fa-angle-right right-chevron"></i>
     </a>

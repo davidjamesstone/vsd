@@ -3,7 +3,7 @@ var filesystem = require('../../file-system');
 var utils = require('../../../../shared/utils');
 var FinderModel = require('../models/finder');
 
-module.exports = function($scope, $state, dialog, fileService, responseHandler) {
+module.exports = function($scope, $state, $log, dialog, fileService, responseHandler) {
 
   var expanded = Object.create(null);
 
@@ -13,8 +13,15 @@ module.exports = function($scope, $state, dialog, fileService, responseHandler) 
   $scope.active = null;
   $scope.pasteBuffer = null;
 
-  var path = $state.params.path ? utils.decodeString($state.params.path) : null;
+  var path = $state.params.path ? decodeURIComponent($state.params.path) : null;
   var model = $scope.model;
+
+
+  model.watcher.on('change', function() {
+    finder.tree = model.tree;
+    console.log('fs change');
+    $scope.$apply();
+  });
 
   var finder = new FinderModel(model.tree, path ? model.list.find(function(item) {
     return item.path === path;
@@ -41,38 +48,25 @@ module.exports = function($scope, $state, dialog, fileService, responseHandler) 
     $scope.treeData.showMenu = true;
   };
 
-  $scope.clickNode = function(e, fso) {
-    e.preventDefault();
-    e.stopPropagation();
+  $scope.clickNode = function(fso) {
+
 
     $scope.active = fso;
 
     finder.active = fso;
 
     if (!fso.isDirectory) {
-      $state.go('app.finder.file', {
+      $state.go('app.fs.finder.file', {
         path: utils.encodeString(fso.path)
       });
     }
-    // if (fso.isDirectory) {
-    //   var isExpanded = $scope.isExpanded(fso);
-    //   if (isExpanded) {
-    //     delete expanded[fso.path];
-    //   } else {
-    //     expanded[fso.path] = true;
-    //   }
-    // } else {
-    //   $scope.open(fso);
-    // }
-
-    return false;
   };
-
+  
   $scope.delete = function(e, fso) {
 
     e.preventDefault();
 
-    $dialog.confirm({
+    dialog.confirm({
       title: 'Delete ' + (fso.isDirectory ? 'folder' : 'file'),
       message: 'Delete [' + fso.name + ']. Are you sure?'
     }).then(function() {
@@ -87,7 +81,7 @@ module.exports = function($scope, $state, dialog, fileService, responseHandler) 
 
     e.preventDefault();
 
-    $dialog.prompt({
+    dialog.prompt({
       title: 'Rename ' + (fso.isDirectory ? 'folder' : 'file'),
       message: 'Please enter a new name',
       defaultValue: fso.name,
@@ -106,7 +100,7 @@ module.exports = function($scope, $state, dialog, fileService, responseHandler) 
 
     e.preventDefault();
 
-    $dialog.prompt({
+    dialog.prompt({
       title: 'Add new file',
       placeholder: 'File name',
       message: 'Please enter the new file name'
@@ -122,7 +116,7 @@ module.exports = function($scope, $state, dialog, fileService, responseHandler) 
 
     e.preventDefault();
 
-    $dialog.prompt({
+    dialog.prompt({
       title: 'Add new folder',
       placeholder: 'Folder name',
       message: 'Please enter the new folder name'

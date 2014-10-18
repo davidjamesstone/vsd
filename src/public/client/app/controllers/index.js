@@ -1,11 +1,8 @@
 var AppModel = require('../models/app');
 var FileSystemObject = require('../../../../shared/file-system-object');
+var utils = require('../../../../shared/utils');
 
 module.exports = function($scope, $state, fs, watcher, FileService, dialog) {
-
-  watcher.on('change', function() {
-    $scope.$apply();
-  });
 
   var model = new AppModel({
     fs: fs,
@@ -22,4 +19,6 @@ module.exports = function($scope, $state, fs, watcher, FileService, dialog) {
     model.readme = res;
   });
 
+  $scope.encodePath = utils.encodeString;
+  $scope.decodePath = utils.decodeString;
 };

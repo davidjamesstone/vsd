@@ -13,6 +13,7 @@ mod.controller('FsCtrl', [
 mod.controller('FsFinderCtrl', [
   '$scope',
   '$state',
+  '$log',
   'DialogService',
   'FileService',
   'ResponseHandler',
@@ -24,6 +25,13 @@ mod.controller('FsFileCtrl', [
   'filePromise',
   'FileService',
   require('./controllers/file')
+]);
+
+mod.controller('FsDirCtrl', [
+  '$scope',
+  'dir',
+  'FileService',
+  require('./controllers/dir')
 ]);
 
 mod.controller('FsTreeCtrl', [

@@ -1,3 +1,3 @@
-module.exports = function($scope, filePromise, fileService) {
-  $scope.file = filePromise;
+module.exports = function($scope, file, fileService) {
+  $scope.file = file;
 };
