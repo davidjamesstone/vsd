@@ -9,6 +9,9 @@ function FileSystemWatcher() {
 
   this._watched = {};
 
+  this._list = null;
+  this._tree = null;
+
   var socket = io.connect(utils.urlRoot() + '/fswatch');
 
   socket.on('connection', function(res) {
@@ -16,10 +19,10 @@ function FileSystemWatcher() {
     var data = res.data;
 
     Object.keys(data).map(function(key) {
-       this._watched[key] = new FileSystemObject(key, data[key].isDirectory);
+      this._watched[key] = new FileSystemObject(key, data[key].isDirectory);
     }, this);
 
-    utils.extend(this._watched, data);
+    //utils.extend(this._watched, data);
 
     this.emit('connection', this._watched);
     this.emit('change');
@@ -29,9 +32,11 @@ function FileSystemWatcher() {
   socket.on('add', function(res) {
 
     var data = res.data;
-    this._watched[data.path] = data;
+    var fso = new FileSystemObject(data.path, false);
 
-    this.emit('add', data);
+    this._watched[data.path] = fso;
+
+    this.emit('add', fso);
     this.emit('change');
 
   }.bind(this));
@@ -39,9 +44,11 @@ function FileSystemWatcher() {
   socket.on('addDir', function(res) {
 
     var data = res.data;
-    this._watched[data.path] = data;
+    var fso = new FileSystemObject(data.path, true);
 
-    this.emit('addDir', res.data);
+    this._watched[fso.path] = fso;
+
+    this.emit('addDir', fso);
     this.emit('change');
 
   }.bind(this));
@@ -49,8 +56,12 @@ function FileSystemWatcher() {
   socket.on('change', function(res) {
 
     var data = res.data;
+    var fso = this._watched[data.path];
 
-    this.emit('modified', data);
+    // check we got something
+    if (fso) {
+      this.emit('modified', fso);
+    }
 
   }.bind(this));
 
@@ -87,6 +98,12 @@ function FileSystemWatcher() {
   }.bind(this));
 
   this._socket = socket;
+
+  this.on('change', function() {
+    this._list = null;
+    this._tree = null;
+  });
+
 }
 Object.defineProperties(FileSystemWatcher.prototype, {
   map: {
@@ -96,12 +113,14 @@ Object.defineProperties(FileSystemWatcher.prototype, {
   },
   list: {
     get: function() {
-      var list = [];
-      var keys = Object.keys(this._watched);
-      for (var i = 0; i < keys.length; i++) {
-        list.push(this._watched[keys[i]]);
+      if (!this._list) {
+        this._list = [];
+        var keys = Object.keys(this._watched);
+        for (var i = 0; i < keys.length; i++) {
+          this._list.push(this._watched[keys[i]]);
+        }
       }
-      return list;
+      return this._list;
     }
   },
   tree: {
@@ -136,7 +155,11 @@ Object.defineProperties(FileSystemWatcher.prototype, {
 
       }
 
-      return treeify(this._watched, 'path', 'dir', 'children');
+      if (!this._tree) {
+        this._tree = treeify(this._watched, 'path', 'dir', 'children');
+      }
+
+      return this._tree;
     }
   }
 });

@@ -13,17 +13,10 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
   $scope.active = null;
   $scope.pasteBuffer = null;
 
-  var path = $state.params.path ? decodeURIComponent($state.params.path) : null;
+  var path = $state.params.path ? utils.decodeString($state.params.path) : null;
   var model = $scope.model;
 
-
-  model.watcher.on('change', function() {
-    finder.tree = model.tree;
-    console.log('fs change');
-    $scope.$apply();
-  });
-
-  var finder = new FinderModel(model.tree, path ? model.list.find(function(item) {
+  var finder = new FinderModel(path ? model.list.find(function(item) {
     return item.path === path;
   }) : null);
 
@@ -50,7 +43,6 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
 
   $scope.clickNode = function(fso) {
 
-
     $scope.active = fso;
 
     finder.active = fso;
@@ -61,7 +53,7 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
       });
     }
   };
-  
+
   $scope.delete = function(e, fso) {
 
     e.preventDefault();

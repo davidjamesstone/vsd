@@ -27,6 +27,12 @@ mod.controller('FsFileCtrl', [
   require('./controllers/file')
 ]);
 
+mod.controller('FsSearchCtrl', [
+  '$scope',
+  '$state',
+  require('./controllers/search')
+]);
+
 mod.controller('FsDirCtrl', [
   '$scope',
   'dir',

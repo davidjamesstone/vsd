@@ -19,13 +19,14 @@
     "socket.io": "^1.1.0",
     "ncp": "^1.0.1",
     "rimraf": "^2.2.8",
-    "emitter-component": "^1.1.1"
+    "emitter-component": "^1.1.1",
+    "is-utf8": "^0.2.0"
   },
   "devDependencies": {},
   "scripts": {
     "build": "npm run build-js && npm run build-css",
     "build-js": "browserify ./src/public/client/index.js -o ./src/public/js/build.js -d",
-    "build-css": "lessc ./src/public/less/index.less > ./src/public/css/build.css"
+    "build-css": "lessc ./src/public/client/index.less > ./src/public/css/build.css"
   },
   "author": "",
   "license": "ISC"

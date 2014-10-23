@@ -80,6 +80,25 @@ ul ul {
 .sidebar .api li {
   white-space: nowrap;
 }
+.header .menu {
+  max-height: 280px;
+}
+.header .menu p {
+  direction: rtl;
+  overflow: hidden;
+}
+i.file-type {
+  font-size: 35px;
+  position: relative;
+}
+i.file-type span {
+  position: absolute;
+  font-size: 9px;
+  font-weight: bold;
+  bottom: 2px;
+  right: 1px;
+  text-transform: uppercase;
+}
 .MdPreview-markdown {
   display: none;
 }
@@ -119,15 +138,19 @@ ul ul {
   white-space: nowrap;
   overflow-x: auto;
   height: 100%;
+  margin-bottom: 10px;
 }
 .fs-finder > div {
   display: inline-block;
   vertical-align: top;
-  width: 130px;
   height: 100%;
+  overflow-y: auto;
 }
 .fs-finder > div:not(:last-child) {
   border-right: solid 1px #ddd;
+}
+.fs-finder > div:not(.preview-pane) {
+  width: 130px;
 }
 .fs-finder > div a {
   display: block;
@@ -144,4 +167,10 @@ ul ul {
   position: absolute;
   right: 5px;
   top: 2px;
+}
+.fs-finder-page .toggle {
+  margin-bottom: 5px;
+}
+.fs-finder-page .fs-finder {
+  height: 200px;
 }

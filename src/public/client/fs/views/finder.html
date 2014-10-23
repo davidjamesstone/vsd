@@ -1,18 +1,38 @@
-<div class="fs-finder">
+<div class="fs-finder-page">
 
-  <div ng-repeat="col in finder.cols">
-    <ng-if condition="">
+	<div collapse="isCollapsed" class="">
+    <div class="fs-finder">
+      <div ng-repeat="col in finder.cols(model.tree)">
+        <a ng-repeat="data in col | filter: notModules | orderBy : ['-isDirectory', 'name']"
+          ng1-right-click="rightClickNode($event, data)"
+          ng-click="clickNode(data);"
+          ng-class="{ active: finder.isHighlighted(data) }">
 
-    <a ng-repeat="data in col | filter: notModules | orderBy : ['-isDirectory', 'name']" ng-right-click="rightClickNode($event, data)" ng-click="clickNode(data);" ng-class="{ active: finder.isHighlighted(data) }">
-      <i ng-class="finder.getIconClassName(data)"></i>&nbsp;{{data.name}}
-      <i ng-if="data.isDirectory" class="fa fa-angle-right right-chevron"></i>
-    </a>
-  </div>
+          <i ng-class="finder.getIconClassName(data)" style="color: {{color(data)}}"></i>&nbsp;{{data.name}}
+          <i ng-if="data.isDirectory" class="fa fa-angle-right right-chevron"></i>
+        </a>
+      </div>
 
-  <div ng-if="finder.active && !finder.active.isDirectory">
-    {{ finder.active.name }}
-  </div>
+      <div ng-if="finder.active && !finder.active.isDirectory" class="preview-pane">
+        {{ model }}
+
+					<i class="fa fa-file file-type" style="color: {{color(finder.active)}};">
+						<span style="color: {{colorText(finder.active)}};">{{finder.active.ext.substr(1)}}</span>
+					</i>
+
+      </div>
+
+    </div>
+	</div>
+
+	<button class="btn btn-default btn-xs pull-right toggle" ng-click="isCollapsed = !isCollapsed">
+ 		<i ng-class="isCollapsed ? 'fa fa-arrow-down': 'fa fa-arrow-up'"></i>
+	</button>
+
+	<span class="hidden-xs hidden-sm" ng-1show="isCollapsed && finder.active">{{model.getRelativePath(finder.active.path)}}</span>
+	<span class="hidden-md hidden-lg" ng-1show="isCollapsed && finder.active">{{model.getRelativePath(finder.active.path)}}</span>
+	<br>
+	<hr style="border-color: {{color(finder.active)}}">
+  <div ui-view></div>
+
 </div>
-
-
-<div ui-view></div>

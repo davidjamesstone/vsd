@@ -12,7 +12,7 @@ module.exports = function($stateProvider) {
       //templateUrl: '/client/fs/views/index.html',
     })
     .state('app.fs.finder', {
-      url: '/finder',
+      url: '/finder?path',
       views: {
         '@app': { // Target the ui-view='' in parent state 'app'
           controller: 'FsFinderCtrl',
@@ -21,7 +21,7 @@ module.exports = function($stateProvider) {
       }
     })
     .state('app.fs.finder.file', {
-      url: '/file/:path',
+      url: '/file',
       controller: 'FsFileCtrl',
       templateUrl: '/client/fs/views/file.html',
       resolve: {
@@ -35,6 +35,23 @@ module.exports = function($stateProvider) {
             return deferred.promise;
           }
         ]
+      }
+    })
+    .state('app.fs.search', {
+      url: '/search?q',
+      views: {
+        '@app': { // Target the ui-view='' in parent state 'app',
+          controller: 'FsSearchCtrl',
+          templateUrl: '/client/fs/views/search.html',
+          // resolve: {
+          //   dir: ['$stateParams',
+          //     function($stateParams) {
+          //       var path = utils.decodeString($stateParams.path);
+          //       return watcher.map[path];
+          //     }
+          //   ]
+          // }
+        }
       }
     })
     .state('app.fs.dir', {

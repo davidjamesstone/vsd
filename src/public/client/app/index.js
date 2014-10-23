@@ -18,6 +18,10 @@ mod.service('ResponseHandler', [
   require('./services/response-handler')
 ]);
 
+mod.service('ColorService', [
+  require('./services/color')
+]);
+
 mod.controller('AppCtrl', [
   '$scope',
   '$state',
@@ -25,6 +29,7 @@ mod.controller('AppCtrl', [
   'fsWatcherPromise',
   'FileService',
   'DialogService',
+  'ColorService',
   require('./controllers')
 ]);
 
@@ -52,6 +57,10 @@ mod.config([
   '$urlRouterProvider',
   require('./config')
 ]);
+
+mod.config( ['$compileProvider', function($compileProvider){
+  $compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob):|data:image\/)/);
+}]);
 
 // mod.directive("fileEditor", [
 //   function() {

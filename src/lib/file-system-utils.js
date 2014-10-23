@@ -1,4 +1,5 @@
 var fs = require('fs');
+var isUtf8 = require('is-utf8');
 var p = require('path');
 var common = require('./common');
 var ncp = require('ncp').ncp;
@@ -72,10 +73,18 @@ exports.writeFile = function(path, contents, callback) {
 };
 
 exports.readFile = function(path, callback) {
-  fs.readFile(path, 'utf8', function(err, contents) {
-    callback(err, err ? null : common.extend(new FileSystemObject(path, false), {
+  fs.readFile(path, function(err, buffer) {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    var contents = isUtf8(buffer) ? buffer.toString('utf8') : buffer;
+
+    callback(null, common.extend(new FileSystemObject(path, false), {
       contents: contents
     }));
+
   });
 };
 

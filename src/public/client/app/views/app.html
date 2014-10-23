@@ -188,12 +188,12 @@
                     }
                   }" ng-model="model.package.contents"></div>
             </div>
-            <div ng-if="!model.package">No result</div>
+            <div ng-if="!model.package">No package.json found</div>
           </wait-done>
         </wait>
       </div>
       <div class="box-footer">
-        Footer
+        <small ng-if="model.package"><a ui-sref="app.fs.finder.file({path: encodePath(model.package.path)})">{{model.package.path}}</a></small>
       </div>
     </div>
 

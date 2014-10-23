@@ -1,10 +1,10 @@
-function FinderModel(tree, active) {
-  this.tree = tree;
+function FinderModel(active) {
+  // this.tree = tree;
   this.active = active;
 }
-FinderModel.prototype._readCols = function() {
+FinderModel.prototype._readCols = function(tree) {
 
-  var tree = this._tree;
+  //var tree = this._tree;
   var active = this._active;
   //var activeIsDir = active.isDirectory;
 
@@ -41,9 +41,9 @@ FinderModel.prototype.getIconClassName = function(fso) {
   var classes = ['fa'];
 
   if (fso.isDirectory) {
-    classes.push(this.isExpanded(fso) ? 'fa-folder-open' : 'fa-folder');
+    classes.push(this.isExpanded(fso) ? 'fa-folder-open-o' : 'fa-folder-o');
   } else {
-    classes.push('fa-file-o');
+    classes.push('fa-file');
   }
 
   return classes.join(' ');
@@ -70,26 +70,18 @@ FinderModel.prototype.isHighlighted = function(fso) {
 FinderModel.prototype.isExpanded = function(dir) {
   return this.isHighlighted(dir);
 };
+FinderModel.prototype.cols = function(tree) {
+  return this._readCols(tree);
+};
+
 
 Object.defineProperties(FinderModel.prototype, {
-  tree: {
-    set: function(value) {
-      this._tree = value;
-      this._cols = this._readCols();
-    }
-  },
   active: {
     get: function() {
       return this._active;
     },
     set: function(value) {
       this._active = value;
-      this._cols = this._readCols();
-    }
-  },
-  cols: {
-    get: function() {
-      return this._cols;
     }
   }
 });
