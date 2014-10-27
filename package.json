@@ -22,7 +22,9 @@
     "emitter-component": "^1.1.1",
     "is-utf8": "^0.2.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "is-utf8": "^0.2.0"
+  },
   "scripts": {
     "build": "npm run build-js && npm run build-css",
     "build-js": "browserify ./src/public/client/index.js -o ./src/public/js/build.js -d",

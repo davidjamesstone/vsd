@@ -14,11 +14,11 @@
       </div>
 
       <div ng-if="finder.active && !finder.active.isDirectory" class="preview-pane">
-        {{ model }}
+      	<h4>{{ finder.active.name }}</h4>
 
-					<i class="fa fa-file file-type" style="color: {{color(finder.active)}};">
-						<span style="color: {{colorText(finder.active)}};">{{finder.active.ext.substr(1)}}</span>
-					</i>
+				<i class="fa fa-file file-type" style="color: {{color(finder.active)}};">
+					<span style="color: {{colorText(finder.active)}};">{{finder.active.ext.substr(1)}}</span>
+				</i>
 
       </div>
 
@@ -30,8 +30,8 @@
  		<i ng-class="isCollapsed ? 'fa fa-arrow-down': 'fa fa-arrow-up'"></i>
 	</button>
 
-	<span class="hidden-xs hidden-sm" ng-1show="isCollapsed && finder.active">{{model.getRelativePath(finder.active.path)}}</span>
-	<span class="hidden-md hidden-lg" ng-1show="isCollapsed && finder.active">{{model.getRelativePath(finder.active.path)}}</span>
+	<span class="hidden-xs hidden-sm" ng-show="finder.active">{{model.getRelativePath(finder.active.path)}}</span>
+	<span class="hidden-md hidden-lg" ng-show="finder.active">{{ finder.active.name }}</span>
 	<br>
 	<hr style="border-color: {{color(finder.active)}}">
   <div ui-view></div>

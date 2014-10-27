@@ -37,7 +37,7 @@ module.exports = function($stateProvider, $locationProvider, $urlRouterProvider)
     })
     .state('app.home', {
       url: '',
-      templateUrl: '/client/app/views/app.html',
+      templateUrl: '/client/app/views/app.html'
     });
 
   function registerDbStates($stateProvider) {

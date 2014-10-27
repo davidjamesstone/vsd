@@ -18,7 +18,7 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
 
   var finder = new FinderModel(path ? model.list.find(function(item) {
     return item.path === path;
-  }) : null);
+  }) : model.tree);
 
   $scope.finder = finder;
 

@@ -1,3 +1,29 @@
+recentFiles: {
+  get: function() {
+    var recent = this._recentFiles;
+
+    // clean any files that may no longer exist
+    var i = recent.length;
+    while (i--) {
+      if (!this.map[recent[i].path]) {
+        recent.splice(i, 1);
+      }
+    }
+
+    var entries = [];
+
+    recent.forEach(function(item) {
+      var entry = {
+        file: this.map[item.path]
+      };
+      entries.push(utils.extend(entry, item));
+    }, this);
+
+    return entries;
+  }
+}
+
+
 
 // var requiresAuthentication = new Handler({
 //   name: 'requiresAuthentication',

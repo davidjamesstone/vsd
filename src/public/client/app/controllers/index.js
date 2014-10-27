@@ -18,14 +18,19 @@ module.exports = function($scope, $state, fs, watcher, fileService, dialog, colo
     $scope.$apply();
   });
 
+  var packageFile = model.packageFile;
+  if (packageFile) {
+    fileService.readFile(packageFile.path).then(function(res) {
+      model.package = res;
+    });
+  }
 
-  fileService.readFile('/Users/guest/Documents/tequid/vsd/package.json').then(function(res) {
-    model.package = res;
-  });
-
-  fileService.readFile('/Users/guest/Documents/tequid/vsd/readme.md').then(function(res) {
-    model.readme = res;
-  });
+  var readmeFile = model.readmeFile;
+  if (readmeFile) {
+    fileService.readFile(readmeFile.path).then(function(res) {
+      model.readme = res;
+    });
+  }
 
   $scope.onSearchFormSubmit = function() {
     $state.go('app.fs.search', { q: searchForm.q.value });

@@ -75,73 +75,79 @@
 
 <div class="row">
   <div class="col-md-8">
+    <div ng-if="model.hasReadmeFile">
 
-    <div class="box box-primary">
-      <div class="box-header">
-        <div class="box-title">
-          <i class="fa fa-code"></i> README
+      <div class="box box-primary">
+        <div class="box-header">
+          <div class="box-title">
+            <i class="fa fa-code"></i> README
+          </div>
+        </div>
+        <div class="box-body">
+          <wait until-not-undefined="model.readme">
+            <wait-loading>Loading readme file</wait-loading>
+            <wait-done>
+              <div ng-if="model.readme">
+                <div class="iiMdPreview" style="max-height: 600px; overflow: auto;" text="{{model.readme.contents}}"></div>
+              </div>
+              <div ng-if="!model.readme">No result</div>
+            </wait-done>
+          </wait>
+        </div>
+        <div class="box-footer">
+          Footer
         </div>
       </div>
-      <div class="box-body">
-        <wait until-not-undefined="model.readme">
-          <wait-loading>Loading package.json</wait-loading>
-          <wait-done>
-            <div ng-if="model.readme">
-              <div class="iiMdPreview" style="max-height: 600px; overflow: auto;" text="{{model.readme.contents}}"></div>
-            </div>
-            <div ng-if="!model.readme">No result</div>
-          </wait-done>
-        </wait>
-      </div>
-      <div class="box-footer">
-        Footer
-      </div>
-    </div>
 
+    </div>
   </div>
 
   <div class="col-md-4">
 
-    <div class="box">
-      <div class="box-header">
-        <div class="box-title">
-          NPM
-        </div>
-        <div class="box-tools">
-          <div class="input-group input-group-sm">
-            <input type="text" class="form-control pull-right" ng-model="packageQuery" placeholder="Filter" style="width: 150px;">
-            <span class="input-group-btn">
-              <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
-            </span>
-          </div><!-- /input-group -->
-        </div>
-      </div>
-      <div class="box-body">
+    <div ng-if="model.hasPackageFile">
 
-        <wait until-not-undefined="model.package">
-          <wait-loading>Loading package.json</wait-loading>
-          <wait-done>
-            <div ng-if="model.dependencies">
-              <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-                <table class="table table-condensed table-striped1">
-                  <tbody>
-                    <tr ng-repeat="dep in model.dependencies | filter: { name: packageQuery }">
-                      <td><span style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{dep.name}}</span></td>
-                      <td class="text-right"><span class="badge bg-green" style="max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{dep.version}}</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+      <div class="box">
+        <div class="box-header">
+          <div class="box-title">
+            NPM
+          </div>
+          <div class="box-tools">
+            <div class="input-group input-group-sm">
+              <input type="text" class="form-control pull-right" ng-model="packageQuery" placeholder="Filter" style="width: 150px;">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+              </span>
+            </div><!-- /input-group -->
+          </div>
+        </div>
+        <div class="box-body">
+
+          <wait until-not-undefined="model.package">
+            <wait-loading>Loading package.json</wait-loading>
+            <wait-done>
+              <div ng-if="model.dependencies">
+                <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                  <table class="table table-condensed table-striped1">
+                    <tbody>
+                      <tr ng-repeat="dep in model.dependencies | filter: { name: packageQuery }">
+                        <td><span style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{dep.name}}</span></td>
+                        <td class="text-right"><span class="badge bg-green" style="max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{dep.version}}</span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
-            <div ng-if="!model.dependencies">No result</div>
-          </wait-done>
-        </wait>
+              <div ng-if="!model.dependencies">No result</div>
+            </wait-done>
+          </wait>
 
+        </div>
+        <div class="box-footer">
+          Footer
+        </div>
       </div>
-      <div class="box-footer">
-        Footer
-      </div>
+
     </div>
 
     <div class="box">
@@ -164,39 +170,41 @@
 
 <div class="row">
   <div class="col-md-8">
+    <div ng-if="model.hasPackageFile">
 
-    <div class="box">
-      <div class="box-header">
-        <div class="box-title">
-          <i class="icon ion-android-developer"></i> package.json
+      <div class="box">
+        <div class="box-header">
+          <div class="box-title">
+            <i class="icon ion-android-developer"></i> package.json
+          </div>
+        </div>
+        <div class="box-body">
+          <wait until-not-undefined="model.package">
+            <wait-loading>Loading package.json</wait-loading>
+            <wait-done>
+              <div ng-if="model.package">
+                <div ui-ace="{
+                      useWrapMode: false,
+                      showGutter: false,
+                      mode: 'javascript',
+                      require: ['ace/ext/language_tools'],
+                      advanced: {
+                        enableSnippets: true,
+                        enableBasicAutocompletion: true,
+                        enableLiveAutocompletion: true
+                      }
+                    }" ng-model="model.package.contents"></div>
+              </div>
+              <div ng-if="!model.package">No package.json found</div>
+            </wait-done>
+          </wait>
+        </div>
+        <div class="box-footer">
+          <small ng-if="model.package"><a ui-sref="app.fs.finder.file({path: encodePath(model.package.path)})">{{model.package.path}}</a></small>
         </div>
       </div>
-      <div class="box-body">
-        <wait until-not-undefined="model.package">
-          <wait-loading>Loading package.json</wait-loading>
-          <wait-done>
-            <div ng-if="model.package">
-              <div ui-ace="{
-                    useWrapMode: false,
-                    showGutter: false,
-                    mode: 'javascript',
-                    require: ['ace/ext/language_tools'],
-                    advanced: {
-                      enableSnippets: true,
-                      enableBasicAutocompletion: true,
-                      enableLiveAutocompletion: true
-                    }
-                  }" ng-model="model.package.contents"></div>
-            </div>
-            <div ng-if="!model.package">No package.json found</div>
-          </wait-done>
-        </wait>
-      </div>
-      <div class="box-footer">
-        <small ng-if="model.package"><a ui-sref="app.fs.finder.file({path: encodePath(model.package.path)})">{{model.package.path}}</a></small>
-      </div>
-    </div>
 
+    </div>
   </div>
   <div class="col-md-4">
 
@@ -219,10 +227,46 @@
 
 </div>
 
-<!--
-<ul ng-if="false">
-  <li ng-repeat="fso in map">{{ fso.name }}</li>
-</ul>
-<ul ng-if="false">
-  <li ng-repeat="fso in tree[0].children[0].children">{{ fso.name }}</li>
-</ul> -->
+<div ng-if="model.hasPackageFile">
+  <div class="box">
+    <div class="box-header">
+      <div class="box-title">
+        NPM DEV
+      </div>
+      <div class="box-tools">
+        <div class="input-group input-group-sm">
+          <input type="text" class="form-control pull-right" ng-model="packageQuery" placeholder="Filter" style="width: 150px;">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+          </span>
+        </div><!-- /input-group -->
+      </div>
+    </div>
+    <div class="box-body">
+
+      <wait until-not-undefined="model.package">
+        <wait-loading>Loading package.json</wait-loading>
+        <wait-done>
+          <div ng-if="model.devDependencies">
+            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+              <table class="table table-condensed table-striped1">
+                <tbody>
+                  <tr ng-repeat="dep in model.devDependencies | filter: { name: packageQuery }">
+                    <td><span style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{dep.name}}</span></td>
+                    <td class="text-right"><span class="badge bg-green" style="max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{dep.version}}</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div ng-if="!model.devDependencies">No dev dependencies found</div>
+        </wait-done>
+      </wait>
+
+    </div>
+    <div class="box-footer">
+      Footer
+    </div>
+  </div>
+</div>

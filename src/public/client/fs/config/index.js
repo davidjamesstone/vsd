@@ -12,7 +12,7 @@ module.exports = function($stateProvider) {
       //templateUrl: '/client/fs/views/index.html',
     })
     .state('app.fs.finder', {
-      url: '/finder?path',
+      url: '/finder',
       views: {
         '@app': { // Target the ui-view='' in parent state 'app'
           controller: 'FsFinderCtrl',
@@ -21,7 +21,7 @@ module.exports = function($stateProvider) {
       }
     })
     .state('app.fs.finder.file', {
-      url: '/file',
+      url: '/file/:path',
       controller: 'FsFileCtrl',
       templateUrl: '/client/fs/views/file.html',
       resolve: {

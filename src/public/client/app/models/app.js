@@ -1,4 +1,5 @@
 var p = require('path');
+var utils = require('../../../../shared/utils');
 
 function AppModel(data) {
   data = data || {};
@@ -9,11 +10,13 @@ function AppModel(data) {
 }
 AppModel.prototype.addRecentFile = function(file) {
   var recent = this._recentFiles;
-  var idx = recent.indexOf(file.path);
+  var idx = recent.findIndex(function(item) {
+    return item.path === file.path;
+  });
   if (idx !== -1) {
     recent.move(idx, 0);
   } else {
-    recent.unshift(file.path);
+    recent.unshift({ path: file.path, time: Date.now() });
     recent.length = Math.min(this._recentFiles.length, 20);
   }
 };
@@ -29,14 +32,15 @@ AppModel.prototype.clearRecentFiles = function() {
 AppModel.prototype.getRelativePath = function(path) {
   return p.relative(this.tree.path, path);
 };
-AppModel.prototype._readDependencies = function() {
+AppModel.prototype._readDependencies = function(dev) {
   var deps = [];
   var packageJSON = this._packageJSON;
   if (packageJSON) {
-    var keys = Object.keys(packageJSON.dependencies);
+    var depKey = packageJSON[dev ? 'devDependencies' : 'dependencies'];
+    var keys = Object.keys(depKey);
     for (var i = 0; i < keys.length; i++) {
       var name = keys[i];
-      var version = packageJSON.dependencies[name];
+      var version = depKey[name];
       deps.push({
         name: name,
         version: version
@@ -68,15 +72,19 @@ Object.defineProperties(AppModel.prototype, {
       // clean any files that may no longer exist
       var i = recent.length;
       while (i--) {
-        if (!this.map[recent[i]]) {
+        if (!this.map[recent[i].path]) {
           recent.splice(i, 1);
         }
       }
 
+      var entries = [];
+
+
       return recent.map(function(item) {
-        return this.map[item];
+        return this.map[item.path];
       }, this);
 
+      return entries;
     }
   },
   jsCount: {
@@ -107,11 +115,29 @@ Object.defineProperties(AppModel.prototype, {
       this._package = value;
       this._packageJSON = JSON.parse(value.contents);
       this._dependencies = this._readDependencies();
+      this._devDependencies = this._readDependencies(true);
+    }
+  },
+  packageFile: {
+    get: function() {
+      return this.tree.children.find(function(item) {
+        return item.name.toLowerCase() === 'package.json';
+      });
+    }
+  },
+  hasPackageFile: {
+    get: function() {
+      return !!this.packageFile;
     }
   },
   dependencies: {
     get: function() {
       return this._dependencies;
+    }
+  },
+  devDependencies: {
+    get: function() {
+      return this._devDependencies;
     }
   },
   readme: {
@@ -121,7 +147,20 @@ Object.defineProperties(AppModel.prototype, {
     set: function(value) {
       this._readme = value;
     }
+  },
+  readmeFile: {
+    get: function() {
+      return this.tree.children.find(function(item) {
+        return  /^readme.(md|markdown)$/.test(item.name.toLowerCase());
+      });
+    }
+  },
+  hasReadmeFile: {
+    get: function() {
+      return !!this.readmeFile;
+    }
   }
+
 });
 
 module.exports = AppModel;

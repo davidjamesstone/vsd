@@ -83,6 +83,10 @@ ul ul {
 .header .menu {
   max-height: 280px;
 }
+.header .menu h4 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .header .menu p {
   direction: rtl;
   overflow: hidden;
@@ -98,6 +102,10 @@ i.file-type span {
   bottom: 2px;
   right: 1px;
   text-transform: uppercase;
+  overflow: hidden;
+  left: 2px;
+  text-align: right;
+  text-overflow: ellipsis;
 }
 .MdPreview-markdown {
   display: none;

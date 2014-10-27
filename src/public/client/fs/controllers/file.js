@@ -44,10 +44,25 @@ module.exports = function($scope, file, fileService) {
     }
 
     return {
+      onLoad : $scope.aceLoaded,
       mode: mode
     };
   };
 
+  $scope.aceLoaded = function(_editor){
+    // Editor part
+    var _session = _editor.getSession();
+    var _renderer = _editor.renderer;
+
+    // Options
+    _editor.setReadOnly(true);
+    _session.setUndoManager(new ace.UndoManager());
+    _renderer.setShowGutter(false);
+
+    // Events
+    _editor.on("changeSession", function(){  });
+    _session.on("change", function(){  });
+  };
 
   function imgUrl() {
     // Obtain a blob: URL for the image data.

@@ -1,10 +1,10 @@
 exports.home = function(req, res) {
   console.log('asdsada')
-  res.sendfile('main.html');
+  res.sendFile('/Users/guest/Documents/tequid/vsd/main.html');
 };
 
 exports.graph = function(req, res) {
-  res.sendfile('graph.html');
+  res.sendFile('graph.html');
 };
 // var mongoose = require('mongoose');
 // var generator = require('vsd-mongoose-generator')(mongoose);

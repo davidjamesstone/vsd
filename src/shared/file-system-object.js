@@ -6,6 +6,7 @@ var FileSystemObject = function(path, stat) {
   this.dir = p.dirname(path);
   this.isDirectory = typeof stat === 'boolean' ? stat : stat.isDirectory();
   this.ext = p.extname(path);
+  this.stat = stat;
 };
 FileSystemObject.prototype = {
   get isFile() {
