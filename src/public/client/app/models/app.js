@@ -5,6 +5,7 @@ function AppModel(data) {
   data = data || {};
   this.fs = data.fs;
   this.watcher = data.watcher;
+  this.sessions = data.sessionService;
 
   this._recentFiles = [];
 }
@@ -30,7 +31,7 @@ AppModel.prototype.clearRecentFiles = function() {
   this._recentFiles.length = 0;
 };
 AppModel.prototype.getRelativePath = function(path) {
-  return p.relative(this.tree.path, path);
+  return p.relative(this.tree.dir, path);
 };
 AppModel.prototype._readDependencies = function(dev) {
   var deps = [];
@@ -77,14 +78,10 @@ Object.defineProperties(AppModel.prototype, {
         }
       }
 
-      var entries = [];
-
-
       return recent.map(function(item) {
         return this.map[item.path];
       }, this);
 
-      return entries;
     }
   },
   jsCount: {

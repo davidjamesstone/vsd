@@ -5,6 +5,10 @@ mod.config([
   require('./config')
 ]);
 
+mod.service('SessionService', [
+  require('./services/session')
+]);
+
 mod.controller('FsCtrl', [
   '$scope',
   require('./controllers')
@@ -22,7 +26,7 @@ mod.controller('FsFinderCtrl', [
 
 mod.controller('FsFileCtrl', [
   '$scope',
-  'filePromise',
+  'session',
   'FileService',
   require('./controllers/file')
 ]);

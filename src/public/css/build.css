@@ -20,9 +20,6 @@ ul ul {
 .nested-keys {
   margin: 8px 0;
 }
-.ace_editor {
-  height: 200px;
-}
 .tree,
 .tree ul {
   list-style-type: none;

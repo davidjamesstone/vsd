@@ -71,7 +71,7 @@ var socket = io.connect(utils.urlRoot() + '/fs');
 var fileSystem = new FileSystem(socket);
 
 fileSystem.on('connection', function(data) {
-  console.log('fs connected' + data);
+  console.log('fs connected', data);
 });
 
 

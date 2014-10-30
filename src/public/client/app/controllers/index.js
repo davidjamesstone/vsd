@@ -2,11 +2,12 @@ var AppModel = require('../models/app');
 var FileSystemObject = require('../../../../shared/file-system-object');
 var utils = require('../../../../shared/utils');
 
-module.exports = function($scope, $state, fs, watcher, fileService, dialog, colorService) {
+module.exports = function($scope, $state, fs, watcher, fileService, dialog, colorService, sessionService) {
 
   var model = new AppModel({
     fs: fs,
-    watcher: watcher
+    watcher: watcher,
+    sessionService: sessionService
   });
 
   $scope.model = model;
@@ -35,12 +36,23 @@ module.exports = function($scope, $state, fs, watcher, fileService, dialog, colo
   $scope.onSearchFormSubmit = function() {
     $state.go('app.fs.search', { q: searchForm.q.value });
   };
+  //
+  // $scope.fileUrl = function(file) {
+  //   return $state.href('app.fs.finder.file', {
+  //     path: utils.encodeString(file.path || file)
+  //   });
+  // };
 
-  $scope.fileUrl = function(file) {
-    return $state.href('app.fs.finder.file', {
-      path: utils.encodeString(file.path)
+  $scope.gotoFile = function(file) {
+    return $state.transitionTo('app.fs.finder.file', {
+      path: utils.encodeString(file.path || file)
     });
   };
+
+  $scope.fileParams = function(file) {
+    return { path: utils.encodeString(file.path)};
+  };
+
 
   $scope.dirUrl = function(dir) {
     return $state.href('app.fs.finder', {
@@ -56,6 +68,51 @@ module.exports = function($scope, $state, fs, watcher, fileService, dialog, colo
   $scope.colorText = function(item) {
     var str = (item instanceof FileSystemObject) ? item.ext : item;
     return str ? '#' + colorService(str).readable().hex() : '';
+  };
+
+  $scope.contentClass = function(item) {
+    return 'qsdsa';
+  };
+
+
+  function saveSession(session) {
+    var path = session.path;
+    var editSession = session.data;
+    var contents = editSession.getValue();
+
+    console.log('writeFile', path);
+
+    fs.writeFile(path, contents, function(rsp) {
+
+      if (rsp.err) {
+
+        dialog.alert({
+          title: 'File System Write Error',
+          message: JSON.stringify(rsp.err)
+        });
+
+        console.log('writeFile Failed', path, rsp.err);
+
+      } else {
+
+        console.log('writeFile Succeeded', path);
+
+        session.markClean();
+        $scope.$apply();
+      }
+    });
+  }
+
+
+  $scope.saveSession = function(session) {
+    saveSession(session);
+  };
+  $scope.saveAllSessions = function() {
+    var sessions = sessionService.dirty;
+
+    sessions.forEach(function(item) {
+      saveSession(item);
+    });
   };
 
   $scope.encodePath = utils.encodeString;

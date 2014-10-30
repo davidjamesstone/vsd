@@ -28,7 +28,44 @@
         stroke-width: 1.5px;
       }
 
+
+
+.wrapper {
+  /*position: relative;*/
+}
+      /*html, body {
+        height: 100%;
+      }
+
+      .wrapper, .right-side, section.content, .root-view {
+        height: 100%;
+      }
+
+      .fs-finder-page {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      .fs-finder-page .top-box {
+      }
+
+      .fs-finder-page .bottom-box {
+        position: relative;
+        flex-grow: 1;
+      }
+
+      .fs-finder-page .bottom-box .ace_editor {
+        height: 100%!important;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }*/
+
     </style>
+
     <title>DBUI</title>
 
     <!-- Global Styles -->
@@ -45,6 +82,8 @@
     <script type="text/javascript" src="http://mbostock.github.io/d3/talk/20111018/d3/d3.layout.js"></script>
 
     <!-- ace editor -->
+
+    <!--<script src="http://ace.c9.io/build/src/ace.js"></script>-->
     <script src="/bower_components/ace-builds/src-min-noconflict/ace.js"></script>
     <script src="/bower_components/ace-builds/src-min-noconflict/ext-language_tools.js"></script>
 
@@ -75,7 +114,6 @@
   </head>
 
   <body ng-app="app" ui-view class="skin-blue">
-
 
 
   </body>

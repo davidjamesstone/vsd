@@ -24,6 +24,8 @@ function FileSystemWatcher() {
 
     //utils.extend(this._watched, data);
 
+    console.log('Watcher connection');
+
     this.emit('connection', this._watched);
     this.emit('change');
 
@@ -35,6 +37,8 @@ function FileSystemWatcher() {
     var fso = new FileSystemObject(data.path, false);
 
     this._watched[data.path] = fso;
+
+    console.log('Watcher add', fso);
 
     this.emit('add', fso);
     this.emit('change');
@@ -48,6 +52,8 @@ function FileSystemWatcher() {
 
     this._watched[fso.path] = fso;
 
+    console.log('Watcher addDir', fso);
+
     this.emit('addDir', fso);
     this.emit('change');
 
@@ -60,6 +66,9 @@ function FileSystemWatcher() {
 
     // check we got something
     if (fso) {
+
+      console.log('Watcher change', fso);
+
       this.emit('modified', fso);
     }
 
@@ -72,6 +81,9 @@ function FileSystemWatcher() {
 
     if (fso) {
       delete this._watched[data.path];
+
+      console.log('Watcher unlink', fso);
+
       this.emit('unlink', fso);
       this.emit('change');
     }
@@ -85,6 +97,9 @@ function FileSystemWatcher() {
 
     if (fso) {
       delete this._watched[data.path];
+
+      console.log('Watcher unlinkDir', fso);
+
       this.emit('unlinkDir', fso);
       this.emit('change');
     }
@@ -92,6 +107,8 @@ function FileSystemWatcher() {
   }.bind(this));
 
   socket.on('error', function(res) {
+
+    console.log('Watcher error', res.err);
 
     this.emit('error', res.err);
 

@@ -30,6 +30,7 @@ mod.controller('AppCtrl', [
   'FileService',
   'DialogService',
   'ColorService',
+  'SessionService',
   require('./controllers')
 ]);
 

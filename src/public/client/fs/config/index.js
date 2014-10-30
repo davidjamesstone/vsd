@@ -1,6 +1,27 @@
 var filesystem = require('../../file-system');
 var watcher = require('../../file-system-watcher');
 var utils = require('../../../../shared/utils');
+var EditSession = ace.require('ace/edit_session').EditSession;
+var UndoManager = ace.require('ace/undomanager').UndoManager;
+
+var modes = {
+  ".js": "ace/mode/javascript",
+  ".css": "ace/mode/css",
+  ".html": "ace/mode/html",
+  ".htm": "ace/mode/html",
+  ".ejs": "ace/mode/html",
+  ".json": "ace/mode/json",
+  ".md": "ace/mode/markdown",
+  ".coffee": "ace/mode/coffee",
+  ".jade": "ace/mode/jade",
+  ".php": "ace/mode/php",
+  ".py": "ace/mode/python",
+  ".scss": "ace/mode/sass",
+  ".txt": "ace/mode/text",
+  ".typescript": "ace/mode/typescript",
+  ".xml": "ace/mode/xml"
+};
+
 
 module.exports = function($stateProvider) {
 
@@ -25,13 +46,41 @@ module.exports = function($stateProvider) {
       controller: 'FsFileCtrl',
       templateUrl: '/client/fs/views/file.html',
       resolve: {
-        filePromise: ['$q', '$stateParams',
-          function($q, $stateParams) {
+        session: ['$q', '$stateParams', 'FileService', 'SessionService',
+          function($q, $stateParams, fileService, sessionService) {
             var deferred = $q.defer();
             var path = utils.decodeString($stateParams.path);
-            filesystem.readFile(path, function(res) {
-              deferred.resolve(res.data);
-            });
+
+            console.log('Requested file ' + path);
+            
+            var session = sessionService.findSession(path);
+
+            if (session) {
+
+              console.log('Using found session.');
+              deferred.resolve(session);
+
+            } else {
+
+              console.log('Reading file for new session.');
+              fileService.readFile(path).then(function(file) {
+
+                var isUtf8 = !(file.contents instanceof ArrayBuffer);
+
+                var sessionData;
+                if (isUtf8) {
+                  sessionData = new EditSession(file.contents, modes[file.ext]);
+                  sessionData.setUndoManager(new UndoManager());
+                } else {
+                  sessionData = file.contents;
+                }
+
+                session = sessionService.addSession(path, sessionData, isUtf8);
+
+                deferred.resolve(session);
+
+              });
+            }
             return deferred.promise;
           }
         ]

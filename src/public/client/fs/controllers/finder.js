@@ -12,6 +12,32 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
   };
   $scope.active = null;
   $scope.pasteBuffer = null;
+  $scope.showEditor = false;
+
+  $scope.aceLoaded = function(editor) {
+
+    $scope.editor = editor;
+
+  };
+  
+  $scope.aceChanged = function(editor) {
+
+    $scope.$apply();
+
+  };
+
+//
+//   if (!$scope.editor) {
+//     console.log('created editor');
+//     $scope.editor = ace.edit("ace");
+//     $scope.editor.getSession().setMode("ace/mode/javascript");
+//   }
+// $scope.$on('$destroy', function () {
+//   console.log('destroy');
+//   //$scope.editor.getSession().$stopWorker();
+//   $scope.editor.setSession(null);
+//   $scope.editor.destroy();
+// });
 
   var path = $state.params.path ? utils.decodeString($state.params.path) : null;
   var model = $scope.model;

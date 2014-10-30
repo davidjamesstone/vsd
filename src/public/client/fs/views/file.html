@@ -3,14 +3,11 @@
   <div class=""
     ng-switch on="viewer">
       <div ng-switch-when="ace">
-        <div ui-ace="aceOptions()" ng-model="file.contents"></div>
       </div>
       <div ng-switch-when="img">
         <img ng-src="{{imgUrl}}" alt="file.name"/>
       </div>
       <div ng-switch-default>no viewer found</div>
   </div>
-
-
 
 </div>

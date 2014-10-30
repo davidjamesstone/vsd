@@ -19,14 +19,14 @@
             <i class="fa fa-clock-o"></i>
             <span class="label label-success">{{model.recentFiles.length}}</span>
           </a>
-          
+
           <ul class="dropdown-menu">
             <li class="header">You have {{model.recentFiles.length}} recent files</li>
             <li>
               <!-- inner menu: contains the actual data -->
               <ul class="menu">
                 <li ng-repeat="file in model.recentFiles">
-                  <a href="{{ fileUrl(file) }}">
+                  <a ui-sref="app.fs.finder.file(fileParams(file))">
                     <div class="pull-left">
                       <i class="fa fa-file file-type" style="color: {{color(file)}};">
                         <span style="color: {{colorText(file)}};">{{file.ext.substr(1)}}</span>
@@ -38,50 +38,32 @@
                 </li>
               </ul>
             </li>
-            <li class="footer"><a ng-click="model.clearRecentFiles()" ng-class="{ 'text-muted': !model.recentFiles.length }">Clear Recent</a>
+            <li class="footer"><a ng-click="model.clearRecentFiles()" ng-class="{ 'disabled': !model.recentFiles.length }">Clear Recent</a>
             </li>
           </ul>
         </li>
         <!-- Notifications: style can be found in dropdown.less -->
         <li class="dropdown notifications-menu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="fa fa-warning"></i>
-            <span class="label label-warning">10</span>
+            <i class="fa fa-save"></i>
+            <span class="label label-{{model.sessions.dirty.length ? 'warning': 'success'}}">{{model.sessions.dirty.length}}</span>
           </a>
           <ul class="dropdown-menu">
-            <li class="header">You have 10 notifications</li>
+            <li class="header">You have {{model.sessions.dirty.length}} unsaved sessions</li>
             <li>
               <!-- inner menu: contains the actual data -->
               <ul class="menu">
-                <li>
-                  <a href="#">
-                    <i class="ion ion-ios7-people info"></i> 5 new members joined today
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <i class="fa fa-warning danger"></i> Very long description here that may not fit into the page and may cause design problems
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <i class="fa fa-users warning"></i> 5 new members joined
-                  </a>
-                </li>
-
-                <li>
-                  <a href="#">
-                    <i class="ion ion-ios7-cart success"></i> 25 sales made
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <i class="ion ion-ios7-person danger"></i> You changed your username
+                <li ng-repeat="session in model.sessions.dirty">
+                  <a ui-sref="app.fs.finder.file(fileParams(model.map[session.path]))">
+                    <i class="fa fa-file file-type" style="color: {{color(model.map[session.path])}};">
+                      <span style="color: {{colorText(model.map[session.path])}};">{{model.map[session.path].ext.substr(1)}}</span>
+                    </i>
+                    {{model.getRelativePath(session.path)}}
                   </a>
                 </li>
               </ul>
             </li>
-            <li class="footer"><a href="#">View all</a>
+            <li class="footer"><a ng-click="saveAllSessions()" ng-class="{ 'disabled': !model.sessions.dirty.length }">Save all</a>
             </li>
           </ul>
         </li>
@@ -364,7 +346,7 @@
     <!-- Main content -->
     <section class="content">
 
-      <div ui-view></div>
+      <div ui-view class="root-view"></div>
 
     </section>
     <!-- /.content -->

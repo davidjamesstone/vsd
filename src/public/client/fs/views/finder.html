@@ -1,39 +1,46 @@
 <div class="fs-finder-page">
 
-	<div collapse="isCollapsed" class="">
-    <div class="fs-finder">
-      <div ng-repeat="col in finder.cols(model.tree)">
-        <a ng-repeat="data in col | filter: notModules | orderBy : ['-isDirectory', 'name']"
-          ng1-right-click="rightClickNode($event, data)"
-          ng-click="clickNode(data);"
-          ng-class="{ active: finder.isHighlighted(data) }">
+	<div class="top-box">
+		<div collapse="isCollapsed">
+	    <div class="fs-finder">
+	      <div ng-repeat="col in finder.cols(model.tree)">
+	        <a ng-repeat="data in col | filter: notModules | orderBy : ['-isDirectory', 'name']"
+	          ng1-right-click="rightClickNode($event, data)"
+	          ng-click="clickNode(data);"
+	          ng-class="{ active: finder.isHighlighted(data) }">
 
-          <i ng-class="finder.getIconClassName(data)" style="color: {{color(data)}}"></i>&nbsp;{{data.name}}
-          <i ng-if="data.isDirectory" class="fa fa-angle-right right-chevron"></i>
-        </a>
-      </div>
+	          <i ng-class="finder.getIconClassName(data)" style="color: {{color(data)}}"></i>&nbsp;{{data.name}}
+	          <i ng-if="data.isDirectory" class="fa fa-angle-right right-chevron"></i>
+	        </a>
+	      </div>
 
-      <div ng-if="finder.active && !finder.active.isDirectory" class="preview-pane">
-      	<h4>{{ finder.active.name }}</h4>
+	      <div ng-if="finder.active && !finder.active.isDirectory" class="preview-pane">
+	      	<h4>{{ finder.active.name }}</h4>
 
-				<i class="fa fa-file file-type" style="color: {{color(finder.active)}};">
-					<span style="color: {{colorText(finder.active)}};">{{finder.active.ext.substr(1)}}</span>
-				</i>
+					<i class="fa fa-file file-type" style="color: {{color(finder.active)}};">
+						<span style="color: {{colorText(finder.active)}};">{{finder.active.ext.substr(1)}}</span>
+					</i>
 
-      </div>
+	      </div>
 
-    </div>
+	    </div>
+		</div>
+
+		<button class="btn btn-default btn-xs pull-right toggle" ng-click="isCollapsed = !isCollapsed">
+			<i ng-class="isCollapsed ? 'fa fa-arrow-down': 'fa fa-arrow-up'"></i>
+		</button>
+
+		<span class="hidden-xs hidden-sm" ng-show="finder.active">{{model.getRelativePath(finder.active.path)}}</span>
+		<span class="hidden-md hidden-lg" ng-show="finder.active">{{ finder.active.name }}</span>
+		<br>
+
 	</div>
 
+	<!-- <hr style="border-color: {{color(finder.active)}}"> -->
 
-	<button class="btn btn-default btn-xs pull-right toggle" ng-click="isCollapsed = !isCollapsed">
- 		<i ng-class="isCollapsed ? 'fa fa-arrow-down': 'fa fa-arrow-up'"></i>
-	</button>
-
-	<span class="hidden-xs hidden-sm" ng-show="finder.active">{{model.getRelativePath(finder.active.path)}}</span>
-	<span class="hidden-md hidden-lg" ng-show="finder.active">{{ finder.active.name }}</span>
-	<br>
-	<hr style="border-color: {{color(finder.active)}}">
-  <div ui-view></div>
+	<div class="bottom-box">
+		<div ui-view></div>
+		<div ng-show="showEditor" ui-ace="{ onLoad: aceLoaded, onChange: aceChanged }" ui1-ace="aceOptions()" ng-model1="model.file.contents"></div>
+	</div>
 
 </div>

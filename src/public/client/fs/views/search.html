@@ -6,7 +6,7 @@
       <i class="fa fa-file" style="color: {{color(fso)}};">
       </i>
 
-      <a ng-if="fso.isFile" href="{{ fileUrl(fso) }}">{{model.getRelativePath(fso.path)}}</a>
+      <a ng-if="fso.isFile" ui-sref="app.fs.finder.file(fileParams(fso))">{{model.getRelativePath(fso.path)}}</a>
       <!-- <a ng-if="fso.isDirectory" href="{{ dirUrl(fso) }}">{{fso.path}}</a> -->
     </li>
   </ul>
