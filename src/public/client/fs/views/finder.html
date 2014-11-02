@@ -2,7 +2,7 @@
 
 	<div class="top-box">
 		<div collapse="isCollapsed">
-	    <div class="fs-finder">
+	    <div class="fs-finder" ng-scrolled>
 	      <div ng-repeat="col in finder.cols(model.tree)">
 	        <a ng-repeat="data in col | filter: notModules | orderBy : ['-isDirectory', 'name']"
 	          ng1-right-click="rightClickNode($event, data)"
@@ -33,6 +33,7 @@
 		<span class="hidden-xs hidden-sm" ng-show="finder.active">{{model.getRelativePath(finder.active.path)}}</span>
 		<span class="hidden-md hidden-lg" ng-show="finder.active">{{ finder.active.name }}</span>
 		<br>
+		<hr style="border-color: {{color(finder.active)}}">
 
 	</div>
 
@@ -40,7 +41,7 @@
 
 	<div class="bottom-box">
 		<div ui-view></div>
-		<div ng-show="showEditor" ui-ace="{ onLoad: aceLoaded, onChange: aceChanged }" ui1-ace="aceOptions()" ng-model1="model.file.contents"></div>
+		<div ng-show="showEditor" ui-ace="{ onLoad: aceLoaded, onChange: aceChanged, onBlur1: aceBlured }" ui1-ace="aceOptions()" ng-model1="model.file.contents"></div>
 	</div>
 
 </div>

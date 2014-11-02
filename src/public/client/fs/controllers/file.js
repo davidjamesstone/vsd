@@ -1,19 +1,16 @@
 module.exports = function($scope, session, fileService) {
   var isUtf8 = session.isUtf8;
 
-
   var model = $scope.model;
 
   var file = model.map[session.path];
-
-  $scope.file = file;
 
   // ensure the finder is set the the right fso
   $scope.finder.active = file;
 
   model.addRecentFile(file);
 
-  function imgUrl() {
+  function imgBlobUrl() {
     // Obtain a blob: URL for the image data.
     var arrayBufferView = new Uint8Array(session.data);
     var blob = new Blob([arrayBufferView], {
@@ -28,11 +25,11 @@ module.exports = function($scope, session, fileService) {
 
     $scope.viewer = 'ace';
     $scope.$parent.showEditor = true;
+    $scope.$parent.editorSession = session.data;
 
-    if ($scope.editor) {
-      $scope.editor.setSession(session.data);
-      var doc = session.data.getDocument();
-    $scope.editor.setOption("maxLines", 600 /*doc.getLength()*/);
+    // if the editor exists, load the editSession we just assigned
+    if ($scope.$parent.editor) {
+      $scope.$parent.loadSession();
     }
 
   } else {
@@ -47,13 +44,10 @@ module.exports = function($scope, session, fileService) {
       case '.gif':
       case '.ico':
         $scope.viewer = 'img';
-        $scope.imgUrl = imgUrl();
+        $scope.imgUrl = imgBlobUrl();
         break;
-      default:
-
     }
   }
-
 
 
 };

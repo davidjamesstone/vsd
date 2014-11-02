@@ -18,11 +18,25 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
 
     $scope.editor = editor;
 
-  };
-  
-  $scope.aceChanged = function(editor) {
+    // load the editorSession if one has already been defined (in FileCtrl)
+    if ($scope.editorSession) {
+      $scope.loadSession();
+    }
 
-    $scope.$apply();
+  };
+
+  $scope.loadSession = function() {
+    $scope.editor.setSession($scope.editorSession);
+  };
+
+  $scope.aceChanged = function(editor) {
+    // Don't remove. Simply handling this causes the $digest we want to update the UI
+    console.log('Finder editor changed');
+  };
+
+  $scope.aceBlured = function(editor) {
+
+    //$scope.$apply();
 
   };
 

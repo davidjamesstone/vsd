@@ -7,6 +7,9 @@ function AppModel(data) {
   this.watcher = data.watcher;
   this.sessions = data.sessionService;
 
+  this.title = 'Title';
+  this.subTitle = 'Subtitle';
+
   this._recentFiles = [];
 }
 AppModel.prototype.addRecentFile = function(file) {

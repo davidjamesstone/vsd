@@ -40,7 +40,11 @@ mod.run(['uiAceConfig',
     uiAceConfig.ace = {};
     angular.extend(uiAceConfig.ace, {
       useWrapMode: false,
+      showPrintMargin: false,
       showGutter: true,
+      setAutoScrollEditorIntoView: true,
+      maxLines: 600,
+      minLines: 5,
       mode: 'javascript',
       require: ['ace/ext/language_tools'],
       advanced: {
@@ -63,16 +67,9 @@ mod.config( ['$compileProvider', function($compileProvider){
   $compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob):|data:image\/)/);
 }]);
 
-// mod.directive("fileEditor", [
-//   function() {
-//     return {
-//       restrict: "A",
-//       template: '<div>{{file.content}}</div>',
-//       link: function(scope, element, attrs) {
-//         //scope[attrs.allPhones];
-//       }
-//     };
-//   }
-// ]);
+mod.directive('ngScrolled', [
+  '$parse',
+  require('./directives/scrolled')
+]);
 
 module.exports = mod;

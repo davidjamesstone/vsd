@@ -7,6 +7,8 @@ var UndoManager = ace.require('ace/undomanager').UndoManager;
 var modes = {
   ".js": "ace/mode/javascript",
   ".css": "ace/mode/css",
+  ".scss": "ace/mode/scss",
+  ".less": "ace/mode/less",
   ".html": "ace/mode/html",
   ".htm": "ace/mode/html",
   ".ejs": "ace/mode/html",
@@ -52,7 +54,7 @@ module.exports = function($stateProvider) {
             var path = utils.decodeString($stateParams.path);
 
             console.log('Requested file ' + path);
-            
+
             var session = sessionService.findSession(path);
 
             if (session) {
