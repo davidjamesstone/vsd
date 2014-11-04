@@ -1,5 +1,9 @@
 <script type="text/ng-template" id="tree-node.html">
-  <a ng-right-click="rightClickNode($event, data)" ng-click="clickNode($event, data);">
+
+  <a ng-if="!data.isDirectory" ng-right-click="rightClickNode($event, data)" ng-click="gotoFile(data);">
+    <i ng-class="getIconClassName(data)"></i>&nbsp;{{data.name}}
+  </a>
+  <a ng-if="data.isDirectory" ng-click="clickNode($event, data);">
     <i ng-class="getIconClassName(data)"></i>&nbsp;{{data.name}}
   </a>
   <ul ng-if="data.isDirectory && isExpanded(data)">
@@ -9,12 +13,9 @@
         ng-class="getClassName(data)"></li>
   </ul>
 </script>
-<!--
+
 <ul class="fs-tree">
-  <li ng-repeat="data in tree.children | filter: nodeModules | orderBy : ['name']" ng-include="'tree-node.html'" ng-class="getClassName(data)"></li>
-</ul> -->
-<ul class="fs-tree">
-  <li ng-repeat="data in model.tree.children | filter: notModules | orderBy : ['-isDirectory', 'name']" ng-include="'tree-node.html'" ng-class="getClassName(data)"></li>
+  <li ng-repeat="data in model.tree.children | orderBy : ['-isDirectory', 'name']" ng-include="'tree-node.html'" ng-class="getClassName(data)"></li>
 </ul>
 <ul class="fs-menu dropdown-menu" ng-show="treeData.showMenu" style="top: {{menuY}}px; left: {{menuX}}px;" ng-mouseleave="treeData.showMenu = false;">
   <li><a ng-click="rename($event, active);" href="#"><i class="icon-pencil"></i>&nbsp;Rename</a></li>

@@ -5,37 +5,73 @@
   height: 100%;
   margin-bottom: 10px;
 
-  > div {
-    display: inline-block;
+  .col {
+    display: table-cell;
     vertical-align: top;
-    height: 100%;
     overflow-y: auto;
+
+    > div {
+
+      width: 130px;
+
+      a.fso {
+        display: block;
+        overflow: hidden;
+        position: relative;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        padding-left: 10px;
+
+        &.active {
+          background-color: #E8EEF2;
+        }
+
+        i.right-chevron {
+          position: absolute;
+          right: 5px;
+          top: 2px;
+        }
+      }
+    }
+
+
 
     &:not(:last-child) {
       border-right: solid 1px #ddd;
     }
 
-    &:not(.preview-pane) {
-      width: 130px;
-    }
 
-    a {
-      display: block;
-      overflow: hidden;
-      position: relative;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      padding-left: 10px;
+    &.preview-pane {
 
-      &.active {
-        background-color: aliceblue;
+      display: none;
+
+      > div {
+        width: auto;
       }
 
-      i.right-chevron {
-        position: absolute;
-        right: 5px;
-        top: 2px;
+      padding: 6px;
+
+      h4 {
+        margin-top: 0;
+        display: inline-block;
+      }
+
+      .preview-title {
+        white-space: nowrap;
+      }
+
+      .fs-menu {
+        position: static;
+        box-shadow: none;
+        border: 0;
+        background-color: transparent;
+      }
+
+      i.toggle {
+        font-size: small;
       }
     }
+
+
   }
 }

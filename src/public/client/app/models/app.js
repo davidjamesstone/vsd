@@ -1,5 +1,6 @@
 var p = require('path');
 var utils = require('../../../../shared/utils');
+var cookie = require('cookie');
 
 function AppModel(data) {
   data = data || {};
@@ -10,7 +11,7 @@ function AppModel(data) {
   this.title = 'Title';
   this.subTitle = 'Subtitle';
 
-  this._recentFiles = [];
+  this._recentFiles = data.recentFiles || [];
 }
 AppModel.prototype.addRecentFile = function(file) {
   var recent = this._recentFiles;
@@ -20,9 +21,33 @@ AppModel.prototype.addRecentFile = function(file) {
   if (idx !== -1) {
     recent.move(idx, 0);
   } else {
-    recent.unshift({ path: file.path, time: Date.now() });
+    recent.unshift({
+      path: file.path,
+      time: Date.now()
+    });
     recent.length = Math.min(this._recentFiles.length, 20);
   }
+
+  this.storeRecentFiles();
+};
+AppModel.prototype.removeRecentFile = function(entry) {
+  var recent = this._recentFiles;
+  var idx = recent.indexOf(entry);
+
+  if (idx !== -1) {
+    recent.splice(idx, 1);
+    this.storeRecentFiles();
+    return true;
+  }
+  return false;
+};
+AppModel.prototype.storeRecentFiles = function() {
+  var cookieExpires = new Date();
+  cookieExpires.setFullYear(cookieExpires.getFullYear() + 1);
+
+  document.cookie = cookie.serialize('recentFiles', angular.toJson(this.recentFiles), {
+    expires: cookieExpires
+  });
 };
 
 AppModel.prototype.countFiles = function(ext) {
@@ -32,6 +57,7 @@ AppModel.prototype.countFiles = function(ext) {
 };
 AppModel.prototype.clearRecentFiles = function() {
   this._recentFiles.length = 0;
+  this.storeRecentFiles();
 };
 AppModel.prototype.getRelativePath = function(path) {
   return p.relative(this.tree.dir, path);
@@ -80,11 +106,7 @@ Object.defineProperties(AppModel.prototype, {
           recent.splice(i, 1);
         }
       }
-
-      return recent.map(function(item) {
-        return this.map[item.path];
-      }, this);
-
+      return recent;
     }
   },
   jsCount: {
@@ -151,7 +173,7 @@ Object.defineProperties(AppModel.prototype, {
   readmeFile: {
     get: function() {
       return this.tree.children.find(function(item) {
-        return  /^readme.(md|markdown)$/.test(item.name.toLowerCase());
+        return /^readme.(md|markdown)$/.test(item.name.toLowerCase());
       });
     }
   },

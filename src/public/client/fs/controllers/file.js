@@ -1,4 +1,4 @@
-module.exports = function($scope, session, fileService) {
+module.exports = function($scope, $state, session, fileService) {
   var isUtf8 = session.isUtf8;
 
   var model = $scope.model;
@@ -7,6 +7,21 @@ module.exports = function($scope, session, fileService) {
 
   // ensure the finder is set the the right fso
   $scope.finder.active = file;
+
+  // Handle the case of the file being removed from recentFiles.
+  $scope.$on('recent-removed', function(e, data) {
+    if (data.path === file.path) { // this should always be the case
+      if (model.recentFiles.length) {
+        var mostRecentEntry = model.recentFiles[0];
+        var mostRecentFile = model.map[mostRecentEntry.path];
+        $scope.gotoFile(mostRecentFile);
+      } else {
+        $scope.$parent.showEditor = false;
+        $scope.finder.active = model.map[file.dir];
+        $state.go('app.fs.finder');
+      }
+    }
+  });
 
   model.addRecentFile(file);
 

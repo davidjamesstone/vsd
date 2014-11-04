@@ -6,7 +6,7 @@
   <!-- Header Navbar: style can be found in header.less -->
   <nav class="navbar navbar-static-top" role="navigation">
     <!-- Sidebar toggle button-->
-    <a ng-click="hideSidebar=!hideSidebar" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
+    <a ng-click="showSidebar=!showSidebar" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
@@ -25,16 +25,17 @@
             <li>
               <!-- inner menu: contains the actual data -->
               <ul class="menu">
-                <li ng-repeat="file in model.recentFiles">
-                  <a ui-sref="app.fs.finder.file(fileParams(file))">
+                <li ng-repeat="item in model.recentFiles">
+                  <a ui-sref="app.fs.finder.file(fileParams(model.map[item.path]))">
                     <div class="pull-left">
-                      <i class="fa fa-file file-type" style="color: {{color(file)}};">
-                        <span style="color: {{colorText(file)}};">{{file.ext.substr(1)}}</span>
+                      <i class="fa fa-file file-type" style="color: {{color(model.map[item.path])}};">
+                        <span style="color: {{colorText(model.map[item.path])}};">{{model.map[item.path].ext.substr(1)}}</span>
                       </i>
                     </div>
-                    <h4>{{file.name}}<small class="hide"><i class="fa fa-clock-o"></i> 5 mins</small></h4>
-                    <p>{{model.getRelativePath(file.dir)}}</p>
+                    <h4>{{model.map[item.path].name}}<small class="hide"><i class="fa fa-clock-o"></i> 5 mins</small></h4>
+                    <p>{{model.getRelativePath(model.map[item.path].dir)}}</p>
                   </a>
+                  <a class="close" ng-click="removeRecentFile(item)">&times;</a>
                 </li>
               </ul>
             </li>
@@ -188,9 +189,9 @@
   </nav>
 </header>
 
-<div ng-class="{ 'active': !hideSidebar }" class="wrapper row-offcanvas row-offcanvas-left">
+<div ng-class="{ 'active': showSidebar }" class="wrapper row-offcanvas row-offcanvas-left">
   <!-- Left side column. contains the logo and sidebar -->
-  <aside ng-class="{ 'collapse-left': hideSidebar }" class="left-side sidebar-offcanvas">
+  <aside ng-class="{ 'collapse-left': !showSidebar }" class="left-side sidebar-offcanvas">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
       <!-- Sidebar user panel -->
@@ -326,7 +327,7 @@
   </aside>
 
   <!-- Right side column. Contains the navbar and content of the page -->
-  <aside class="right-side" ng-class="{ 'strech': hideSidebar }">
+  <aside class="right-side" ng-class="{ 'strech': !showSidebar }">
 
     <!-- Content Header (Page header) -->
     <section class="content-header">

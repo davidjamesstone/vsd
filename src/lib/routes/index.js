@@ -1,5 +1,4 @@
 exports.home = function(req, res) {
-  console.log('asdsada')
   res.sendFile('/Users/guest/Documents/tequid/vsd/main.html');
 };
 

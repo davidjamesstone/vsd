@@ -1,13 +1,15 @@
 var AppModel = require('../models/app');
 var FileSystemObject = require('../../../../shared/file-system-object');
 var utils = require('../../../../shared/utils');
+var parseCookie = require('cookie').parse;
 
 module.exports = function($scope, $state, fs, watcher, fileService, dialog, colorService, sessionService) {
 
   var model = new AppModel({
     fs: fs,
     watcher: watcher,
-    sessionService: sessionService
+    sessionService: sessionService,
+    recentFiles: angular.fromJson(parseCookie(document.cookie).recentFiles)
   });
 
   $scope.model = model;
@@ -34,7 +36,9 @@ module.exports = function($scope, $state, fs, watcher, fileService, dialog, colo
   }
 
   $scope.onSearchFormSubmit = function() {
-    $state.go('app.fs.search', { q: searchForm.q.value });
+    $state.go('app.fs.search', {
+      q: searchForm.q.value
+    });
   };
   //
   // $scope.fileUrl = function(file) {
@@ -50,7 +54,9 @@ module.exports = function($scope, $state, fs, watcher, fileService, dialog, colo
   };
 
   $scope.fileParams = function(file) {
-    return { path: utils.encodeString(file.path)};
+    return {
+      path: utils.encodeString(file.path)
+    };
   };
 
 
@@ -70,12 +76,7 @@ module.exports = function($scope, $state, fs, watcher, fileService, dialog, colo
     return str ? '#' + colorService(str).readable().hex() : '';
   };
 
-  $scope.contentClass = function(item) {
-    return 'qsdsa';
-  };
-
-
-  function saveSession(session) {
+  function saveSession(session, callback) {
     var path = session.path;
     var editSession = session.data;
     var contents = editSession.getValue();
@@ -91,6 +92,7 @@ module.exports = function($scope, $state, fs, watcher, fileService, dialog, colo
           message: JSON.stringify(rsp.err)
         });
 
+        callback(rsp.err);
         console.log('writeFile Failed', path, rsp.err);
 
       } else {
@@ -98,7 +100,12 @@ module.exports = function($scope, $state, fs, watcher, fileService, dialog, colo
         console.log('writeFile Succeeded', path);
 
         session.markClean();
-        $scope.$apply();
+
+        if (callback) {
+          callback(null, session);
+        }
+
+        //$scope.$apply();
       }
     });
   }
@@ -113,6 +120,57 @@ module.exports = function($scope, $state, fs, watcher, fileService, dialog, colo
     sessions.forEach(function(item) {
       saveSession(item);
     });
+  };
+
+  $scope.removeRecentFile = function(entry) {
+
+    // find related session
+    var sessions = model.sessions;
+    var session = sessions.findSession(entry.path);
+    if (session) {
+
+      if (session.isDirty) {
+
+        dialog.confirm({
+          title: 'Save File',
+          message: 'File has changed. Would you like to Save [' + model.getRelativePath(session.path) + ']',
+          okButtonText: 'Yes',
+          cancelButtonText: 'No'
+        }).then(function() {
+          saveSession(session, function(err, session) {
+            if (!err) {
+              model.removeRecentFile(entry);
+              sessions.removeSession(session);
+              $scope.$broadcast('recent-removed', entry);
+            }
+          });
+        }, function(value) {
+          console.log('Remove recent (save) modal dismissed', value);
+          // Check if clicked 'No', otherwise do nothing
+          if (value === 'cancel') {
+            model.removeRecentFile(entry);
+            sessions.removeSession(session);
+            $scope.$broadcast('recent-removed', entry);
+          }
+        });
+
+        return;
+      }
+
+      sessions.removeSession(session);
+
+    }
+
+    model.removeRecentFile(entry);
+    $scope.$broadcast('recent-removed', entry);
+
+  };
+
+
+  window.onbeforeunload = function() {
+    if (sessionService.dirty.length) {
+      return 'You have unsaved changes. Are you sure you want to leave.';
+    }
   };
 
   $scope.encodePath = utils.encodeString;

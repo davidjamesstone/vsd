@@ -183,11 +183,4 @@ module.exports = function($scope, $modal, $log, dialog, responseHandler) {
 
   };
 
-  $scope.notModules = function(fso) {
-    return fso.isDirectory && (fso.name === 'node_modules' || fso.name === 'bower_components') ? false : true;
-  };
-
-  $scope.nodeModules = function(fso) {
-    return fso.isDirectory && fso.name === 'node_modules' ? true : false;
-  };
 };

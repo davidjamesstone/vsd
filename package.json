@@ -20,7 +20,8 @@
     "ncp": "^1.0.1",
     "rimraf": "^2.2.8",
     "emitter-component": "^1.1.1",
-    "is-utf8": "^0.2.0"
+    "is-utf8": "^0.2.0",
+    "cookie": "^0.1.2"
   },
   "devDependencies": {
     "is-utf8": "^0.2.0"

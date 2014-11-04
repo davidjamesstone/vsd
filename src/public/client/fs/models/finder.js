@@ -82,6 +82,14 @@ Object.defineProperties(FinderModel.prototype, {
     },
     set: function(value) {
       this._active = value;
+      if (this._active.isFile) {
+        this._activeFile = this._active;
+      }
+    }
+  },
+  activeFile: {
+    get: function() {
+      return this._activeFile;
     }
   }
 });

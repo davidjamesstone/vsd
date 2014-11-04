@@ -26,6 +26,7 @@ mod.controller('FsFinderCtrl', [
 
 mod.controller('FsFileCtrl', [
   '$scope',
+  '$state',
   'session',
   'FileService',
   require('./controllers/file')

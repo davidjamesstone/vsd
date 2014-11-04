@@ -1,47 +1,75 @@
 <div class="fs-finder-page">
 
-	<div class="top-box">
-		<div collapse="isCollapsed">
-	    <div class="fs-finder" ng-scrolled>
-	      <div ng-repeat="col in finder.cols(model.tree)">
-	        <a ng-repeat="data in col | filter: notModules | orderBy : ['-isDirectory', 'name']"
-	          ng1-right-click="rightClickNode($event, data)"
-	          ng-click="clickNode(data);"
-	          ng-class="{ active: finder.isHighlighted(data) }">
+  <div class="top-box">
 
-	          <i ng-class="finder.getIconClassName(data)" style="color: {{color(data)}}"></i>&nbsp;{{data.name}}
-	          <i ng-if="data.isDirectory" class="fa fa-angle-right right-chevron"></i>
-	        </a>
-	      </div>
-
-	      <div ng-if="finder.active && !finder.active.isDirectory" class="preview-pane">
-	      	<h4>{{ finder.active.name }}</h4>
-
-					<i class="fa fa-file file-type" style="color: {{color(finder.active)}};">
-						<span style="color: {{colorText(finder.active)}};">{{finder.active.ext.substr(1)}}</span>
-					</i>
-
-	      </div>
-
-	    </div>
-		</div>
-
-		<button class="btn btn-default btn-xs pull-right toggle" ng-click="isCollapsed = !isCollapsed">
+		<button class="btn btn-default btn-xs pull-right btn-flat toggle" ng-click="isCollapsed = !isCollapsed">
 			<i ng-class="isCollapsed ? 'fa fa-arrow-down': 'fa fa-arrow-up'"></i>
 		</button>
 
-		<span class="hidden-xs hidden-sm" ng-show="finder.active">{{model.getRelativePath(finder.active.path)}}</span>
-		<span class="hidden-md hidden-lg" ng-show="finder.active">{{ finder.active.name }}</span>
-		<br>
-		<hr style="border-color: {{color(finder.active)}}">
+		<div class="btn-group pull-right">
+		  <button type="button" class="btn btn-default btn-xs btn-flat dropdown-toggle" data-toggle="dropdown">
+				<i class="fa fa-bars"></i>
+		  </button>
+		  <ul class="dropdown-menu">
+				<li class="dropdown-header">{{ finder.active.name }}</li>
+				<li><a ng-click="rename(finder.active);"><i class="fa fa-pencil"></i>&nbsp;Rename</a>
+				</li>
+				<li class="divider"></li>
+				<li><a ng-click="setPasteBuffer(finder.active, 'cut');"><i class="fa fa-scissors"></i>&nbsp;Cut</a>
+				</li>
+				<li><a ng-click="setPasteBuffer(finder.active, 'copy');"><i class="fa fa-copy"></i>&nbsp;Copy</a>
+				</li>
+				<li ng-show="showPaste(finder.active)">
+					<a ng-click="paste(finder.active);"><i class="fa fa-paste"></i>&nbsp;Paste</a>
+				</li>
+				<li ng-show="finder.active.isDirectory" class="divider"></li>
+				<li ng-show="finder.active.isDirectory"><a ng-click="mkfile(finder.active);"><i class="fa fa-file"></i>&nbsp;Add new file</a>
+				</li>
+				<li ng-show="finder.active.isDirectory"><a ng-click="mkdir(finder.active);"><i class="fa fa-folder"></i>&nbsp;Add new folder</a>
+				</li>
+				<li class="divider"></li>
+				<li><a ng-click="delete(finder.active);"><i class="fa fa-trash"></i>&nbsp;Delete</a>
+				</li>
+		  </ul>
+		</div>
 
-	</div>
+    <span class="hidden-xs hidden-sm" ng-show="finder.active">{{model.getRelativePath(finder.active.path)}}</span>
+    <span class="hidden-md hidden-lg" ng-show="finder.active">{{ finder.active.name }}</span>
+    <br>
+    <hr style="border-color: {{color(finder.active)}}">
 
-	<!-- <hr style="border-color: {{color(finder.active)}}"> -->
+		<div ng-if="!isCollapsed">
+			<div class="fs-finder well" ng-scrolled>
+				<div ng-repeat="col in finder.cols(model.tree)" class="col">
+					<div>
+						<a ng-repeat="data in col | orderBy : ['-isDirectory', 'name']" ng-click="clickNode(data);" ng-class="{ active: finder.isHighlighted(data) }" class="fso">
+							<i ng-class="finder.getIconClassName(data)" style="color: {{color(data)}}"></i>&nbsp;{{data.name}}
+							<i ng-if="data.isDirectory" class="fa fa-angle-right right-chevron"></i>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
 
-	<div class="bottom-box">
-		<div ui-view></div>
-		<div ng-show="showEditor" ui-ace="{ onLoad: aceLoaded, onChange: aceChanged, onBlur1: aceBlured }" ui1-ace="aceOptions()" ng-model1="model.file.contents"></div>
-	</div>
+  </div>
+
+  <div class="bottom-box">
+		<div class="recent-file-tabs nav-tabs-custom">
+			<ul class="nav nav-tabs">
+				<li ng-repeat="item in model.recentFiles | orderBy: 'time'" ng-class="{ 'active': model.map[item.path] === finder.activeFile }" ng1-scrolled-into-view="model.map[item.path] === finder.activeFile">
+					<a ui-sref="app.fs.finder.file(fileParams(model.map[item.path]))" title="{{model.getRelativePath(model.map[item.path].dir)}}">
+						<div class="pull-left">
+							<i class="fa fa-file file-type" style="color: {{color(model.map[item.path])}};">
+							</i>
+						</div>
+						{{model.map[item.path].name}}
+					</a>
+					<a class="close" ng-click="removeRecentFile(item)">&times;</a>
+				</li>
+			</ul>
+		</div>
+    <div ui-view></div>
+    <div ng-show="showEditor" ui-ace="{ onLoad: aceLoaded, onChange: aceChanged }"></div>
+  </div>
 
 </div>

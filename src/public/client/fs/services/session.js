@@ -30,6 +30,18 @@ Sessions.prototype.addSession = function(path, data, isUtf8) {
 
   return session;
 };
+Sessions.prototype.removeSession = function(session) {
+
+  var sessions = this._sessions;
+
+  var idx = sessions.indexOf(session);
+  if (idx !== -1) {
+    sessions.splice(idx, 1);
+    return true;
+  }
+
+  return false;
+};
 
 Object.defineProperties(Sessions.prototype, {
   sessions: {

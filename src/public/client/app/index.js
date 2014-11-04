@@ -44,7 +44,7 @@ mod.run(['uiAceConfig',
       showGutter: true,
       setAutoScrollEditorIntoView: true,
       maxLines: 600,
-      minLines: 5,
+      minLines: 15,
       mode: 'javascript',
       require: ['ace/ext/language_tools'],
       advanced: {
@@ -70,6 +70,11 @@ mod.config( ['$compileProvider', function($compileProvider){
 mod.directive('ngScrolled', [
   '$parse',
   require('./directives/scrolled')
+]);
+
+mod.directive('ngScrolledIntoView', [
+  '$parse',
+  require('./directives/scrolled-into-view')
 ]);
 
 module.exports = mod;

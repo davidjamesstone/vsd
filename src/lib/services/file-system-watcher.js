@@ -18,9 +18,9 @@ var watcher = chokidar.watch(root, {
       var parent = new FileSystemObject(fso.dir, true);
       var grandparent = new FileSystemObject(parent.dir, true);
       if (isDir) {
-        return grandparent.name === 'node_modules' || grandparent.name === 'bower_components' || /[\/\\]\./.test(path);
+        return fso.name === 'node_modules' || fso.name === 'bower_components' || /[\/\\]\./.test(path);
       } else {
-        return grandparent.name === 'node_modules' || grandparent.name === 'bower_components' || /[\/\\]\./.test(path);
+        return fso.name === 'node_modules' || fso.name === 'bower_components' || /[\/\\]\./.test(path);
       }
     } else {
       return false;

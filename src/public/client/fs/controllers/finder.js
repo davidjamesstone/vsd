@@ -5,12 +5,6 @@ var FinderModel = require('../models/finder');
 
 module.exports = function($scope, $state, $log, dialog, fileService, responseHandler) {
 
-  var expanded = Object.create(null);
-
-  $scope.treeData = {
-    showMenu: false
-  };
-  $scope.active = null;
   $scope.pasteBuffer = null;
   $scope.showEditor = false;
 
@@ -18,7 +12,7 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
 
     $scope.editor = editor;
 
-    // load the editorSession if one has already been defined (in FileCtrl)
+    // load the editorSession if one has already been defined (like in child controller FileCtrl)
     if ($scope.editorSession) {
       $scope.loadSession();
     }
@@ -30,28 +24,9 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
   };
 
   $scope.aceChanged = function(editor) {
-    // Don't remove. Simply handling this causes the $digest we want to update the UI
+    // Don't remove this. Simply handling this causes the $digest we want to update the UI
     console.log('Finder editor changed');
   };
-
-  $scope.aceBlured = function(editor) {
-
-    //$scope.$apply();
-
-  };
-
-//
-//   if (!$scope.editor) {
-//     console.log('created editor');
-//     $scope.editor = ace.edit("ace");
-//     $scope.editor.getSession().setMode("ace/mode/javascript");
-//   }
-// $scope.$on('$destroy', function () {
-//   console.log('destroy');
-//   //$scope.editor.getSession().$stopWorker();
-//   $scope.editor.setSession(null);
-//   $scope.editor.destroy();
-// });
 
   var path = $state.params.path ? utils.decodeString($state.params.path) : null;
   var model = $scope.model;
@@ -73,17 +48,7 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
     }
   }
 
-  $scope.rightClickNode = function(e, fso) {
-    console.log('RClicked ' + fso.name);
-    $scope.menuX = e.pageX;
-    $scope.menuY = e.pageY;
-    $scope.active = fso;
-    $scope.treeData.showMenu = true;
-  };
-
   $scope.clickNode = function(fso) {
-
-    $scope.active = fso;
 
     finder.active = fso;
 
@@ -94,9 +59,7 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
     }
   };
 
-  $scope.delete = function(e, fso) {
-
-    e.preventDefault();
+  $scope.delete = function(fso) {
 
     dialog.confirm({
       title: 'Delete ' + (fso.isDirectory ? 'folder' : 'file'),
@@ -109,9 +72,7 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
 
   };
 
-  $scope.rename = function(e, fso) {
-
-    e.preventDefault();
+  $scope.rename = function(fso) {
 
     dialog.prompt({
       title: 'Rename ' + (fso.isDirectory ? 'folder' : 'file'),
@@ -128,9 +89,7 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
 
   };
 
-  $scope.mkfile = function(e, fso) {
-
-    e.preventDefault();
+  $scope.mkfile = function(fso) {
 
     dialog.prompt({
       title: 'Add new file',
@@ -144,9 +103,7 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
 
   };
 
-  $scope.mkdir = function(e, fso) {
-
-    e.preventDefault();
+  $scope.mkdir = function(fso) {
 
     dialog.prompt({
       title: 'Add new folder',
@@ -160,9 +117,7 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
 
   };
 
-  $scope.paste = function(e, fso) {
-
-    e.preventDefault();
+  $scope.paste = function(fso) {
 
     var pasteBuffer = $scope.pasteBuffer;
 
@@ -176,7 +131,7 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
 
   };
 
-  $scope.showPaste = function(e, active) {
+  $scope.showPaste = function(active) {
     var pasteBuffer = $scope.pasteBuffer;
 
     if (pasteBuffer && active.isDirectory) {
@@ -189,22 +144,12 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
     return false;
   };
 
-  $scope.setPasteBuffer = function(e, fso, op) {
-
-    e.preventDefault();
+  $scope.setPasteBuffer = function(fso, op) {
 
     $scope.pasteBuffer = {
       fso: fso,
       op: op
     };
 
-  };
-
-  $scope.notModules = function(fso) {
-    return fso.isDirectory && (fso.name === 'node_modules' || fso.name === 'bower_components') ? false : true;
-  };
-
-  $scope.nodeModules = function(fso) {
-    return fso.isDirectory && fso.name === 'node_modules' ? true : false;
   };
 };

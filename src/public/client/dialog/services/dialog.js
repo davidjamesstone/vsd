@@ -28,7 +28,9 @@ module.exports = function($modal) {
         data: function() {
           return {
             title: data.title,
-            message: data.message
+            message: data.message,
+            okButtonText: data.okButtonText,
+            cancelButtonText: data.cancelButtonText
           };
         }
       }
