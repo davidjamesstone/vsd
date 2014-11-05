@@ -211,9 +211,6 @@ i.file-type span {
 .fs-finder-page .toggle-finder {
   margin-left: 5px;
 }
-.fs-finder-page .toggle {
-  margin-left: 5px;
-}
 .fs-finder-page .recent-file-tabs {
   margin-bottom: 0;
 }
@@ -221,6 +218,9 @@ i.file-type span {
   white-space: nowrap;
   overflow-x: auto;
   overflow-y: hidden;
+}
+.fs-finder-page .recent-file-tabs .nav-tabs::-webkit-scrollbar {
+  display: none;
 }
 .fs-finder-page .recent-file-tabs .nav-tabs li {
   float: none;
@@ -237,7 +237,7 @@ i.file-type span {
 }
 .fs-finder-page .ace-editor {
   position: absolute;
-  top: 44px;
+  top: 48px;
   left: 0;
   bottom: 0;
   right: 0;

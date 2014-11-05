@@ -1,32 +1,28 @@
 
 .fs-finder-page {
 
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    display: flex;
-    flex-direction: column;
-    
-    .top-box {
-      padding: 10px;
-      
-      hr {
-        margin-bottom: 0;
-      }
-    }
-    
-    .bottom-box {
-      flex-grow: 1;
-      position: relative;
-    }
-
-    .toggle-menu, .toggle-finder {
-    margin-left: 5px;
-    }
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
   
-  .toggle {
+  .top-box {
+    padding: 10px;
+    
+    hr {
+      margin-bottom: 0;
+    }
+  }
+  
+  .bottom-box {
+    flex-grow: 1;
+    position: relative;
+  }
+
+  .toggle-menu, .toggle-finder {
     margin-left: 5px;
   }
 
@@ -41,6 +37,11 @@
     margin-bottom: 0;
 
     .nav-tabs {
+      
+      &::-webkit-scrollbar {
+       display: none;
+      }
+      
       white-space: nowrap;
       overflow-x: auto;
       overflow-y: hidden;
@@ -63,10 +64,9 @@
     max-height: 350px;
   }
 
-
   .ace-editor {
     position: absolute;
-    top: 44px;
+    top: 48px;
     left: 0;
     bottom: 0;
     right: 0;

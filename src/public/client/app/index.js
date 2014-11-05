@@ -75,7 +75,7 @@ mod.directive('ngScrolled', [
 ]);
 
 mod.directive('ngScrolledIntoView', [
-  '$parse',
+  '$timeout',
   require('./directives/scrolled-into-view')
 ]);
 

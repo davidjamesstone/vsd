@@ -58,7 +58,7 @@
 
   <div class="bottom-box">
 		<div class="recent-file-tabs nav-tabs-custom">
-			<ul class="nav nav-tabs">
+			<ul class="nav nav-tabs" ng-scrolled-into-view="finder.activeFile">
 				<li ng-repeat="item in model.recentFiles | orderBy: 'time'" ng-class="{ 'active': model.map[item.path] === finder.activeFile }" ng1-scrolled-into-view="model.map[item.path] === finder.activeFile">
 					<a ui-sref="app.fs.finder.file(fileParams(model.map[item.path]))" title="{{model.getRelativePath(model.map[item.path].dir)}}">
 						<div class="pull-left">
