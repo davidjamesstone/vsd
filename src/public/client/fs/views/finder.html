@@ -2,11 +2,11 @@
 
   <div class="top-box">
 
-		<button class="btn btn-default btn-xs pull-right btn-flat toggle" ng-click="isCollapsed = !isCollapsed">
+		<button class="btn btn-default btn-xs pull-right btn-flat toggle-finder" ng-click="isCollapsed = !isCollapsed">
 			<i ng-class="isCollapsed ? 'fa fa-arrow-down': 'fa fa-arrow-up'"></i>
 		</button>
 
-		<div class="btn-group pull-right">
+		<div class="btn-group pull-right toggle-menu">
 		  <button type="button" class="btn btn-default btn-xs btn-flat dropdown-toggle" data-toggle="dropdown">
 				<i class="fa fa-bars"></i>
 		  </button>
@@ -33,6 +33,9 @@
 		  </ul>
 		</div>
 
+    <a ng-click="saveAllSessions()" ng-show="model.sessions.dirty.length" class="btn btn-danger btn-xs btn-flat pull-right save-all">Save all</a>
+    <a ng-click="beautify()" ng-show="canBeautify()" class="btn btn-default btn-xs btn-flat pull-right save-all">Save all</a>
+            
     <span class="hidden-xs hidden-sm" ng-show="finder.active">{{model.getRelativePath(finder.active.path)}}</span>
     <span class="hidden-md hidden-lg" ng-show="finder.active">{{ finder.active.name }}</span>
     <br>
@@ -69,7 +72,7 @@
 			</ul>
 		</div>
     <div ui-view></div>
-    <div ng-show="showEditor" ui-ace="{ onLoad: aceLoaded, onChange: aceChanged }"></div>
+    <div ng-show="showEditor" ui-ace="{ onLoad: aceLoaded, onChange: aceChanged }" class="ace-editor"></div>
   </div>
 
 </div>

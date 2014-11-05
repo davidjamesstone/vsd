@@ -7,7 +7,7 @@ require('../dialog');
 require('../fs');
 
 var mod = require('./module');
-
+mod.value('$anchorScroll', angular.noop);
 mod.service('FileService', [
   '$q',
   require('./services/file')
@@ -39,12 +39,14 @@ mod.run(['uiAceConfig',
   function(uiAceConfig) {
     uiAceConfig.ace = {};
     angular.extend(uiAceConfig.ace, {
+      useSoftTabs: true,
+      tabSize: 2,
       useWrapMode: false,
       showPrintMargin: false,
       showGutter: true,
-      setAutoScrollEditorIntoView: true,
-      maxLines: 600,
-      minLines: 15,
+      // setAutoScrollEditorIntoView: true,
+      // maxLines: 600,
+      // minLines: 15,
       mode: 'javascript',
       require: ['ace/ext/language_tools'],
       advanced: {

@@ -1,16 +1,42 @@
 
 .fs-finder-page {
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    
+    .top-box {
+      padding: 10px;
+      
+      hr {
+        margin-bottom: 0;
+      }
+    }
+    
+    .bottom-box {
+      flex-grow: 1;
+      position: relative;
+    }
+
+    .toggle-menu, .toggle-finder {
+    margin-left: 5px;
+    }
+  
   .toggle {
     margin-left: 5px;
   }
 
   .recent-file-tabs {
 
-    position: fixed;
-    z-index: 100;
-    top: 0;
-    right: 0;
-    left: 0;
+    // position: fixed;
+    // z-index: 100;
+    // top: 0;
+    // right: 0;
+    // left: 0;
 
     margin-bottom: 0;
 
@@ -32,7 +58,19 @@
   }
 
   .fs-finder {
+    margin-bottom: 0;
+    margin-top: 20px;
     max-height: 350px;
+  }
+
+
+  .ace-editor {
+    position: absolute;
+    top: 44px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    // height: 200px;
   }
 
 }

@@ -105,7 +105,7 @@ module.exports = function($scope, $state, fs, watcher, fileService, dialog, colo
           callback(null, session);
         }
 
-        //$scope.$apply();
+        $scope.$apply();
       }
     });
   }

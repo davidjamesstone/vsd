@@ -18,7 +18,7 @@ var modes = {
   ".jade": "ace/mode/jade",
   ".php": "ace/mode/php",
   ".py": "ace/mode/python",
-  ".scss": "ace/mode/sass",
+  ".sass": "ace/mode/sass",
   ".txt": "ace/mode/text",
   ".typescript": "ace/mode/typescript",
   ".xml": "ace/mode/xml"
@@ -48,8 +48,8 @@ module.exports = function($stateProvider) {
       controller: 'FsFileCtrl',
       templateUrl: '/client/fs/views/file.html',
       resolve: {
-        session: ['$q', '$stateParams', 'FileService', 'SessionService',
-          function($q, $stateParams, fileService, sessionService) {
+        session: ['$q', '$stateParams', 'FileService', 'SessionService', 'uiAceConfig',
+          function($q, $stateParams, fileService, sessionService, aceConfig) {
             var deferred = $q.defer();
             var path = utils.decodeString($stateParams.path);
 
@@ -72,6 +72,8 @@ module.exports = function($stateProvider) {
                 var sessionData;
                 if (isUtf8) {
                   sessionData = new EditSession(file.contents, modes[file.ext]);
+                  sessionData.setTabSize(aceConfig.ace.tabSize);
+                  sessionData.setUseSoftTabs(aceConfig.ace.useSoftTabs);
                   sessionData.setUndoManager(new UndoManager());
                 } else {
                   sessionData = file.contents;

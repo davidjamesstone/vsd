@@ -167,7 +167,7 @@ i.file-type span {
   overflow-y: auto;
 }
 .fs-finder .col > div {
-  width: 130px;
+  width: 160px;
 }
 .fs-finder .col > div a.fso {
   display: block;
@@ -188,38 +188,33 @@ i.file-type span {
 .fs-finder .col:not(:last-child) {
   border-right: solid 1px #ddd;
 }
-.fs-finder .col.preview-pane {
-  display: none;
-  padding: 6px;
+.fs-finder-page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
 }
-.fs-finder .col.preview-pane > div {
-  width: auto;
+.fs-finder-page .top-box {
+  padding: 10px;
 }
-.fs-finder .col.preview-pane h4 {
-  margin-top: 0;
-  display: inline-block;
+.fs-finder-page .top-box hr {
+  margin-bottom: 0;
 }
-.fs-finder .col.preview-pane .preview-title {
-  white-space: nowrap;
+.fs-finder-page .bottom-box {
+  flex-grow: 1;
+  position: relative;
 }
-.fs-finder .col.preview-pane .fs-menu {
-  position: static;
-  box-shadow: none;
-  border: 0;
-  background-color: transparent;
-}
-.fs-finder .col.preview-pane i.toggle {
-  font-size: small;
+.fs-finder-page .toggle-menu,
+.fs-finder-page .toggle-finder {
+  margin-left: 5px;
 }
 .fs-finder-page .toggle {
   margin-left: 5px;
 }
 .fs-finder-page .recent-file-tabs {
-  position: fixed;
-  z-index: 100;
-  top: 0;
-  right: 0;
-  left: 0;
   margin-bottom: 0;
 }
 .fs-finder-page .recent-file-tabs .nav-tabs {
@@ -236,5 +231,14 @@ i.file-type span {
   font-size: 16px;
 }
 .fs-finder-page .fs-finder {
+  margin-bottom: 0;
+  margin-top: 20px;
   max-height: 350px;
+}
+.fs-finder-page .ace-editor {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }

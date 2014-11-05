@@ -57,6 +57,9 @@ angular.module('ui.ace', [])
       if (angular.isDefined(opts.useSoftTabs)) {
         session.setUseSoftTabs(opts.useSoftTabs);
       }
+      if (angular.isDefined(opts.tabSize)) {
+        session.setTabSize('tabSize', opts.tabSize);
+      }
       if (angular.isDefined(opts.setAutoScrollEditorIntoView)) {
         acee.setAutoScrollEditorIntoView(opts.setAutoScrollEditorIntoView);
       }

@@ -3,7 +3,12 @@ var filesystem = require('../../file-system');
 var utils = require('../../../../shared/utils');
 var FinderModel = require('../models/finder');
 
-module.exports = function($scope, $state, $log, dialog, fileService, responseHandler) {
+var beautifyConfig = require('../../config').beautify;
+var beautify_js = require('js-beautify');
+var beautify_css = require('js-beautify').css;
+var beautify_html = require('js-beautify').html;
+
+module.exports = function($scope, $state, $log, $q, dialog, fileService, responseHandler) {
 
   $scope.pasteBuffer = null;
   $scope.showEditor = false;
@@ -11,6 +16,83 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
   $scope.aceLoaded = function(editor) {
 
     $scope.editor = editor;
+
+    editor.commands.addCommands([{
+      name: 'save',
+      bindKey: {
+        win: 'Ctrl-S',
+        mac: 'Command-S'
+      },
+      exec: function(editor) {
+        var editorSession = editor.getSession();
+        var session = model.sessions.dirty.find(function(item) {
+          return item.data === editorSession;
+        });
+        if (session) {
+          $scope.saveSession(session);
+        }
+      },
+      readOnly: false // this command should not apply in readOnly mode
+    }, {
+      name: 'saveall',
+      bindKey: {
+        win: 'Ctrl-Shift-S',
+        mac: 'Command-Option-S'
+      },
+      exec: $scope.saveAllSessions,
+      readOnly: false // this command should not apply in readOnly mode
+    }, {
+      name: 'help',
+      bindKey: {
+        win: 'Ctrl-H',
+        mac: 'Command-H'
+      },
+      //exec: this._onHelp.bind(this),
+      readOnly: true // this command should apply in readOnly mode
+    }]);
+
+    editor.commands.addCommands([{
+      name: 'beautify',
+      bindKey: {
+        win: 'Ctrl-B',
+        mac: 'Command-B'
+      },
+      exec: function(editor, line) {
+        var cfg, fn;
+        var fso = finder.active;
+
+        switch (fso.ext) {
+          case '.css':
+          case '.less':
+          case '.sass':
+          case '.scss':
+            {
+              fn = beautify_css;
+              cfg = beautifyConfig ? beautifyConfig.css : null;
+            }
+            break;
+          case '.html':
+            {
+              fn = beautify_html;
+              cfg = beautifyConfig ? beautifyConfig.html : null;
+            }
+            break;
+          case '.js':
+          case '.json':
+            {
+              fn = beautify_js;
+              cfg = beautifyConfig ? beautifyConfig.js : null;
+            }
+            break;
+        }
+
+        if (fn) {
+          editor.setValue(fn(editor.getValue(), cfg));
+        }
+      },
+      readOnly: false // this command should not apply in readOnly mode
+    }]);
+
 
     // load the editorSession if one has already been defined (like in child controller FileCtrl)
     if ($scope.editorSession) {
@@ -37,7 +119,7 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
 
   $scope.finder = finder;
 
-  function genericFileSystemCallback(response) {
+  function fileSystemCallback(response) {
     // notify of any errors, otherwise silent.
     // The File System Watcher will handle the state changes in the file system
     if (response.err) {
@@ -52,12 +134,80 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
 
     finder.active = fso;
 
-    if (!fso.isDirectory) {
+    if (fso.isFile) {
       $state.go('app.fs.finder.file', {
         path: utils.encodeString(fso.path)
       });
+
+      //   getSession($q, fso.path, fileService, model.sessions).then(function(session) {
+
+      //     model.addRecentFile(fso);
+      //     $scope.editorSession = session.data;
+      //     $scope.showEditor = true;
+      //     $scope.loadSession();
+      //   });
+
     }
+
   };
+
+  var EditSession = ace.require('ace/edit_session').EditSession;
+  var UndoManager = ace.require('ace/undomanager').UndoManager;
+  var modes = {
+    ".js": "ace/mode/javascript",
+    ".css": "ace/mode/css",
+    ".scss": "ace/mode/scss",
+    ".less": "ace/mode/less",
+    ".html": "ace/mode/html",
+    ".htm": "ace/mode/html",
+    ".ejs": "ace/mode/html",
+    ".json": "ace/mode/json",
+    ".md": "ace/mode/markdown",
+    ".coffee": "ace/mode/coffee",
+    ".jade": "ace/mode/jade",
+    ".php": "ace/mode/php",
+    ".py": "ace/mode/python",
+    ".sass": "ace/mode/sass",
+    ".txt": "ace/mode/text",
+    ".typescript": "ace/mode/typescript",
+    ".xml": "ace/mode/xml"
+  };
+
+  function getSession($q, path, fileService, sessionService) {
+    var deferred = $q.defer();
+
+    console.log('Requested file ' + path);
+
+    var session = sessionService.findSession(path);
+
+    if (session) {
+
+      console.log('Using found session.');
+      deferred.resolve(session);
+
+    } else {
+
+      console.log('Reading file for new session.');
+      fileService.readFile(path).then(function(file) {
+
+        var isUtf8 = !(file.contents instanceof ArrayBuffer);
+
+        var sessionData;
+        if (isUtf8) {
+          sessionData = new EditSession(file.contents, modes[file.ext]);
+          sessionData.setUndoManager(new UndoManager());
+        } else {
+          sessionData = file.contents;
+        }
+
+        session = sessionService.addSession(path, sessionData, isUtf8);
+
+        deferred.resolve(session);
+
+      });
+    }
+    return deferred.promise;
+  }
 
   $scope.delete = function(fso) {
 
@@ -65,7 +215,7 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
       title: 'Delete ' + (fso.isDirectory ? 'folder' : 'file'),
       message: 'Delete [' + fso.name + ']. Are you sure?'
     }).then(function() {
-      filesystem.remove(fso.path, genericFileSystemCallback);
+      filesystem.remove(fso.path, fileSystemCallback);
     }, function() {
       $log.info('Delete modal dismissed');
     });
@@ -82,7 +232,7 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
     }).then(function(value) {
       var oldPath = fso.path;
       var newPath = p.resolve(fso.dir, value);
-      filesystem.rename(oldPath, newPath, genericFileSystemCallback);
+      filesystem.rename(oldPath, newPath, fileSystemCallback);
     }, function() {
       $log.info('Rename modal dismissed');
     });
@@ -96,7 +246,7 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
       placeholder: 'File name',
       message: 'Please enter the new file name'
     }).then(function(value) {
-      filesystem.mkfile(p.resolve(fso.path, value), genericFileSystemCallback);
+      filesystem.mkfile(p.resolve(fso.path, value), fileSystemCallback);
     }, function() {
       $log.info('Make file modal dismissed');
     });
@@ -110,7 +260,7 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
       placeholder: 'Folder name',
       message: 'Please enter the new folder name'
     }).then(function(value) {
-      filesystem.mkdir(p.resolve(fso.path, value), genericFileSystemCallback);
+      filesystem.mkdir(p.resolve(fso.path, value), fileSystemCallback);
     }, function() {
       $log.info('Make directory modal dismissed');
     });
@@ -122,9 +272,9 @@ module.exports = function($scope, $state, $log, dialog, fileService, responseHan
     var pasteBuffer = $scope.pasteBuffer;
 
     if (pasteBuffer.op === 'copy') {
-      filesystem.copy(pasteBuffer.fso.path, p.resolve(fso.path, pasteBuffer.fso.name), genericFileSystemCallback);
+      filesystem.copy(pasteBuffer.fso.path, p.resolve(fso.path, pasteBuffer.fso.name), fileSystemCallback);
     } else if (pasteBuffer.op === 'cut') {
-      filesystem.rename(pasteBuffer.fso.path, p.resolve(fso.path, pasteBuffer.fso.name), genericFileSystemCallback);
+      filesystem.rename(pasteBuffer.fso.path, p.resolve(fso.path, pasteBuffer.fso.name), fileSystemCallback);
     }
 
     $scope.pasteBuffer = null;
