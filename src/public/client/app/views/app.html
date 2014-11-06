@@ -214,42 +214,21 @@
           {{model.tree.name}}
         </div>
       </div>
-      <div class="box-body" style="height: 300px; overflow: auto;">
-        <ng-include src="'/client/fs/views/finder.html'" ng-controller="FsFinderCtrl"></ng-include>
+      <div class="box-body" style="height: 250px;">
+  			<div class="fs-finder" ng-controller="FsFinderCtrl" ng-scrolled>
+  				<div ng-repeat="col in finder.cols(model.tree)" class="col">
+  					<div>
+  						<a ng-repeat="data in col | orderBy : ['-isDirectory', 'name']" ng-click="clickNode(data);" ng-class="{ active: finder.isHighlighted(data) }" class="fso">
+  							<i ng-class="finder.getIconClassName(data)" style="color: {{color(data)}}"></i>&nbsp;{{data.name}}
+  							<i ng-if="data.isDirectory" class="fa fa-angle-right right-chevron"></i>
+  						</a>
+  					</div>
+  				</div>
+  			</div>
+        <ng1-include src="'/client/fs/views/finder.html'" ng1-controller="FsFinderCtrl"></ng-include>
       </div>
     </div>
 
   </div>
 
-</div>
-
-<div ng-if="model.hasPackageFile">
-  <div class="box">
-    <div class="box-header">
-      <div class="box-title">
-        NPM DEV
-      </div>
-      <div class="box-tools">
-        <div class="input-group input-group-sm">
-          <input type="text" class="form-control pull-right" ng-model="packageQuery" placeholder="Filter" style="width: 150px;">
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
-          </span>
-        </div><!-- /input-group -->
-      </div>
-    </div>
-    <div class="box-body">
-
-      <wait until-not-undefined="model.package">
-        <wait-loading>Loading package.json</wait-loading>
-        <wait-done>
-          <div ng-if="model.devDependencies">
-
-          </div>
-          <div ng-if="!model.devDependencies">No dev dependencies found</div>
-        </wait-done>
-      </wait>
-
-    </div>
-  </div>
 </div>

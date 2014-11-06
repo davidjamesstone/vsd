@@ -93,7 +93,6 @@ module.exports = function($scope, $state, $log, $q, dialog, fileService, respons
       readOnly: false // this command should not apply in readOnly mode
     }]);
 
-
     // load the editorSession if one has already been defined (like in child controller FileCtrl)
     if ($scope.editorSession) {
       $scope.loadSession();
@@ -138,76 +137,9 @@ module.exports = function($scope, $state, $log, $q, dialog, fileService, respons
       $state.go('app.fs.finder.file', {
         path: utils.encodeString(fso.path)
       });
-
-      //   getSession($q, fso.path, fileService, model.sessions).then(function(session) {
-
-      //     model.addRecentFile(fso);
-      //     $scope.editorSession = session.data;
-      //     $scope.showEditor = true;
-      //     $scope.loadSession();
-      //   });
-
     }
 
   };
-
-  var EditSession = ace.require('ace/edit_session').EditSession;
-  var UndoManager = ace.require('ace/undomanager').UndoManager;
-  var modes = {
-    ".js": "ace/mode/javascript",
-    ".css": "ace/mode/css",
-    ".scss": "ace/mode/scss",
-    ".less": "ace/mode/less",
-    ".html": "ace/mode/html",
-    ".htm": "ace/mode/html",
-    ".ejs": "ace/mode/html",
-    ".json": "ace/mode/json",
-    ".md": "ace/mode/markdown",
-    ".coffee": "ace/mode/coffee",
-    ".jade": "ace/mode/jade",
-    ".php": "ace/mode/php",
-    ".py": "ace/mode/python",
-    ".sass": "ace/mode/sass",
-    ".txt": "ace/mode/text",
-    ".typescript": "ace/mode/typescript",
-    ".xml": "ace/mode/xml"
-  };
-
-  function getSession($q, path, fileService, sessionService) {
-    var deferred = $q.defer();
-
-    console.log('Requested file ' + path);
-
-    var session = sessionService.findSession(path);
-
-    if (session) {
-
-      console.log('Using found session.');
-      deferred.resolve(session);
-
-    } else {
-
-      console.log('Reading file for new session.');
-      fileService.readFile(path).then(function(file) {
-
-        var isUtf8 = !(file.contents instanceof ArrayBuffer);
-
-        var sessionData;
-        if (isUtf8) {
-          sessionData = new EditSession(file.contents, modes[file.ext]);
-          sessionData.setUndoManager(new UndoManager());
-        } else {
-          sessionData = file.contents;
-        }
-
-        session = sessionService.addSession(path, sessionData, isUtf8);
-
-        deferred.resolve(session);
-
-      });
-    }
-    return deferred.promise;
-  }
 
   $scope.delete = function(fso) {
 
@@ -270,11 +202,12 @@ module.exports = function($scope, $state, $log, $q, dialog, fileService, respons
   $scope.paste = function(fso) {
 
     var pasteBuffer = $scope.pasteBuffer;
+    var pastePath = fso.isDirectory ? fso.path : fso.dir;
 
     if (pasteBuffer.op === 'copy') {
-      filesystem.copy(pasteBuffer.fso.path, p.resolve(fso.path, pasteBuffer.fso.name), fileSystemCallback);
+      filesystem.copy(pasteBuffer.fso.path, p.resolve(pastePath, pasteBuffer.fso.name), fileSystemCallback);
     } else if (pasteBuffer.op === 'cut') {
-      filesystem.rename(pasteBuffer.fso.path, p.resolve(fso.path, pasteBuffer.fso.name), fileSystemCallback);
+      filesystem.rename(pasteBuffer.fso.path, p.resolve(pastePath, pasteBuffer.fso.name), fileSystemCallback);
     }
 
     $scope.pasteBuffer = null;
@@ -283,12 +216,22 @@ module.exports = function($scope, $state, $log, $q, dialog, fileService, respons
 
   $scope.showPaste = function(active) {
     var pasteBuffer = $scope.pasteBuffer;
-
-    if (pasteBuffer && active.isDirectory) {
-      if (!pasteBuffer.fso.isDirectory) {
-        return true;
-      } else if (active.path.toLowerCase().indexOf(pasteBuffer.fso.path.toLowerCase()) !== 0) { // disallow pasting into self or a decendent
-        return true;
+    
+    if (pasteBuffer) {
+      var sourcePath = pasteBuffer.fso.path.toLowerCase();
+      var sourceDir = pasteBuffer.fso.dir.toLowerCase();
+      var destinationDir = (active.isDirectory ? active.path : active.dir).toLowerCase();
+      var isDirectory = pasteBuffer.fso.isDirectory;
+      
+      if (!isDirectory) {
+        // Always allow pasteing of a file unless it's a move operation (cut) and the destination dir is the same
+        return pasteBuffer.op !== 'cut' || destinationDir !== sourceDir;
+      } else {
+        // Allow pasteing directories if not into self a decendent
+        if (destinationDir.indexOf(sourcePath) !== 0) {
+          // and  or if the operation is move (cut) the parent dir too
+          return pasteBuffer.op !== 'cut' || destinationDir !== sourceDir;
+        }
       }
     }
     return false;

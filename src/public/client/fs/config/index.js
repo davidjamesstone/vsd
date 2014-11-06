@@ -29,10 +29,7 @@ module.exports = function($stateProvider) {
 
   $stateProvider
     .state('app.fs', {
-      abstract: true,
-      //url: 'fs',
-      // controller: 'FsCtrl',
-      //templateUrl: '/client/fs/views/index.html',
+      abstract: true
     })
     .state('app.fs.finder', {
       url: '/finder',
@@ -95,15 +92,7 @@ module.exports = function($stateProvider) {
       views: {
         '@app': { // Target the ui-view='' in parent state 'app',
           controller: 'FsSearchCtrl',
-          templateUrl: '/client/fs/views/search.html',
-          // resolve: {
-          //   dir: ['$stateParams',
-          //     function($stateParams) {
-          //       var path = utils.decodeString($stateParams.path);
-          //       return watcher.map[path];
-          //     }
-          //   ]
-          // }
+          templateUrl: '/client/fs/views/search.html'
         }
       }
     })

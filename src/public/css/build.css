@@ -162,9 +162,10 @@ i.file-type span {
   margin-bottom: 10px;
 }
 .fs-finder .col {
-  display: table-cell;
+  display: inline-block;
   vertical-align: top;
   overflow-y: auto;
+  height: 100%;
 }
 .fs-finder .col > div {
   width: 160px;
@@ -233,7 +234,7 @@ i.file-type span {
 .fs-finder-page .fs-finder {
   margin-bottom: 0;
   margin-top: 20px;
-  max-height: 350px;
+  height: 250px;
 }
 .fs-finder-page .ace-editor {
   position: absolute;
