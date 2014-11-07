@@ -49,7 +49,6 @@ AppModel.prototype.storeRecentFiles = function() {
     expires: cookieExpires
   });
 };
-
 AppModel.prototype.countFiles = function(ext) {
   return this.list.filter(function(item) {
     return !item.isDirectory && item.ext === ext;
@@ -182,7 +181,6 @@ Object.defineProperties(AppModel.prototype, {
       return !!this.readmeFile;
     }
   }
-
 });
 
 module.exports = AppModel;

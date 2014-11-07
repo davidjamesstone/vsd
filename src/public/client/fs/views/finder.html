@@ -43,6 +43,9 @@
 
 		<div ng-if="!isCollapsed">
 			<div class="fs-finder well" ng-scrolled>
+			  <div class="col">
+			    <ng-include src="'/client/fs/views/tree.html'" ng-controller="FsTreeCtrl"></ng-include>
+			  </div>
 				<div ng-repeat="col in finder.cols(model.tree)" class="col">
 					<div>
 						<a ng-repeat="data in col | orderBy : ['-isDirectory', 'name']" ng-click="clickNode(data);" ng-class="{ active: finder.isHighlighted(data) }" class="fso">

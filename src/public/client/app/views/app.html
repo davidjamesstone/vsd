@@ -117,38 +117,40 @@
 
             <div tabset class="nav-tabs-custom">
 
-                <tab heading="Dependencies" active1="tabs[0].active" select1="selectTab(0)">
+              <tab heading="Dependencies" active1="tabs[0].active" select1="selectTab(0)">
 
-                  <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
 
-                    <table class="table table-condensed table-striped1">
-                      <tbody>
+                  <table class="table table-condensed table-striped1">
+                    <tbody>
 
-                        <tr ng-repeat="dep in model.dependencies | filter: { name: packageQuery }">
-                          <td><span style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{dep.name}}</span></td>
-                          <td class="text-right"><span class="badge bg-green" style="max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{dep.version}}</span>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                      <tr ng-repeat="dep in model.dependencies | filter: { name: packageQuery }">
+                        <td><span style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{dep.name}}</span>
+                        </td>
+                        <td class="text-right"><span class="badge bg-green" style="max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{dep.version}}</span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
 
-                </tab>
+              </tab>
 
-                <tab heading="Dev" active1="tabs[1].active" select1="selectTab(1)">
+              <tab heading="Dev" active1="tabs[1].active" select1="selectTab(1)">
 
-                  <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-                    <table class="table table-condensed table-striped1">
-                      <tbody>
-                        <tr ng-repeat="dep in model.devDependencies | filter: { name: packageQuery }">
-                          <td><span style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{dep.name}}</span></td>
-                          <td class="text-right"><span class="badge bg-green" style="max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{dep.version}}</span>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </tab>
+                <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                  <table class="table table-condensed table-striped1">
+                    <tbody>
+                      <tr ng-repeat="dep in model.devDependencies | filter: { name: packageQuery }">
+                        <td><span style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{dep.name}}</span>
+                        </td>
+                        <td class="text-right"><span class="badge bg-green" style="max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{dep.version}}</span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </tab>
 
             </div>
           </div>
@@ -215,17 +217,16 @@
         </div>
       </div>
       <div class="box-body" style="height: 250px;">
-  			<div class="fs-finder" ng-controller="FsFinderCtrl" ng-scrolled>
-  				<div ng-repeat="col in finder.cols(model.tree)" class="col">
-  					<div>
-  						<a ng-repeat="data in col | orderBy : ['-isDirectory', 'name']" ng-click="clickNode(data);" ng-class="{ active: finder.isHighlighted(data) }" class="fso">
-  							<i ng-class="finder.getIconClassName(data)" style="color: {{color(data)}}"></i>&nbsp;{{data.name}}
-  							<i ng-if="data.isDirectory" class="fa fa-angle-right right-chevron"></i>
-  						</a>
-  					</div>
-  				</div>
-  			</div>
-        <ng1-include src="'/client/fs/views/finder.html'" ng1-controller="FsFinderCtrl"></ng-include>
+        <div class="fs-finder" ng-controller="FsFinderCtrl" ng-scrolled>
+          <div ng-repeat="col in finder.cols(model.tree)" class="col">
+            <div>
+              <a ng-repeat="data in col | orderBy : ['-isDirectory', 'name']" ng-click="clickNode(data);" ng-class="{ active: finder.isHighlighted(data) }" class="fso">
+                <i ng-class="finder.getIconClassName(data)" style="color: {{color(data)}}"></i>&nbsp;{{data.name}}
+                <i ng-if="data.isDirectory" class="fa fa-angle-right right-chevron"></i>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
