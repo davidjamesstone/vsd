@@ -8,21 +8,6 @@ module.exports = function($scope, $state, session, fileService) {
   // ensure the finder is set the the right fso
   $scope.finder.active = file;
 
-  // Handle the case of the file being removed from recentFiles.
-  $scope.$on('recent-removed', function(e, data) {
-    if (data.path === file.path) { // this should always be the case
-      if (model.recentFiles.length) {
-        var mostRecentEntry = model.recentFiles[0];
-        var mostRecentFile = model.map[mostRecentEntry.path];
-        $scope.gotoFile(mostRecentFile);
-      } else {
-        $scope.$parent.showEditor = false;
-        $scope.finder.active = model.map[file.dir];
-        $state.go('app.fs.finder');
-      }
-    }
-  });
-
   model.addRecentFile(file);
 
   function imgBlobUrl() {
@@ -38,13 +23,25 @@ module.exports = function($scope, $state, session, fileService) {
 
   if (isUtf8) {
 
-    $scope.viewer = 'ace';
-    $scope.$parent.showEditor = true;
-    $scope.$parent.editorSession = session.data;
+    if (file.dir.endsWith('.db')) {
+      $scope.viewer = 'db';
+      $scope.$parent.showEditor = false;
+      $scope.$parent.editorSession = session.data;
 
-    // if the editor exists, load the editSession we just assigned
-    if ($scope.$parent.editor) {
-      $scope.$parent.loadSession();
+      // if the editor exists, load the editSession we just assigned
+      if ($scope.$parent.editor) {
+        $scope.$parent.loadSession();
+      }
+
+    } else {
+      $scope.viewer = 'ace';
+      $scope.$parent.showEditor = true;
+      $scope.$parent.editorSession = session.data;
+
+      // if the editor exists, load the editSession we just assigned
+      if ($scope.$parent.editor) {
+        $scope.$parent.loadSession();
+      }
     }
 
   } else {
@@ -63,6 +60,21 @@ module.exports = function($scope, $state, session, fileService) {
         break;
     }
   }
+
+  // Handle the case of the file being removed from recentFiles.
+  $scope.$on('recent-removed', function(e, data) {
+    if (data.path === file.path) { // this should always be the case
+      if (model.recentFiles.length) {
+        var mostRecentEntry = model.recentFiles[0];
+        var mostRecentFile = model.map[mostRecentEntry.path];
+        $scope.gotoFile(mostRecentFile);
+      } else {
+        $scope.$parent.showEditor = false;
+        $scope.finder.active = model.map[file.dir];
+        $state.go('app.fs.finder');
+      }
+    }
+  });
 
 
 };

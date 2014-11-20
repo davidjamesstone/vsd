@@ -9,22 +9,36 @@ var watcher = chokidar.watch(root, {
     // This function gets called twice per path.
     // Once with a single argument (the path),
     // second time with two arguments (the path and the fs.Stats object of that path).
-    //return stat && stat.isDirectory() ? /\/node_modules|[\/\\]\./.test(path) : false;
     if (stat) {
-      // ignore node_modules' and bower_components grandchildren and also ignore
-      // any dir starting with a '.' e.g. '.git'
+
       var isDir = stat.isDirectory();
       var fso = new FileSystemObject(path, stat);
-      var parent = new FileSystemObject(fso.dir, true);
-      var grandparent = new FileSystemObject(parent.dir, true);
+
       if (isDir) {
-        return fso.name === 'node_modules' || fso.name === 'bower_components' || /[\/\\]\./.test(path);
+
+        // Allow special whitelist directories
+        var specialDirs = ['.api', '.db'];
+
+        for (var i = 0; i < specialDirs.length; i++) {
+          if (fso.name.endsWith(specialDirs[i])) {
+            return false;
+          }
+        }
+
+        // Otherwise ignore node_modules and bower_components and also ignore
+        // any dir starting with a '.' e.g. '.git'
+        return fso.name === 'node_modules' ||
+          fso.name === 'bower_components' ||
+          /[\/\\]\./.test(path);
+
       } else {
-        return fso.name === 'node_modules' || fso.name === 'bower_components' || /[\/\\]\./.test(path);
+
+        // Ignore dot files
+        return fso.name.startsWith('.');
       }
-    } else {
-      return false;
     }
+
+    return false;
   },
   ignoreInitial: true
 });

@@ -1,8 +1,10 @@
 <div class="fs-file">
 
-  <div class=""
-    ng-switch on="viewer">
+  <div ng-switch on="viewer">
       <div ng-switch-when="ace">
+      </div>
+      <div ng-switch-when="db">
+        <div ng-include="'/client/db/views/db.html'"></div>
       </div>
       <div ng-switch-when="img">
         <img ng-src="{{imgUrl}}" alt="finder.active.name"/>

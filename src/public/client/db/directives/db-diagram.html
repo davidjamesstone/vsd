@@ -1,0 +1,11 @@
+<svg width="100%" height"100%">
+  <g ng-repeat="node in nodes">
+    <rect ng-if="false" ng-attr-rx="{{node.rx}}" ng-attr-ry="{{node.ry}}" ng-attr-x="{{node.x}}"
+        ng-attr-y="{{node.y}}" ng-attr-width="{{node.width}}" ng-attr-height="{{node.height}}"
+        overflow="auto" style="fill:transparent;stroke-width:1;stroke:rgb(0,0,0)">
+    </rect>
+    <text fill="red" ng-attr-x="{{node.x + 50}}"
+        ng-attr-y="{{node.y + 50}}">{{node.label}}</text>
+  </g>
+
+</svg>

@@ -10,6 +10,13 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <link rel="icon" href="../../favicon.ico">
+
+  <!-- Global Styles -->
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/build.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+
   <style type="text/css">
     .node circle {
       cursor: pointer;
@@ -41,6 +48,31 @@
       top: 0!important;
       bottom: 0;
     }
+
+
+    body {
+      padding-top: 50px;
+    }
+    body>.header {
+      position: fixed;
+    }
+    .left-side {
+      position: fixed;
+      padding-top: ;
+    }
+    @media screen and (max-width: 992px) {
+      .row-offcanvas-left .sidebar-offcanvas {
+        left: 0;
+      }
+    }
+
+    @media screen and (max-width: 560px) {
+      body {
+        padding-top: 100px;
+      }
+    }
+
+
     /*html, body {
         height: 100%;
       }
@@ -75,27 +107,25 @@
 
   <title>DBUI</title>
 
-  <!-- Global Styles -->
-  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-  <link rel="stylesheet" href="/css/main.css">
-  <link rel="stylesheet" href="/css/build.css">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
 
 
+
+  <script src="/js/dom.jsPlumb-1.7.2.js"></script>
+
+  <!-- d3
+  <script1 src="d3/d3.js"></script1>
   <script src="http://d3js.org/d3.v3.js"></script>
   <script src="http://cpettitt.github.io/project/dagre-d3/latest/dagre-d3.js"></script>
-
-  <script1 type="text/javascript" src="d3/d3.js"></script1>
-  <script type="text/javascript" src="http://mbostock.github.io/d3/talk/20111018/d3/d3.layout.js"></script>
-
-  <!-- ace editor -->
+  <script src="http://mbostock.github.io/d3/talk/20111018/d3/d3.layout.js"></script>-->
 
   <!--<script src="http://ace.c9.io/build/src/ace.js"></script>-->
   <script src="/bower_components/ace-builds/src-min-noconflict/ace.js"></script>
   <script src="/bower_components/ace-builds/src-min-noconflict/ext-language_tools.js"></script>
 
-  <!-- angularjs -->
-  <script src="/bower_components/angular/angular.min.js"></script>
+  <!-- angularjs
+  <script src="/bower_components/angular/angular.min.js"></script>-->
+  <script src="/js/angular.min.js"></script>
+  <script src="/js/jsplumb-angular.js"></script>
 
   <!-- angular ui-ace editor -->
   <script src="/js/ui-ace.js"></script>
@@ -107,13 +137,13 @@
   <!-- angular wait- -->
   <script src="/bower_components/angular-wait/dist/angular-wait.js"></script>
 
-  <!-- ./wrapper -->
+  <!-- utils -->
   <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
-  <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular-route.min.js"></script>-->
+
+  <!-- angular ui -->
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
-
 
   <script src="socket.io/socket.io.js"></script>
 

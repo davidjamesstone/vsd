@@ -22,12 +22,16 @@ ul ul {
 .content-header {
   display: none;
 }
+/**
+ * Tree view
+ */
 .tree,
 .tree ul {
   list-style-type: none;
   margin-left: 0 0 0 10px;
   padding: 0;
   position: relative;
+  overflow: hidden;
 }
 .tree li {
   margin: 0;
@@ -238,8 +242,86 @@ i.file-type span {
 }
 .fs-finder-page .ace-editor {
   position: absolute;
-  top: 48px;
+  top: 47px;
   left: 0;
   bottom: 0;
   right: 0;
+}
+.db {
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  top: 44px;
+}
+.db .db-ctnr {
+  height: 100%;
+}
+.db .db-ctnr .model-tree {
+  height: 100%;
+}
+.db .model-sidebar {
+  height: 100%;
+  overflow-y: auto;
+  background-color: #fff;
+}
+.db .model-sidebar > ul.list-group {
+  margin-right: -15px;
+  margin-left: -15px;
+  margin-bottom: 0;
+}
+.db .model-sidebar > ul.list-group li {
+  border-radius: 0;
+  border-right: 0;
+}
+.db .model-editor {
+  height: 100%;
+}
+.db .model-editor > div {
+  height: 100%;
+  margin-right: -15px;
+  margin-left: -15px;
+}
+.db .model-editor .panel {
+  border-radius: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+}
+.db .model-editor .panel .panel-body {
+  flex: 1;
+  overflow-y: auto;
+}
+.db .model-editor .panel .panel-body form {
+  max-width: 500px;
+}
+.db .model-editor .panel .panel-footer {
+  overflow-y: auto;
+}
+.db .model-editor .panel .panel-footer form {
+  max-width: 500px;
+}
+.db .model-editor .panel .breadcrumb {
+  font-size: small;
+}
+.db .db-model-viewer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1090;
+  background-color: #fff;
+}
+.db .db-model-viewer .tree {
+  overflow: auto;
+  height: 100%;
+}
+.db .db-model-viewer .tree li {
+  white-space: nowrap;
+}
+.db .db-model-viewer .panel {
+  position: absolute;
+  margin-bottom: 0;
 }

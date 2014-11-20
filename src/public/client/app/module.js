@@ -3,6 +3,7 @@ module.exports = angular.module('app', [
   'ui.bootstrap',
   'ui.ace',
   'evgenyneu.markdown-preview',
+  'jsplumb',
   'michiKono',
   'dialog',
   'fs'

@@ -1,1 +1,74 @@
-<div ui-view></div>
+<div ng-controller="DbCtrl" class="db container-fluid">
+
+  <!-- Templates -->
+  <script type="text/ng-template" id="key.html">
+    <a ng-click="gotoPath(key)">{{key.name}}</a><span class="small"><span ng-show="key.def.required" class="text-danger">&nbsp;*&nbsp;</span>&nbsp;{{key.typeAsString()}}</span>
+    <div ng-if="key.isNested()" ng-repeat="keys in [key.isNestedTypeArray() ? key.def.def.keys : key.def.keys]" ng-include="'keys.html'">
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="keys.html">
+    <ul>
+      <li class="key tree-node" ng-repeat="key in keys.items" ng-include="'key.html'">
+      </li>
+    </ul>
+  </script>
+
+  <h1 class="page-header hide">Db: {{ model.name }}</h1>
+
+  <div class="btn-group hide">
+    <button type="button" ng-disabled="errors().length" class="btn btn-default"><i class="fa fa-save"></i>
+    </button>
+    <button type="button" class="btn btn-default" ng-click="showModelDiagram()"><i class="fa fa-sitemap"></i>
+    </button>
+    <button type="button" class="btn btn-default" ng-click="showModelJson()"><i class="fa fa-file-o"></i>
+    </button>
+  </div>
+
+  <!-- Validation Errors -->
+  <div ng-if="errors().length" class="alert alert-danger">
+    <h5>Validation Errors</h5>
+    <ul>
+      <li ng-repeat="err in errors()">
+        {{err.message}}
+      </li>
+    </ul>
+  </div>
+
+  <div class="row db-ctnr">
+    <div class="hidden-xs hidden-sm col-md-4 model-sidebar">
+
+
+      <ul ng-if="dbFinder.isModel" class="list-group">
+        <li class="list-group-item">
+          <button type="button" class="btn btn-default" ng-click="showModelDiagram()"><i class="fa fa-sitemap"></i>
+          </button>
+          <button type="button" class="btn btn-default" ng-click="showModelViewer = true"><i class="fa fa-sitemap"></i>
+          </button>
+          <div ng-if="showModelViewer" db-viewer></div>
+        </li>
+        <li class="schema list-group-item" ng-repeat="schema in model.schemas">
+          <a ng-click="gotoPath(schema)">{{ schema.name }}</a>
+          <div ng-if="false" ng-repeat="keys in [schema.keys]" ng-include="'keys.html'">
+          </div>
+          <hr ng-if="false">
+        </li>
+      </ul>
+
+      <ul ng-if="!dbFinder.isModel" class="tree">
+        <li class="schema" ng-repeat="schema in [dbFinder.activeSchema]">
+          <a ng-click="gotoPath(schema)">{{ schema.name }}</a>
+          <div ng-repeat="keys in [schema.keys]" ng-include="'keys.html'">
+          </div>
+        </li>
+      </ul>
+
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-8 model-editor">
+      <div ng-if="dbFinder.isModel" ng-include="'/client/db/views/model-editor.html'" ng-controller="DbModelCtrl"></div>
+      <div ng-if="dbFinder.isSchema" ng-include="'/client/db/views/schema.html'" ng-controller="DbSchemaCtrl"></div>
+      <div ng-if="dbFinder.isKey" ng-include="'/client/db/views/key.html'" ng-controller="DbKeyCtrl"></div>
+    </div>
+  </div>
+
+</div>

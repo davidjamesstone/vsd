@@ -1,3 +1,6 @@
+// Load Module Dependencies
+require('../db');
+
 var mod = require('./module');
 
 mod.config([

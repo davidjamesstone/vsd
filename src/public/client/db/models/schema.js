@@ -39,10 +39,10 @@ var schema = _.extend({}, base, {
 
     return errors;
   },
-  schemaReferences: function(schema) {
+  schemaReferences: function() {
     return this.db.schemaReferences(this);
   },
-  isSchemaReferenced: function(schema) {
+  isSchemaReferenced: function() {
     return this.db.isSchemaReferenced(this);
   },
   childKeys: function() {

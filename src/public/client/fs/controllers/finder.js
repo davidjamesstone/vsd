@@ -173,12 +173,13 @@ module.exports = function($scope, $state, $log, $q, dialog, fileService, respons
 
   $scope.mkfile = function(fso) {
 
+    var path = fso.isDirectory ? fso.path : fso.dir;
     dialog.prompt({
       title: 'Add new file',
       placeholder: 'File name',
       message: 'Please enter the new file name'
     }).then(function(value) {
-      filesystem.mkfile(p.resolve(fso.path, value), fileSystemCallback);
+      filesystem.mkfile(p.resolve(path, value), fileSystemCallback);
     }, function() {
       $log.info('Make file modal dismissed');
     });
@@ -187,12 +188,13 @@ module.exports = function($scope, $state, $log, $q, dialog, fileService, respons
 
   $scope.mkdir = function(fso) {
 
+    var path = fso.isDirectory ? fso.path : fso.dir;
     dialog.prompt({
       title: 'Add new folder',
       placeholder: 'Folder name',
       message: 'Please enter the new folder name'
     }).then(function(value) {
-      filesystem.mkdir(p.resolve(fso.path, value), fileSystemCallback);
+      filesystem.mkdir(p.resolve(path, value), fileSystemCallback);
     }, function() {
       $log.info('Make directory modal dismissed');
     });
@@ -216,13 +218,13 @@ module.exports = function($scope, $state, $log, $q, dialog, fileService, respons
 
   $scope.showPaste = function(active) {
     var pasteBuffer = $scope.pasteBuffer;
-    
+
     if (pasteBuffer) {
       var sourcePath = pasteBuffer.fso.path.toLowerCase();
       var sourceDir = pasteBuffer.fso.dir.toLowerCase();
       var destinationDir = (active.isDirectory ? active.path : active.dir).toLowerCase();
       var isDirectory = pasteBuffer.fso.isDirectory;
-      
+
       if (!isDirectory) {
         // Always allow pasteing of a file unless it's a move operation (cut) and the destination dir is the same
         return pasteBuffer.op !== 'cut' || destinationDir !== sourceDir;

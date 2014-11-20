@@ -1,0 +1,33 @@
+<div class="db-model-viewer">
+
+  <!-- Templates -->
+  <script type="text/ng-template" id="key.html">
+    <a ng-click="gotoPath(key)">{{key.name}}</a>
+    <span class="small"><span ng-show="key.def.required" class="text-danger">&nbsp;*&nbsp;</span>&nbsp;{{key.typeAsString()}}</span>
+    <div ng-if="key.isNested()" ng-repeat="keys in [key.isNestedTypeArray() ? key.def.def.keys : key.def.keys]" ng-include="'keys.html'">
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="keys.html">
+    <ul>
+      <li class="key" ng-repeat="key in keys.items" ng-include="'key.html'" id="{{ key.id }}">
+      </li>
+    </ul>
+  </script>
+
+  <div class="tree">
+
+    <!-- Schema -->
+    <div ng-repeat="schema in model.schemas" ng-attr-connect="{{ getRefs(schema) }}" id="{{ schema.id }}" style1="left: {{getPos(schema.id).x}}; top: {{getPos(schema.id).y}};" class="panel panel-{{ schema.installed ? 'info' : 'default' }} schema" Xdraggable Xdraggable-drop="onDrop($event)">
+      <div class="panel-heading"><a ng-click="gotoPath(schema)">{{ schema.name }}</a></div>
+      <div class="panel-body">
+        <div ng-repeat="keys in [schema.keys]" ng-include="'keys.html'">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" class="btn btn-default btn-flat fa fa-close" ng-click="$parent.showModelViewer = false" style="position: absolute; right: 20px; top: 20px; z-index: 1030;">
+  </button>
+
+</div>

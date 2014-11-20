@@ -40,10 +40,11 @@
 
     </form>
 
+    <div ng-if="false" db-diagram style="height: 100%;"></div>
   </div>
 
   <!-- Schema List Group -->
-  <ul class="list-group">
+  <ul class=" hide list-group">
     <li class="list-group-item" ng-repeat="schema in model.schemas">
       <a ng-click="gotoPath(schema)">{{ schema.name }}</a>
     </li>

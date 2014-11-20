@@ -1,4 +1,5 @@
 
+    
 recentFiles: {
   get: function() {
     var recent = this._recentFiles;

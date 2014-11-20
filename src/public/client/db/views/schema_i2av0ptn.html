@@ -1,0 +1,86 @@
+<div ng-if="!schema">Schema Not Found</div>
+
+<div ng-if="schema" class="panel panel-default">
+
+  <div class="panel-heading">
+    <div class="panel-title">
+      <ol class="breadcrumb">
+        <li ng-repeat="path in schema.path()" ng-class="{ active: $last }">
+          <a ng-if="$first" ng-click="gotoPath(path)">{{ path.name }}</a>
+          <span ng-if="$last">{{ path.name }}</span>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="panel-body">
+
+    <form class="form-horizontal">
+
+      <!-- Schema Name -->
+      <div class="form-group">
+        <label for="name" class="col-sm-2 control-label">Schema Name</label>
+        <div class="col-sm-10">
+          <input type="text" id="name" ng-model="schema.name" class="form-control" focus="true" required ng-pattern="model.nameRegexValidate" />
+        </div>
+      </div>
+
+      <!-- Schema Description -->
+      <div class="form-group">
+        <label for="description" class="col-sm-2 control-label">Schema Description</label>
+        <div class="col-sm-10">
+          <textarea id="description" ng-model="schema.description" class="form-control input-sm"></textarea>
+        </div>
+      </div>
+
+      <!-- Schema Installed -->
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" negate ng-model="schema.installed" ng-disabled="schema.isSchemaReferenced()" />Child Schema
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Schema Key -->
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="button" class="btn btn-primary btn-xs" ng-click="addKey(schema.keys)" tooltip="Add key to [{{ schema.name }}]" tooltip-placement="top" tooltip-append-to-body="false">
+            <i class="fa fa-plus"></i>
+            Add key to [{{ schema.name }}]
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+
+  <!-- Keys List Group -->
+  <ul class="list-group">
+    <li class="list-group-item" ng-repeat="key in schema.keys.items">
+      <a ng-click="gotoPath(key)">{{ key.name }}</a>
+    </li>
+  </ul>
+
+  <div class="hide panel-footer text-right">
+    <div ng-if="schema.isSchemaReferenced()">
+      <!-- References -->
+      <h6>References</h6>
+      <ul class="list-inline small">
+        <li ng-repeat="key in schema.schemaReferences()"><a ng-click="gotoPath(key)" class="text-muted">{{ key.keys.schema.name + '.' + key.name }}</a>
+        </li>
+      </ul>
+      <hr>
+    </div>
+    <small ng-if="schema.isSchemaReferenced()" class="text-info">
+      Schema [{{schema.name}}] cannot be deleted. First remove all references.
+    </small>
+    <button type="button" class="btn btn-danger btn-xs" ng-click="deleteSchema(schema)" ng-disabled="schema.isSchemaReferenced()">
+      <i class="fa fa-trash"></i> Delete Schema
+    </button>
+
+  </div>
+</div>

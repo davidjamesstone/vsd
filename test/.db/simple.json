@@ -1,0 +1,180 @@
+{
+  "id": "433998012345355354",
+  "name": "test",
+  "schemas": [
+    {
+      "id": "0535980761854775",
+      "name": "Customer",
+      "installed": true,
+      "keys": {
+        "items": [
+          {
+            "name": "title",
+            "type": "String",
+            "def": {
+              "required": true,
+              "enumeration": "Mr Mrs Miss Dr"
+            }
+          },
+          {
+            "name": "firstName",
+            "type": "String",
+            "def": {
+              "required": false
+            }
+          },
+          {
+            "name": "lastName",
+            "type": "Number",
+            "def": {
+              "required": true,
+              "min": 0,
+              "max": 100
+            }
+          },
+          {
+            "name": "dob",
+            "type": "Date",
+            "def": {
+              "required": true
+            }
+          },
+          {
+            "name": "sex",
+            "type": "String",
+            "def": {
+              "enumeration": "Male Female"
+            }
+          },
+          {
+            "name": "extraData",
+            "type": "Mixed",
+            "def": {}
+          },
+          {
+            "name": "scores",
+            "type": "Array",
+            "def": {
+              "oftype": "Number",
+              "def": {
+                "required": true,
+                "min": 0,
+                "max": 100
+              }
+            }
+          },
+          {
+            "name": "address",
+            "type": "NestedDocument",
+            "def": {
+              "keys": {
+                "items": [
+                  {
+                    "name": "line1",
+                    "type": "String",
+                    "def": {
+                      "required": true
+                    }
+                  },
+                  {
+                    "name": "line2",
+                    "type": "String",
+                    "def": {}
+                  },
+                  {
+                    "name": "line3",
+                    "type": "String",
+                    "def": {}
+                  },
+                  {
+                    "name": "town",
+                    "type": "String",
+                    "def": {
+                      "required": true
+                    }
+                  },
+                  {
+                    "name": "county",
+                    "type": "String",
+                    "def": {
+                      "required": true
+                    }
+                  },
+                  {
+                    "name": "postcode",
+                    "type": "String",
+                    "def": {
+                      "required": true
+                    }
+                  },
+                  {
+                    "name": "latLong",
+                    "type": "NestedDocument",
+                    "def": {
+                      "keys": {
+                        "items": [
+                          {
+                            "name": "lat",
+                            "type": "Number",
+                            "def": {
+                              "required": true
+                            }
+                          },
+                          {
+                            "name": "long",
+                            "type": "Number",
+                            "def": {
+                              "required": true
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "orders",
+            "type": "Array",
+            "def": {
+              "oftype": "ForeignKey",
+              "def": {
+                "required": true,
+                "ref": "016305049997383936"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "016305049997383936",
+      "name": "Order",
+      "installed": true,
+      "keys": {
+        "items": [
+          {
+            "name": "quantity",
+            "type": "Number",
+            "def": {
+              "required": false,
+              "defaultValue": "1",
+              "min": "1",
+              "max": "10"
+            }
+          },
+          {
+            "name": "customer",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "0535980761854775"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
