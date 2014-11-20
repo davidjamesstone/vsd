@@ -94,7 +94,7 @@ module.exports = function($timeout) {
 
       }
 
-      $timeout(positionGraph, 350);
+      $timeout(positionGraph, 250);
 
       // // draggable config
       // var draggable = {
@@ -183,7 +183,7 @@ module.exports = function($timeout) {
 
 
 
-        $timeout(render, 1250);
+        $timeout(render, 750);
 
 
 

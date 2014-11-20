@@ -65,15 +65,31 @@
     right: 0;
     z-index: 1090;
     background-color: #fff;
+    border: aliceblue 18px solid;
+    .close-btn {
+      position: absolute;
+      right: 4px;
+      top: 4px;
+      z-index: 1030;
+    }
     .tree {
+      background-color: beige;
       overflow: auto;
       height: 100%;
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.5;
       li {
         white-space: nowrap;
       }
     }
     .panel {
       position: absolute;
+      padding: 4px;
+
+      .panel-body {
+        padding: 6px;
+      }
       // z-index: 1;
       // background-color: transparent;
       margin-bottom: 0;
