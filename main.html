@@ -7,6 +7,7 @@
   <meta name="viewport" content="user-scalable=no">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="description" content="">
   <meta name="author" content="">
   <link rel="icon" href="../../favicon.ico">
@@ -32,6 +33,9 @@
       stroke: #ccc;
       stroke-width: 1.5px;
     }
+    
+    
+    
     html,
     body {
       height: 100%;
@@ -53,12 +57,15 @@
     body {
       padding-top: 50px;
     }
-    body>.header {
+    body > .header {
       position: fixed;
     }
     .left-side {
       position: fixed;
-      padding-top: ;
+      padding-top: 50px;
+    }
+    .skin-blue .left-side {
+      background: #fff;
     }
     @media screen and (max-width: 992px) {
       .row-offcanvas-left .sidebar-offcanvas {
@@ -67,42 +74,11 @@
     }
 
     @media screen and (max-width: 560px) {
-      body {
-        padding-top: 100px;
+      body > .header .logo {
+        display: none;
       }
     }
 
-
-    /*html, body {
-        height: 100%;
-      }
-
-      .wrapper, .right-side, section.content, .root-view {
-        height: 100%;
-      }
-
-      .fs-finder-page {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-      }
-
-      .fs-finder-page .top-box {
-      }
-
-      .fs-finder-page .bottom-box {
-        position: relative;
-        flex-grow: 1;
-      }
-
-      .fs-finder-page .bottom-box .ace_editor {
-        height: 100%!important;
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-      }*/
   </style>
 
   <title>DBUI</title>
@@ -110,7 +86,6 @@
 
 
 
-  <script src="/js/dom.jsPlumb-1.7.2.js"></script>
 
   <!-- d3
   <script1 src="d3/d3.js"></script1>
@@ -125,6 +100,7 @@
   <!-- angularjs
   <script src="/bower_components/angular/angular.min.js"></script>-->
   <script src="/js/angular.min.js"></script>
+  <script src="/js/dom.jsPlumb-1.7.2.js"></script>
   <script src="/js/jsplumb-angular.js"></script>
 
   <!-- angular ui-ace editor -->
@@ -142,8 +118,8 @@
 
   <!-- angular ui -->
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.min.js"></script>
 
   <script src="socket.io/socket.io.js"></script>
 

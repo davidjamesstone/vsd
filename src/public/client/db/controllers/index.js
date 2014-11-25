@@ -3,7 +3,7 @@ var db = require('../models/db');
 var DbFinder = require('../models/db-finder');
 var dagre = require('dagre');
 
-module.exports = function($scope, $http, $state, $modal, dialog, $timeout) {
+module.exports = function($scope, $http, $state, $modal, dialog, $interval) {
 
   var dbData = JSON.parse($scope.$parent.editorSession.getValue());
 
@@ -13,20 +13,24 @@ module.exports = function($scope, $http, $state, $modal, dialog, $timeout) {
 
   $scope.model = model;
 
+  function checkModelStateUpdateSession() {
+    var oldValue = $scope.session.data.doc.getValue();
+    var newValue = angular.toJson(JSON.parse(model.toJson()), true);
+    if (newValue !== oldValue) {
+
+      console.log('set dbmodel schemas changed');
+      $scope.session.data.doc.setValue(newValue);
+    }
+  }
+
+  var stopWatch = $interval(checkModelStateUpdateSession, 2000, 0, false); // false so we don't invokeApply
+
   var dbFinder = new DbFinder(model);
 
   $scope.dbFinder = dbFinder;
 
-  // scope data
-  $scope.data = {
-    isCollapsed: false
-  } ;
-
-
-  //$timeout(autoLayout);
-
-  $scope.$watch('model.name', function(oldValue, newValue) {
-    console.log('rename db model file');
+  $scope.$on('$destroy', function() {
+    $interval.cancel(stopWatch);
   });
 
   $scope.modelAsJson = function() {
@@ -36,15 +40,17 @@ module.exports = function($scope, $http, $state, $modal, dialog, $timeout) {
 
   $scope.showModelJson = function() {
     $modal.open({
-      templateUrl: '/html/db-json.html',
-      scope: $scope
+      templateUrl: '/client/db/views/db-json.html',
+      scope: $scope,
+      size: 'lg'
     });
   };
 
   $scope.showModelDiagram = function() {
     $modal.open({
       templateUrl: '/client/db/views/db-diagram.html',
-      scope: $scope
+      scope: $scope,
+      size: 'lg'
     });
   };
 
@@ -188,61 +194,5 @@ module.exports = function($scope, $http, $state, $modal, dialog, $timeout) {
     var index = items.indexOf(key);
     items.move(index, ++index);
   };
-
-  function autoLayout() {
-    var g = new dagre.Digraph();
-    var edges = [];
-    var el;
-    // $('.schema').each(function() {
-    //     var $this = $(this);
-    //     var id = $(this).attr('id');
-    //     g.addNode(id, {
-    //         label: id,
-    //         width: $this.width(),
-    //         height: $this.height()
-    //     });
-    //     $this.find('.key-header[data-ref]').each(function() {
-    //         edges.push([$(this).data('ref'), id]);
-    //     });
-    // });
-
-    for (var i = 0; i < model.schemas.length; i++) {
-      var schema = model.schemas[i];
-      var id = schema.id;
-      // el = document.getElementById(id);
-      // el.style.position = 'absolute';
-      // var style = window.getComputedStyle(el, null);
-
-      g.addNode(id, {
-        label: id,
-        // width: parseFloat(style.width),
-        // height: parseFloat(style.height)
-      });
-
-      var schemaReferences = schema.schemaReferences();
-      for (var j = 0; j < schemaReferences.length; j++) {
-        edges.push([schemaReferences[j].keys.schema.id, id]);
-      }
-
-    }
-
-
-    for (var k = 0; k < edges.length; k++) {
-      g.addEdge(null, edges[k][0], edges[k][1]);
-    }
-
-    var layout = dagre.layout().nodeSep(20).edgeSep(5).rankSep(20).run(g);
-    // var layout = dagre.layout().run(g);
-    layout.eachNode(function(u, value) {
-
-      // el = document.getElementById(u);
-      // el.style.top = value.y + 'px';
-      // el.style.left = value.x + 'px';
-      // el.style.width = '200px';
-      // el.style.height = '300px';
-      // el.style.overflow = 'hidden';
-
-    });
-  }
 
 };

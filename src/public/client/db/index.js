@@ -3,10 +3,10 @@ require('../dialog');
 
 var mod = require('./module');
 
-mod.config([
-  '$stateProvider',
-  require('./config')
-]);
+// mod.config([
+//   '$stateProvider',
+//   require('./config')
+// ]);
 
 mod.controller('DbCtrl', [
   '$scope',
@@ -14,7 +14,7 @@ mod.controller('DbCtrl', [
   '$state',
   '$modal',
   'DialogService',
-  '$timeout',
+  '$interval',
   require('./controllers')
 ]);
 
@@ -38,11 +38,6 @@ mod.controller('DbArrayDefCtrl', [
   '$scope',
   'DialogService',
   require('./controllers/array-def')
-]);
-
-mod.directive('dbDiagram', [
-  '$timeout',
-  require('./directives/db-diagram')
 ]);
 
 mod.directive('draggable', [

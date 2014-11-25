@@ -19,6 +19,9 @@ ul ul {
 .nested-keys {
   margin: 8px 0;
 }
+.ace_search {
+  box-sizing: initial;
+}
 .content-header {
   display: none;
 }
@@ -37,6 +40,7 @@ ul ul {
   margin: 0;
   padding: 0 12px;
   position: relative;
+  white-space: nowrap;
 }
 .tree li::before,
 .tree li::after {
@@ -263,7 +267,10 @@ i.file-type span {
 .db .model-sidebar {
   height: 100%;
   overflow-y: auto;
-  background-color: #fff;
+  background-color: #F5F5F5;
+}
+.db .model-sidebar .tree {
+  display: table;
 }
 .db .model-sidebar > ul.list-group {
   margin-right: -15px;
@@ -274,36 +281,39 @@ i.file-type span {
   border-radius: 0;
   border-right: 0;
 }
-.db .model-editor {
-  height: 100%;
-}
-.db .model-editor > div {
-  height: 100%;
+.db .model-editor > div.editor {
   margin-right: -15px;
   margin-left: -15px;
 }
 .db .model-editor .panel {
   border-radius: 0;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
   margin-bottom: 0;
-}
-.db .model-editor .panel .panel-body {
-  flex: 1;
-  overflow-y: auto;
-}
-.db .model-editor .panel .panel-body form {
-  max-width: 500px;
-}
-.db .model-editor .panel .panel-footer {
-  overflow-y: auto;
-}
-.db .model-editor .panel .panel-footer form {
-  max-width: 500px;
 }
 .db .model-editor .panel .breadcrumb {
   font-size: small;
+}
+@media screen and (min-width: 560px) {
+  .db .model-editor {
+    height: 100%;
+  }
+  .db .model-editor > div.editor {
+    height: 100%;
+  }
+  .db .model-editor .panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .db .model-editor .panel .panel-body {
+    flex: 1;
+    overflow-y: auto;
+  }
+  .db .model-editor .panel .panel-body form {
+    max-width: 500px;
+  }
+  .db .model-editor .panel .panel-footer {
+    overflow-y: auto;
+  }
 }
 .db .db-model-viewer {
   position: fixed;
@@ -313,7 +323,7 @@ i.file-type span {
   right: 0;
   z-index: 1090;
   background-color: #fff;
-  border: aliceblue 18px solid;
+  border: #999 6px solid;
 }
 .db .db-model-viewer .close-btn {
   position: absolute;
@@ -322,15 +332,12 @@ i.file-type span {
   z-index: 1030;
 }
 .db .db-model-viewer .tree {
-  background-color: beige;
+  background-color: #333;
   overflow: auto;
   height: 100%;
   margin: 0;
   font-size: 12px;
   line-height: 1.5;
-}
-.db .db-model-viewer .tree li {
-  white-space: nowrap;
 }
 .db .db-model-viewer .panel {
   position: absolute;

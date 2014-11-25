@@ -21,6 +21,7 @@ mod.controller('FsFinderCtrl', [
   '$scope',
   '$state',
   '$log',
+  '$modal',
   '$q',
   'DialogService',
   'FileService',

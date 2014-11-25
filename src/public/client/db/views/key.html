@@ -1,6 +1,6 @@
 <div ng-if="!key">Key Not Found</div>
 
-<div ng-if="key" class="panel panel-default">
+<div ng-if="key" class="panel panel-info">
 
   <div class="panel-heading">
     <div class="panel-title">
@@ -27,14 +27,14 @@
             <input type="text" id="name" ng-model="key.name" class="form-control" focus="true" required ng-pattern="model.nameRegexValidate" />
 
             <!-- Key Actions Button Group -->
-            <div class="input-group-btn">
+            <div class="input-group-btn" dropdown>
               <button type="button" class="btn btn-default" ng-click="moveKeyUp(key)" tooltip="Move key [{{key.name}}] up" tooltip-placement="top" tooltip-append-to-body="true"><i class="fa fa-arrow-up"></i>
               </button>
               <button type="button" class="btn btn-default" ng-click="moveKeyDown(key)" tooltip="Move key [{{key.name}}] down" tooltip-placement="top" tooltip-append-to-body="true"><i class="fa fa-arrow-down"></i>
               </button>
               <button type="button" class="btn btn-default" ng-click="addKey(key.keys, key)" tooltip="Add key below [{{ key.name }}]" tooltip-placement="left" tooltip-append-to-body="true"><i class="fa fa-plus"></i>
               </button>
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" tooltip="More actions" tooltip-placement="left" tooltip-append-to-body="true">
+              <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle tooltip="More actions" tooltip-placement="left" tooltip-append-to-body="true">
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu pull-right" role="menu">

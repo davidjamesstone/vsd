@@ -40,15 +40,9 @@ module.exports = function($scope, $state, fs, watcher, fileService, dialog, colo
       q: searchForm.q.value
     });
   };
-  //
-  // $scope.fileUrl = function(file) {
-  //   return $state.href('app.fs.finder.file', {
-  //     path: utils.encodeString(file.path || file)
-  //   });
-  // };
 
   $scope.gotoFile = function(file) {
-    return $state.transitionTo('app.fs.finder.file', {
+    return $state.go('app.fs.finder.file', {
       path: utils.encodeString(file.path || file)
     });
   };
@@ -110,10 +104,10 @@ module.exports = function($scope, $state, fs, watcher, fileService, dialog, colo
     });
   }
 
-
   $scope.saveSession = function(session) {
     saveSession(session);
   };
+
   $scope.saveAllSessions = function() {
     var sessions = sessionService.dirty;
 
@@ -127,6 +121,14 @@ module.exports = function($scope, $state, fs, watcher, fileService, dialog, colo
     // find related session
     var sessions = model.sessions;
     var session = sessions.findSession(entry.path);
+
+
+    function remove() {
+      sessions.removeSession(session);
+      model.removeRecentFile(entry);
+      $scope.$broadcast('recent-removed', entry);
+    }
+
     if (session) {
 
       if (session.isDirty) {
@@ -148,22 +150,14 @@ module.exports = function($scope, $state, fs, watcher, fileService, dialog, colo
           console.log('Remove recent (save) modal dismissed', value);
           // Check if clicked 'No', otherwise do nothing
           if (value === 'cancel') {
-            model.removeRecentFile(entry);
-            sessions.removeSession(session);
-            $scope.$broadcast('recent-removed', entry);
+            remove();
           }
         });
 
-        return;
+      } else {
+        remove();
       }
-
-      sessions.removeSession(session);
-
     }
-
-    model.removeRecentFile(entry);
-    $scope.$broadcast('recent-removed', entry);
-
   };
 
 

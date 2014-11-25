@@ -36,38 +36,45 @@
   </div>
 
   <div class="row db-ctnr">
-    <div class="hidden-xs hidden-sm col-md-4 model-sidebar">
+    <div ng-if="showModelViewer" db-viewer></div>
+    <div class="hidden-xs col-sm-4 model-sidebar">
 
 
-      <ul ng-if="dbFinder.isModel" class="list-group">
-        <li class="list-group-item">
-          <button type="button" class="btn btn-default" ng-click="showModelDiagram()"><i class="fa fa-sitemap"></i>
-          </button>
-          <button type="button" class="btn btn-default" ng-click="showModelViewer = true"><i class="fa fa-sitemap"></i>
-          </button>
-          <div ng-if="showModelViewer" db-viewer></div>
-        </li>
-        <li class="schema list-group-item" ng-repeat="schema in model.schemas">
-          <a ng-click="gotoPath(schema)">{{ schema.name }}</a>
-          <div ng-if="false" ng-repeat="keys in [schema.keys]" ng-include="'keys.html'">
-          </div>
-          <hr ng-if="false">
+      <ul ng-if="dbFinder.isModel" class="tree">
+        <li>
+          <a ng-click="gotoPath(model)">{{ model.name }}</a>
+          <ul>
+            <li class="schema" ng-repeat="schema in model.schemas">
+              <a ng-click="gotoPath(schema)">{{ schema.name }}</a>
+            </li>
+          </ul>
         </li>
       </ul>
 
       <ul ng-if="!dbFinder.isModel" class="tree">
-        <li class="schema" ng-repeat="schema in [dbFinder.activeSchema]">
-          <a ng-click="gotoPath(schema)">{{ schema.name }}</a>
-          <div ng-repeat="keys in [schema.keys]" ng-include="'keys.html'">
-          </div>
+        <li>
+          <a ng-click="gotoPath(model)">{{ model.name }}</a>
+          <ul>
+            <li class="schema" ng-repeat="schema in [dbFinder.activeSchema]">
+              <a ng-click="gotoPath(schema)">{{ schema.name }}</a>
+              <div ng-repeat="keys in [schema.keys]" ng-include="'keys.html'">
+              </div>
+            </li>
+          </ul>
         </li>
       </ul>
 
     </div>
-    <div class="col-xs-12 col-sm-12 col-md-8 model-editor">
-      <div ng-if="dbFinder.isModel" ng-include="'/client/db/views/model-editor.html'" ng-controller="DbModelCtrl"></div>
-      <div ng-if="dbFinder.isSchema" ng-include="'/client/db/views/schema.html'" ng-controller="DbSchemaCtrl"></div>
-      <div ng-if="dbFinder.isKey" ng-include="'/client/db/views/key.html'" ng-controller="DbKeyCtrl"></div>
+    <div class="col-xs-12 col-sm-8 model-editor">
+      <div style="position: absolute; right: 3px; top: 3px;">
+        <button type="button" class="btn btn-default btn-flat" ng-click="showModelJson()"><i class="fa fa-file-code-o"></i>
+        </button>
+        <button type="button" class="btn btn-default btn-flat" ng-click="showModelViewer = true"><i class="fa fa-sitemap"></i>
+        </button>
+      </div>
+      <div class="editor" ng-if="dbFinder.isModel" ng-include="'/client/db/views/model-editor.html'" ng-controller="DbModelCtrl"></div>
+      <div class="editor" ng-if="dbFinder.isSchema" ng-include="'/client/db/views/schema.html'" ng-controller="DbSchemaCtrl"></div>
+      <div class="editor" ng-if="dbFinder.isKey" ng-include="'/client/db/views/key.html'" ng-controller="DbKeyCtrl"></div>
     </div>
   </div>
 

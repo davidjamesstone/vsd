@@ -8,6 +8,7 @@ module.exports = function($timeout) {
     link: function($scope, $element) {
 
       var model = $scope.model;
+
       // var state = cookie.parse(document.cookie)[model.id];
       // var uiState = angular.fromJson(state) || {};
       //
@@ -31,6 +32,11 @@ module.exports = function($timeout) {
       // $scope.getPos = function(schemaId) {
       //   return uiState[schemaId];
       // };
+
+      $scope.gotoPath = function(obj) {
+        $scope.$parent.gotoPath(obj);
+        $scope.$parent.showModelViewer = false;
+      };
 
       $scope.getRefs = function(schema) {
         if (schema.isSchemaReferenced()) {
@@ -121,12 +127,8 @@ module.exports = function($timeout) {
       var plumb = jsPlumb.getInstance({});
 
       plumb.bind('ready', function() {
-        //plumb.Defaults.Container = document.body;//$element[0];//
 
-        function render() {
-          //makeDraggable();
-          renderConnections();
-        }
+        //plumb.Defaults.Container = document.body;//$element[0];//
 
         // function makeDraggable() {
         //   plumb.draggable(document.querySelectorAll('.panel.schema'), draggable);
@@ -135,17 +137,15 @@ module.exports = function($timeout) {
         function renderConnections() {
           console.log('renderConnections');
 
+          // query the dom for all schema elements with a connect attribute.
+          // Iterate over each schema and plumb together with all referencing keys.
           var connections = angular.element(document.querySelectorAll('[connect]:not([connect=""])'));
-          console.log(connections.length);
 
           for (var i = 0; i < connections.length; i++) {
             var connection = connections[i];
             var $connection = angular.element(connections[i]);
             var source = $connection[0];
             var ends = angular.fromJson($connection.attr('connect'));
-
-            console.log(ends.length);
-
 
             for (var j = 0; j < ends.length; j++) {
               var target = document.getElementById(ends[j]);
@@ -181,11 +181,7 @@ module.exports = function($timeout) {
 
         }
 
-
-
-        $timeout(render, 750);
-
-
+        $timeout(renderConnections, 750);
 
       });
 

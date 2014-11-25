@@ -56,12 +56,12 @@ module.exports = function($stateProvider) {
 
             if (session) {
 
-              console.log('Using found session.');
+              console.log('Using found session');
               deferred.resolve(session);
 
             } else {
 
-              console.log('Reading file for new session.');
+              console.log('Reading file for new session');
               fileService.readFile(path).then(function(file) {
 
                 var isUtf8 = !(file.contents instanceof ArrayBuffer);

@@ -14,7 +14,10 @@
   .model-sidebar {
     height: 100%;
     overflow-y: auto;
-    background-color: #fff;
+    background-color: #F5F5F5;
+    .tree {
+      display: table;
+    }
     > ul.list-group {
       margin-right: -15px;
       margin-left: -15px;
@@ -26,37 +29,50 @@
     }
   }
 
+
   .model-editor {
-    height: 100%;
-    >div {
-      height: 100%;
+
+    >div.editor {
       margin-right: -15px;
       margin-left: -15px;
     }
     .panel {
       border-radius: 0;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
       margin-bottom: 0;
-      .panel-body {
-        flex: 1;
-        overflow-y: auto;
-        form {
-          max-width: 500px;
-        }
-      }
-      .panel-footer {
-        overflow-y: auto;
-        form {
-          max-width: 500px;
-        }
-      }
+
       .breadcrumb {
         font-size: small;
       }
     }
   }
+
+  @media screen and (min-width: 560px) {
+
+    .model-editor {
+      height: 100%;
+      >div.editor {
+        height: 100%;
+      }
+      .panel {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        .panel-body {
+          flex: 1;
+          overflow-y: auto;
+          form {
+            max-width: 500px;
+          }
+        }
+        .panel-footer {
+          overflow-y: auto;
+        }
+      }
+    }
+
+  }
+
+
   .db-model-viewer {
     position: fixed;
     top: 0;
@@ -65,7 +81,7 @@
     right: 0;
     z-index: 1090;
     background-color: #fff;
-    border: aliceblue 18px solid;
+    border: #999 6px solid;
     .close-btn {
       position: absolute;
       right: 4px;
@@ -73,15 +89,12 @@
       z-index: 1030;
     }
     .tree {
-      background-color: beige;
+      background-color: #333;
       overflow: auto;
       height: 100%;
       margin: 0;
       font-size: 12px;
       line-height: 1.5;
-      li {
-        white-space: nowrap;
-      }
     }
     .panel {
       position: absolute;

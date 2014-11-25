@@ -6,8 +6,8 @@
 			<i ng-class="isCollapsed ? 'fa fa-arrow-down': 'fa fa-arrow-up'"></i>
 		</button>
 
-		<div class="btn-group pull-right toggle-menu">
-		  <button type="button" class="btn btn-default btn-xs btn-flat dropdown-toggle" data-toggle="dropdown">
+		<div class="btn-group pull-right toggle-menu" dropdown>
+		  <button type="button" class="btn btn-default btn-xs btn-flat dropdown-toggle" dropdown-toggle>
 				<i class="fa fa-bars"></i>
 		  </button>
 		  <ul class="dropdown-menu">
@@ -39,11 +39,11 @@
     <span class="hidden-xs hidden-sm" ng-show="finder.active">{{model.getRelativePath(finder.active.path)}}</span>
     <span class="hidden-md hidden-lg" ng-show="finder.active">{{ finder.active.name }}</span>
     <br>
-    <hr style="border-color: {{color(finder.active)}}">
+    <hr ng-if="false" style="border-color: {{color(finder.active)}}">
 
 		<div ng-if="!isCollapsed">
 			<div class="fs-finder well" ng-scrolled>
-			  <div class="col">
+			  <div ng-if="false" class="col">
 			    <ng-include src="'/client/fs/views/tree.html'" ng-controller="FsTreeCtrl"></ng-include>
 			  </div>
 				<div ng-repeat="col in finder.cols(model.tree)" class="col">

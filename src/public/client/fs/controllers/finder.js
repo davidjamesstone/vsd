@@ -8,7 +8,7 @@ var beautify_js = require('js-beautify');
 var beautify_css = require('js-beautify').css;
 var beautify_html = require('js-beautify').html;
 
-module.exports = function($scope, $state, $log, $q, dialog, fileService, responseHandler) {
+module.exports = function($scope, $state, $log, $modal, $q, dialog, fileService, responseHandler) {
 
   $scope.pasteBuffer = null;
   $scope.showEditor = false;
@@ -47,8 +47,13 @@ module.exports = function($scope, $state, $log, $q, dialog, fileService, respons
         win: 'Ctrl-H',
         mac: 'Command-H'
       },
-      //exec: this._onHelp.bind(this),
-      readOnly: true // this command should apply in readOnly mode
+      exec: function() {
+        $modal.open({
+          templateUrl: '/client/fs/views/keyboard-shortcuts.html',
+          size: 'lg'
+        });
+      },
+      readOnly: false // this command should apply in readOnly mode
     }]);
 
     editor.commands.addCommands([{

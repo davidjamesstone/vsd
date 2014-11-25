@@ -79,6 +79,10 @@ mod.directive('ngScrolledIntoView', [
   require('./directives/scrolled-into-view')
 ]);
 
+mod.directive('negate', [
+  require('./directives/negate')
+]);
+
 mod.directive('focus', [
   '$timeout',
   require('./directives/focus')

@@ -1,148 +1,140 @@
 {
   "id": "433998012345355354",
-  "name": "test",
+  "name": "simple",
   "schemas": [
     {
-      "id": "0535980761854775",
-      "name": "Customer",
+      "id": "8552849",
+      "name": "brkg",
       "installed": true,
       "keys": {
         "items": [
           {
-            "name": "title",
-            "type": "String",
-            "def": {
-              "required": true,
-              "enumeration": "Mr Mrs Miss Dr"
-            }
-          },
-          {
-            "name": "firstName",
-            "type": "String",
-            "def": {
-              "required": false
-            }
-          },
-          {
-            "name": "lastName",
-            "type": "Number",
-            "def": {
-              "required": true,
-              "min": 0,
-              "max": 100
-            }
-          },
-          {
-            "name": "dob",
-            "type": "Date",
-            "def": {
-              "required": true
-            }
-          },
-          {
-            "name": "sex",
-            "type": "String",
-            "def": {
-              "enumeration": "Male Female"
-            }
-          },
-          {
-            "name": "extraData",
-            "type": "Mixed",
-            "def": {}
-          },
-          {
-            "name": "scores",
-            "type": "Array",
-            "def": {
-              "oftype": "Number",
-              "def": {
-                "required": true,
-                "min": 0,
-                "max": 100
-              }
-            }
-          },
-          {
-            "name": "address",
-            "type": "NestedDocument",
-            "def": {
-              "keys": {
-                "items": [
-                  {
-                    "name": "line1",
-                    "type": "String",
-                    "def": {
-                      "required": true
-                    }
-                  },
-                  {
-                    "name": "line2",
-                    "type": "String",
-                    "def": {}
-                  },
-                  {
-                    "name": "line3",
-                    "type": "String",
-                    "def": {}
-                  },
-                  {
-                    "name": "town",
-                    "type": "String",
-                    "def": {
-                      "required": true
-                    }
-                  },
-                  {
-                    "name": "county",
-                    "type": "String",
-                    "def": {
-                      "required": true
-                    }
-                  },
-                  {
-                    "name": "postcode",
-                    "type": "String",
-                    "def": {
-                      "required": true
-                    }
-                  },
-                  {
-                    "name": "latLong",
-                    "type": "NestedDocument",
-                    "def": {
-                      "keys": {
-                        "items": [
-                          {
-                            "name": "lat",
-                            "type": "Number",
-                            "def": {
-                              "required": true
-                            }
-                          },
-                          {
-                            "name": "long",
-                            "type": "Number",
-                            "def": {
-                              "required": true
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  }
-                ]
-              }
-            }
-          },
-          {
-            "name": "orders",
+            "id": "4072676",
+            "name": "tradingStyles",
             "type": "Array",
             "def": {
               "oftype": "ForeignKey",
               "def": {
                 "required": true,
-                "ref": "016305049997383936"
+                "ref": "629863"
+              }
+            }
+          },
+          {
+            "id": "5073204",
+            "name": "name",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "3333168",
+            "name": "fcanumber",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "7696898",
+            "name": "directorName",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "629863",
+      "name": "ts",
+      "installed": true,
+      "keys": {
+        "items": [
+          {
+            "id": "8412362",
+            "name": "name",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "8553752",
+      "name": "quote",
+      "installed": true,
+      "keys": {
+        "items": [
+          {
+            "id": "2632562",
+            "name": "tradingStyle",
+            "type": "ForeignKey",
+            "def": {
+              "ref": "629863"
+            }
+          },
+          {
+            "id": "9933024",
+            "name": "brk",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "5076057"
+            }
+          },
+          {
+            "id": "7066696",
+            "name": "brkg",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "8552849"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "5076057",
+      "name": "brk",
+      "installed": true,
+      "keys": {
+        "items": [
+          {
+            "id": "4276742",
+            "name": "brkg",
+            "type": "ForeignKey",
+            "def": {
+              "ref": "8552849"
+            }
+          },
+          {
+            "id": "4893797",
+            "name": "mktPrefs",
+            "type": "NestedDocument",
+            "def": {
+              "required": true,
+              "keys": {
+                "items": [
+                  {
+                    "id": "4325665",
+                    "name": "contact",
+                    "type": "Array",
+                    "def": {
+                      "oftype": "ChildDocument",
+                      "def": {}
+                    }
+                  }
+                ]
               }
             }
           }
@@ -150,27 +142,53 @@
       }
     },
     {
-      "id": "016305049997383936",
-      "name": "Order",
+      "id": "7192262",
+      "name": "mktPrefs",
       "installed": true,
       "keys": {
         "items": [
           {
-            "name": "quantity",
-            "type": "Number",
+            "id": "4242030",
+            "name": "allowEmail",
+            "type": "Boolean",
             "def": {
-              "required": false,
-              "defaultValue": "1",
-              "min": "1",
-              "max": "10"
+              "required": true,
+              "defaultValue": "true"
             }
           },
           {
-            "name": "customer",
-            "type": "ForeignKey",
+            "id": "5036386",
+            "name": "allowPost",
+            "type": "Boolean",
             "def": {
               "required": true,
-              "ref": "0535980761854775"
+              "defaultValue": "true"
+            }
+          },
+          {
+            "id": "9783572",
+            "name": "allowPhone",
+            "type": "Boolean",
+            "def": {
+              "required": true,
+              "defaultValue": "true"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "1204732",
+      "name": "NewSchemaName",
+      "installed": true,
+      "keys": {
+        "items": [
+          {
+            "id": "3390131",
+            "name": "FirstKeyName",
+            "type": "String",
+            "def": {
+              "required": true
             }
           }
         ]

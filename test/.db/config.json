@@ -9,6 +9,7 @@
       "keys": {
         "items": [
           {
+            "id": "4634482",
             "name": "stringField",
             "type": "String",
             "def": {
@@ -19,6 +20,7 @@
             }
           },
           {
+            "id": "5909994",
             "name": "numberField",
             "type": "Number",
             "def": {
@@ -28,6 +30,7 @@
             }
           },
           {
+            "id": "2558567",
             "name": "dateField",
             "type": "Date",
             "def": {
@@ -36,6 +39,7 @@
             }
           },
           {
+            "id": "2043255",
             "name": "booleanField",
             "type": "Boolean",
             "def": {
@@ -43,6 +47,7 @@
             }
           },
           {
+            "id": "5227233",
             "name": "mixedField",
             "type": "Mixed",
             "def": {
@@ -50,11 +55,13 @@
             }
           },
           {
+            "id": "7256918",
             "name": "objectIdField",
             "type": "ObjectId",
             "def": {}
           },
           {
+            "id": "4505284",
             "name": "foreignKeyField",
             "type": "ForeignKey",
             "def": {
@@ -63,6 +70,7 @@
             }
           },
           {
+            "id": "4765894",
             "name": "simpleTypedArrayField",
             "type": "Array",
             "def": {
@@ -75,6 +83,7 @@
             }
           },
           {
+            "id": "6309973",
             "name": "complexTypedArrayField",
             "type": "Array",
             "def": {
@@ -83,6 +92,7 @@
                 "keys": {
                   "items": [
                     {
+                      "id": "3356530",
                       "name": "stringField1",
                       "type": "String",
                       "def": {
@@ -91,6 +101,7 @@
                       }
                     },
                     {
+                      "id": "4642277",
                       "name": "dateField1",
                       "type": "Date",
                       "def": {
@@ -99,6 +110,7 @@
                       }
                     },
                     {
+                      "id": "7516543",
                       "name": "booleanField1",
                       "type": "Boolean",
                       "def": {
@@ -107,6 +119,7 @@
                       }
                     },
                     {
+                      "id": "9924028",
                       "name": "numberField",
                       "type": "Number",
                       "def": {
@@ -121,6 +134,7 @@
             }
           },
           {
+            "id": "3552946",
             "name": "referencedSchemaArrayField",
             "type": "Array",
             "def": {
@@ -131,6 +145,7 @@
             }
           },
           {
+            "id": "4113006",
             "name": "mixedArrayField",
             "type": "Array",
             "def": {
@@ -141,6 +156,7 @@
             }
           },
           {
+            "id": "5171892",
             "name": "foreignKeyArrayField",
             "type": "Array",
             "def": {
@@ -151,12 +167,14 @@
             }
           },
           {
+            "id": "5703303",
             "name": "nestedDocumentField",
             "type": "NestedDocument",
             "def": {
               "keys": {
                 "items": [
                   {
+                    "id": "7433378",
                     "name": "stringField",
                     "type": "String",
                     "def": {
@@ -165,6 +183,7 @@
                     }
                   },
                   {
+                    "id": "629923",
                     "name": "dateField",
                     "type": "Date",
                     "def": {
@@ -173,6 +192,7 @@
                     }
                   },
                   {
+                    "id": "1921333",
                     "name": "booleanField",
                     "type": "Boolean",
                     "def": {
@@ -181,12 +201,14 @@
                     }
                   },
                   {
+                    "id": "6886973",
                     "name": "subSchemaField",
                     "type": "NestedDocument",
                     "def": {
                       "keys": {
                         "items": [
                           {
+                            "id": "4893309",
                             "name": "stringField",
                             "type": "String",
                             "def": {
@@ -195,6 +217,7 @@
                             }
                           },
                           {
+                            "id": "5153306",
                             "name": "dateField",
                             "type": "Date",
                             "def": {
@@ -203,6 +226,7 @@
                             }
                           },
                           {
+                            "id": "5755872",
                             "name": "booleanField",
                             "type": "Boolean",
                             "def": {
@@ -211,12 +235,14 @@
                             }
                           },
                           {
+                            "id": "6582230",
                             "name": "subSchemaField",
                             "type": "NestedDocument",
                             "def": {
                               "keys": {
                                 "items": [
                                   {
+                                    "id": "7850133",
                                     "name": "stringField",
                                     "type": "String",
                                     "def": {
@@ -225,6 +251,7 @@
                                     }
                                   },
                                   {
+                                    "id": "5554403",
                                     "name": "dateField",
                                     "type": "Date",
                                     "def": {
@@ -233,6 +260,7 @@
                                     }
                                   },
                                   {
+                                    "id": "6859298",
                                     "name": "booleanField",
                                     "type": "Boolean",
                                     "def": {
@@ -262,6 +290,7 @@
       "keys": {
         "items": [
           {
+            "id": "1235075",
             "name": "stringField1",
             "type": "String",
             "def": {
@@ -270,6 +299,7 @@
             }
           },
           {
+            "id": "9915172",
             "name": "dateField1",
             "type": "Date",
             "def": {
@@ -278,6 +308,7 @@
             }
           },
           {
+            "id": "83740",
             "name": "booleanField1",
             "type": "Boolean",
             "def": {
@@ -294,6 +325,7 @@
       "keys": {
         "items": [
           {
+            "id": "719392",
             "name": "stringField2",
             "type": "String",
             "def": {
@@ -302,6 +334,7 @@
             }
           },
           {
+            "id": "3779879",
             "name": "dateField2",
             "type": "Date",
             "def": {
@@ -310,6 +343,7 @@
             }
           },
           {
+            "id": "7657090",
             "name": "booleanField2",
             "type": "Boolean",
             "def": {
@@ -327,6 +361,7 @@
       "keys": {
         "items": [
           {
+            "id": "7651295",
             "name": "stringField2",
             "type": "String",
             "def": {
@@ -335,6 +370,7 @@
             }
           },
           {
+            "id": "2779273",
             "name": "dateField2",
             "type": "Date",
             "def": {
@@ -343,6 +379,7 @@
             }
           },
           {
+            "id": "7109983",
             "name": "booleanField2",
             "type": "Boolean",
             "def": {
@@ -360,6 +397,7 @@
       "keys": {
         "items": [
           {
+            "id": "8748984",
             "name": "title",
             "type": "String",
             "def": {
@@ -368,6 +406,7 @@
             }
           },
           {
+            "id": "1214734",
             "name": "firstName",
             "type": "String",
             "def": {
@@ -375,6 +414,7 @@
             }
           },
           {
+            "id": "6818220",
             "name": "lastName",
             "type": "Number",
             "def": {
@@ -384,6 +424,7 @@
             }
           },
           {
+            "id": "7200640",
             "name": "dob",
             "type": "Date",
             "def": {
@@ -391,6 +432,7 @@
             }
           },
           {
+            "id": "8877080",
             "name": "sex",
             "type": "String",
             "def": {
@@ -398,11 +440,13 @@
             }
           },
           {
+            "id": "572117",
             "name": "extraData",
             "type": "Mixed",
             "def": {}
           },
           {
+            "id": "5581500",
             "name": "scores",
             "type": "Array",
             "def": {
@@ -415,12 +459,14 @@
             }
           },
           {
+            "id": "8348363",
             "name": "address",
             "type": "NestedDocument",
             "def": {
               "keys": {
                 "items": [
                   {
+                    "id": "8874165",
                     "name": "line1",
                     "type": "String",
                     "def": {
@@ -428,16 +474,19 @@
                     }
                   },
                   {
+                    "id": "7915527",
                     "name": "line2",
                     "type": "String",
                     "def": {}
                   },
                   {
+                    "id": "2347744",
                     "name": "line3",
                     "type": "String",
                     "def": {}
                   },
                   {
+                    "id": "2045011",
                     "name": "town",
                     "type": "String",
                     "def": {
@@ -445,6 +494,7 @@
                     }
                   },
                   {
+                    "id": "8627471",
                     "name": "county",
                     "type": "String",
                     "def": {
@@ -452,6 +502,7 @@
                     }
                   },
                   {
+                    "id": "7576298",
                     "name": "postcode",
                     "type": "String",
                     "def": {
@@ -459,12 +510,14 @@
                     }
                   },
                   {
+                    "id": "4024704",
                     "name": "latLong",
                     "type": "NestedDocument",
                     "def": {
                       "keys": {
                         "items": [
                           {
+                            "id": "4691887",
                             "name": "lat",
                             "type": "Number",
                             "def": {
@@ -472,6 +525,7 @@
                             }
                           },
                           {
+                            "id": "3880364",
                             "name": "long",
                             "type": "Number",
                             "def": {
@@ -487,6 +541,7 @@
             }
           },
           {
+            "id": "6213841",
             "name": "orders",
             "type": "Array",
             "def": {
@@ -507,6 +562,7 @@
       "keys": {
         "items": [
           {
+            "id": "6519356",
             "name": "quantity",
             "type": "Number",
             "def": {
@@ -517,6 +573,7 @@
             }
           },
           {
+            "id": "9223603",
             "name": "customer",
             "type": "ForeignKey",
             "def": {
@@ -534,6 +591,7 @@
       "keys": {
         "items": [
           {
+            "id": "2471856",
             "name": "sarray",
             "type": "String",
             "def": {
@@ -547,6 +605,7 @@
             }
           },
           {
+            "id": "9247668",
             "name": "fk",
             "type": "ForeignKey",
             "def": {
@@ -564,6 +623,7 @@
       "keys": {
         "items": [
           {
+            "id": "1884988",
             "name": "newkey",
             "type": "String",
             "def": {

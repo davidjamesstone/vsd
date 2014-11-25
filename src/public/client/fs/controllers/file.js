@@ -6,6 +6,7 @@ module.exports = function($scope, $state, session, fileService) {
   var file = model.map[session.path];
 
   // ensure the finder is set the the right fso
+  $scope.session = session;
   $scope.finder.active = file;
 
   model.addRecentFile(file);
@@ -61,7 +62,7 @@ module.exports = function($scope, $state, session, fileService) {
     }
   }
 
-  // Handle the case of the file being removed from recentFiles.
+  // Handle the case of the current file being removed from recentFiles.
   $scope.$on('recent-removed', function(e, data) {
     if (data.path === file.path) { // this should always be the case
       if (model.recentFiles.length) {
