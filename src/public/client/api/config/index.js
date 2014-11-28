@@ -1,9 +1,3 @@
-var filesystem = require('../../file-system');
-var watcher = require('../../file-system-watcher');
-var utils = require('../../../../shared/utils');
-var EditSession = ace.require('ace/edit_session').EditSession;
-var UndoManager = ace.require('ace/undomanager').UndoManager;
-
 module.exports = function($stateProvider) {
 
     $stateProvider
@@ -11,7 +5,7 @@ module.exports = function($stateProvider) {
         abstract: true,
         url: '/api/:apiName',
         controller: 'ApiCtrl',
-        templateUrl: '/html/api/api.html',
+        templateUrl: '/client/api/views/api.html',
         resolve: {
           apiPromise: ['$http', '$stateParams',
             function($http, $stateParams) {
@@ -22,12 +16,12 @@ module.exports = function($stateProvider) {
       })
       .state('api.home', {
         url: '', // Default. Will be used in place of abstract parent in the case of hitting the index (api/)
-        templateUrl: '/html/api/api-home.html'
+        templateUrl: '/client/api/views/api-home.html'
       })
       .state('api.diagram', {
         url: '/diagram',
         controller: 'ApiDiagramCtrl',
-        templateUrl: '/html/api/diagram.html'
+        templateUrl: '/client/api/views/diagram.html'
       })
       .state('api.controller', {
         abstract: true,
@@ -37,7 +31,7 @@ module.exports = function($stateProvider) {
         url: '',
         views: {
           '@api': { // Target the ui-view='' in parent state 'api',
-            templateUrl: '/html/api/controller-home.html'
+            templateUrl: '/client/api/views/controller-home.html'
           }
         }
       })
@@ -46,7 +40,7 @@ module.exports = function($stateProvider) {
         views: {
           '@api': { // Target the ui-view='' in parent state 'api',
             controller: 'ApiControllerCtrl',
-            templateUrl: '/html/api/controller.html'
+            templateUrl: '/client/api/views/controller.html'
           }
         }
       })
@@ -55,11 +49,11 @@ module.exports = function($stateProvider) {
         views: {
           'x@api': { // Target the ui-view='' in parent state 'api',
             controller: 'ApiHandlerCtrl',
-            templateUrl: '/html/api/handler.html'
+            templateUrl: '/client/api/views/handler.html'
           },
           'handler@api.controller.item': { // Target the ui-view='handler' in parent state 'api.controller.item',
             controller: 'ApiHandlerCtrl',
-            templateUrl: '/html/api/handler.html'
+            templateUrl: '/client/api/views/handler.html'
           }
         }
       })
@@ -71,7 +65,7 @@ module.exports = function($stateProvider) {
         url: '',
         views: {
           '@api': { // Target the ui-view='' in parent state 'api',
-            templateUrl: '/html/api/route-home.html'
+            templateUrl: '/client/api/views/route-home.html'
           }
         }
       })
@@ -80,7 +74,7 @@ module.exports = function($stateProvider) {
         views: {
           '@api': { // Target the ui-view='' in parent state 'api',
             controller: 'ApiRouteCtrl',
-            templateUrl: '/html/api/route.html'
+            templateUrl: '/client/api/views/route.html'
           }
         }
       })
@@ -89,7 +83,7 @@ module.exports = function($stateProvider) {
         views: {
           '@api': { // Target the ui-view='' in parent state 'api',
             controller: 'ApiActionCtrl',
-            templateUrl: '/html/api/action.html'
+            templateUrl: '/client/api/views/action.html'
           }
         }
       });

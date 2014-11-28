@@ -1,0 +1,168 @@
+{
+  "id": "4339354",
+  "name": "twitter",
+  "schemas": [
+    {
+      "id": "6177324",
+      "name": "tweet",
+      "installed": true,
+      "keys": {
+        "items": [
+          {
+            "id": "8635787",
+            "name": "text",
+            "type": "String",
+            "def": {
+              "required": true
+            }
+          },
+          {
+            "id": "7891585",
+            "name": "user",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "2081714"
+            }
+          },
+          {
+            "id": "1635228",
+            "name": "toUser",
+            "type": "ForeignKey",
+            "def": {
+              "ref": "2081714"
+            }
+          },
+          {
+            "id": "5554084",
+            "name": "replyTo",
+            "type": "ForeignKey",
+            "def": {
+              "ref": "6177324"
+            }
+          },
+          {
+            "id": "9901831",
+            "name": "latLong",
+            "type": "NestedDocument",
+            "def": {
+              "keys": {
+                "items": [
+                  {
+                    "id": "5857825",
+                    "name": "latitude",
+                    "type": "Number",
+                    "def": {}
+                  },
+                  {
+                    "id": "449560",
+                    "name": "longitude",
+                    "type": "Number",
+                    "def": {}
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "id": "6670062",
+            "name": "location",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "2081714",
+      "name": "user",
+      "installed": true,
+      "keys": {
+        "items": [
+          {
+            "id": "9557848",
+            "name": "firstName",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "6540539",
+            "name": "lastName",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "3746952",
+            "name": "handle",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "6087559",
+            "name": "following",
+            "type": "Array",
+            "def": {
+              "oftype": "ForeignKey",
+              "def": {
+                "ref": "2081714"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "265102",
+      "name": "list",
+      "installed": true,
+      "keys": {
+        "items": [
+          {
+            "id": "5835385",
+            "name": "users",
+            "type": "Array",
+            "def": {
+              "oftype": "ForeignKey",
+              "def": {
+                "ref": "2081714"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "5784044",
+      "name": "latLong",
+      "installed": false,
+      "keys": {
+        "items": [
+          {
+            "id": "1094861",
+            "name": "latitude",
+            "type": "Number",
+            "def": {}
+          },
+          {
+            "id": "7224182",
+            "name": "longitude",
+            "type": "Number",
+            "def": {}
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 // Load Module Dependencies
 require('../db');
+require('../api');
 
 var mod = require('./module');
 

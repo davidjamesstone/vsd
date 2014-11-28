@@ -5,54 +5,57 @@ mod.config([
   require('./config')
 ]);
 
-mod.service('SessionService', [
-  require('./services/session')
-]);
-
-mod.controller('FsCtrl', [
-  '$scope',
-  require('./controllers')
-]);
-
-mod.controller('FsFinderCtrl', [
+mod.controller('ApiActionCtrl', [
   '$scope',
   '$state',
-  '$log',
-  '$q',
+  '$stateParams',
   'DialogService',
-  'FileService',
-  'ResponseHandler',
-  require('./controllers/finder')
+  require('./controllers/action')
 ]);
 
-mod.controller('FsFileCtrl', [
+mod.controller('ApiAddResourceCtrl', [
+  '$scope',
+  '$modalInstance',
+  'data',
+  require('./controllers/add-resource')
+]);
+  
+mod.controller('ApiCtrl', [
   '$scope',
   '$state',
-  'session',
-  'FileService',
-  require('./controllers/file')
+  'DialogService',
+  'apiPromise',
+  require('./controllers/api')
 ]);
 
-mod.controller('FsSearchCtrl', [
+mod.controller('ApiControllerCtrl', [
+  '$scope', 
+  '$state', 
+  '$stateParams',
+  require('./controllers/controller')
+]);
+
+mod.controller('ApiDiagramCtrl', [
   '$scope',
   '$state',
-  require('./controllers/search')
+  '$stateParams',
+  require('./controllers/diagram')
 ]);
 
-mod.controller('FsDirCtrl', [
-  '$scope',
-  'dir',
-  'FileService',
-  require('./controllers/dir')
+mod.controller('ApiHandlerCtrl', [
+  '$scope', 
+  '$state', 
+  '$stateParams',
+  require('./controllers/handler')
 ]);
 
-mod.controller('FsTreeCtrl', [
+mod.controller('ApiRouteCtrl', [
   '$scope',
+  '$state',
+  '$stateParams',
   '$modal',
-  '$log',
   'DialogService',
-  'ResponseHandler',
-  require('./controllers/tree')
+  require('./controllers/route')
 ]);
 
 module.exports = mod;

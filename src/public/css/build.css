@@ -267,7 +267,7 @@ i.file-type span {
 .db .model-sidebar {
   height: 100%;
   overflow-y: auto;
-  background-color: #F5F5F5;
+  background-color: #fff;
 }
 .db .model-sidebar .tree {
   display: table;
@@ -288,6 +288,7 @@ i.file-type span {
 .db .model-editor .panel {
   border-radius: 0;
   margin-bottom: 0;
+  background-color: transparent;
 }
 .db .model-editor .panel .breadcrumb {
   font-size: small;
