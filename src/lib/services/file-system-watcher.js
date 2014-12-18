@@ -1,6 +1,6 @@
 var chokidar = require('chokidar');
 var p = require('path');
-var FileSystemObject = require('../../shared/file-system-object');
+var FileSystemObject = require('vsd-shared').FileSystemObject;
 
 var root = process.cwd();
 
@@ -17,7 +17,7 @@ var watcher = chokidar.watch(root, {
       if (isDir) {
 
         // Allow special whitelist directories
-        var specialDirs = ['.api', '.db'];
+        var specialDirs = ['.rtr', '.db'];
 
         for (var i = 0; i < specialDirs.length; i++) {
           if (fso.name.endsWith(specialDirs[i])) {

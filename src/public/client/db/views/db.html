@@ -1,32 +1,21 @@
 <div ng-controller="DbCtrl" class="db container-fluid">
 
   <!-- Templates -->
-  <script type="text/ng-template" id="key.html">
-    <a ng-click="gotoPath(key)">{{key.name}}</a><span class="small"><span ng-show="key.def.required" class="text-danger">&nbsp;*&nbsp;</span>&nbsp;{{key.typeAsString()}}</span>
-    <div ng-if="key.isNested()" ng-repeat="keys in [key.isNestedTypeArray() ? key.def.def.keys : key.def.keys]" ng-include="'keys.html'">
+  <script type="text/ng-template" id="db-key.html">
+    <a ng-click="gotoPath(key)">{{key.name}}</a><span class="small"><span ng-show="key.isRequired()" class="text-danger">&nbsp;*&nbsp;</span>&nbsp;{{key.typeAsString()}}</span>
+    <div ng-if="key.isNested()" ng-repeat="keys in [key.isNestedTypeArray() ? key.def.def.keys : key.def.keys]" ng-include="'db-keys.html'">
     </div>
   </script>
 
-  <script type="text/ng-template" id="keys.html">
+  <script type="text/ng-template" id="db-keys.html">
     <ul>
-      <li class="key tree-node" ng-repeat="key in keys.items" ng-include="'key.html'">
+      <li class="key tree-node" ng-repeat="key in keys.items" ng-include="'db-key.html'">
       </li>
     </ul>
   </script>
 
-  <h1 class="page-header hide">Db: {{ model.name }}</h1>
-
-  <div class="btn-group hide">
-    <button type="button" ng-disabled="errors().length" class="btn btn-default"><i class="fa fa-save"></i>
-    </button>
-    <button type="button" class="btn btn-default" ng-click="showModelDiagram()"><i class="fa fa-sitemap"></i>
-    </button>
-    <button type="button" class="btn btn-default" ng-click="showModelJson()"><i class="fa fa-file-o"></i>
-    </button>
-  </div>
-
   <!-- Validation Errors -->
-  <div ng-if="errors().length" class="alert alert-danger">
+  <div ng-if="errors().length" class="small alert alert-danger">
     <h5>Validation Errors</h5>
     <ul>
       <li ng-repeat="err in errors()">
@@ -37,8 +26,8 @@
 
   <div class="row db-ctnr">
     <div ng-if="showModelViewer" db-viewer></div>
+    <div ng-if="showModelGraph" db-graph></div>
     <div class="hidden-xs col-sm-4 model-sidebar">
-
 
       <ul ng-if="dbFinder.isModel" class="tree">
         <li>
@@ -57,7 +46,7 @@
           <ul>
             <li class="schema" ng-repeat="schema in [dbFinder.activeSchema]">
               <a ng-click="gotoPath(schema)">{{ schema.name }}</a>
-              <div ng-repeat="keys in [schema.keys]" ng-include="'keys.html'">
+              <div ng-repeat="keys in [schema.keys]" ng-include="'db-keys.html'">
               </div>
             </li>
           </ul>
@@ -67,10 +56,17 @@
     </div>
     <div class="col-xs-12 col-sm-8 model-editor">
       <div style="position: absolute; right: 3px; top: 3px;">
-        <button type="button" class="btn btn-default btn-flat" ng-click="showModelJson()"><i class="fa fa-file-code-o"></i>
-        </button>
-        <button type="button" class="btn btn-default btn-flat" ng-click="showModelViewer = true"><i class="fa fa-sitemap"></i>
-        </button>
+        <div class="btn-group" dropdown>
+          <button type="button" class="btn btn-primary dropdown-toggle btn-xs btn-flat" dropdown-toggle>
+            <i class="fa fa-bars"></i>
+          </button>
+          <ul class="dropdown-menu pull-right">
+            <li><a ng-click="showModelViewer = true"><i class="fa fa-sitemap"></i>&nbsp;ER Diagram</a></li>
+            <li><a ng-click="showModelGraph = true"><i class="fa fa-empire"></i>&nbsp;Force Directed Graph</a></li>
+            <li class="divider"></li>
+            <li><a ng-click="showModelJson()"><i class="fa fa-file-code-o"></i>&nbsp;JSON</a></li>
+          </ul>
+        </div>
       </div>
       <div class="editor" ng-if="dbFinder.isModel" ng-include="'/client/db/views/model-editor.html'" ng-controller="DbModelCtrl"></div>
       <div class="editor" ng-if="dbFinder.isSchema" ng-include="'/client/db/views/schema.html'" ng-controller="DbSchemaCtrl"></div>

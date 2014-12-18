@@ -1,5 +1,5 @@
 var fileutils = require('../file-system-utils');
-var Response = require('../../shared/response');
+var Response = require('vsd-shared').Response;
 
 module.exports = function(io) {
 

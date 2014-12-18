@@ -547,6 +547,7 @@
             "def": {
               "oftype": "ForeignKey",
               "def": {
+                "unique": true,
                 "required": true,
                 "ref": "016305049997383936"
               }

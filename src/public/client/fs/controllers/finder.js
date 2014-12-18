@@ -1,6 +1,6 @@
 var p = require('path');
 var filesystem = require('../../file-system');
-var utils = require('../../../../shared/utils');
+var utils = require('vsd-utils');
 var FinderModel = require('../models/finder');
 
 var beautifyConfig = require('../../config').beautify;
@@ -145,7 +145,8 @@ module.exports = function($scope, $state, $log, $modal, $q, dialog, fileService,
     }
 
   };
-
+  
+  
   $scope.delete = function(fso) {
 
     dialog.confirm({
@@ -252,4 +253,5 @@ module.exports = function($scope, $state, $log, $modal, $q, dialog, fileService,
     };
 
   };
+  
 };

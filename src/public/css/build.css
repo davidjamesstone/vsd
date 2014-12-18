@@ -79,7 +79,7 @@ ul ul {
 .sidebar .db li.key {
   padding: 2px;
 }
-.sidebar .api li {
+.sidebar .router li {
   white-space: nowrap;
 }
 .header .menu {
@@ -346,5 +346,102 @@ i.file-type span {
   margin-bottom: 0;
 }
 .db .db-model-viewer .panel .panel-body {
+  padding: 6px;
+}
+.router {
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  top: 44px;
+}
+.router .router-ctnr {
+  height: 100%;
+}
+.router .router-ctnr .model-tree {
+  height: 100%;
+}
+.router .model-sidebar {
+  height: 100%;
+  overflow-y: auto;
+  background-color: #fff;
+}
+.router .model-sidebar .tree {
+  display: table;
+}
+.router .model-sidebar > ul.list-group {
+  margin-right: -15px;
+  margin-left: -15px;
+  margin-bottom: 0;
+}
+.router .model-sidebar > ul.list-group li {
+  border-radius: 0;
+  border-right: 0;
+}
+.router .model-editor > div.editor {
+  margin-right: -15px;
+  margin-left: -15px;
+}
+.router .model-editor .panel {
+  border-radius: 0;
+  margin-bottom: 0;
+  background-color: transparent;
+}
+.router .model-editor .panel .breadcrumb {
+  font-size: small;
+}
+@media screen and (min-width: 560px) {
+  .router .model-editor {
+    height: 100%;
+  }
+  .router .model-editor > div.editor {
+    height: 100%;
+  }
+  .router .model-editor .panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .router .model-editor .panel .panel-body {
+    flex: 1;
+    overflow-y: auto;
+  }
+  .router .model-editor .panel .panel-body form {
+    max-width: 500px;
+  }
+  .router .model-editor .panel .panel-footer {
+    overflow-y: auto;
+  }
+}
+.router .router-model-viewer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1090;
+  background-color: #fff;
+  border: #999 6px solid;
+}
+.router .router-model-viewer .close-btn {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  z-index: 1030;
+}
+.router .router-model-viewer .tree {
+  background-color: #333;
+  overflow: auto;
+  height: 100%;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.router .router-model-viewer .panel {
+  position: absolute;
+  padding: 4px;
+  margin-bottom: 0;
+}
+.router .router-model-viewer .panel .panel-body {
   padding: 6px;
 }

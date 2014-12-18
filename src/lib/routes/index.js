@@ -3,7 +3,7 @@ exports.home = function(req, res) {
 };
 
 exports.graph = function(req, res) {
-  res.sendFile('graph.html');
+  res.sendFile('/Users/guest/Documents/tequid/vsd/graph.html');
 };
 // var mongoose = require('mongoose');
 // var generator = require('vsd-mongoose-generator')(mongoose);

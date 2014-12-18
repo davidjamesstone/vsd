@@ -6,6 +6,8 @@ module.exports = function ($timeout) {
         
         $timeout(function() {
           var active = el.querySelector('.active');
+          if (!active) return;
+          
           var centerOfActiveEl = active.offsetLeft + (active.offsetWidth / 2);
           var leftBoundary = el.scrollLeft;
           var rightBoundary = leftBoundary + el.offsetWidth;

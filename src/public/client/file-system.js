@@ -1,4 +1,4 @@
-var utils = require('../../shared/utils');
+var utils = require('vsd-utils');
 var emitter = require('emitter-component');;
 
 /*

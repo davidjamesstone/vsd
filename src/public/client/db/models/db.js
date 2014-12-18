@@ -2,8 +2,8 @@ var base = require('./base');
 var schema = require('./schema');
 var Msg = require('./msg');
 
-var staticTypes = 'String Boolean Number Date NestedDocument Array ForeignKey ObjectId Mixed Buffer'.split(' ');
-var childDocumentType = ['ChildDocument'];
+var staticTypes = 'String Boolean Number Date NestedDocument Array ForeignKey ObjectId Mixed Buffer ChildDocument'.split(' ');
+var childDocumentType = [];
 
 var db = _.extend({}, base, {
   id: null,

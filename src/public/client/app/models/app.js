@@ -1,5 +1,5 @@
 var p = require('path');
-var utils = require('../../../../shared/utils');
+var utils = require('vsd-utils');
 var cookie = require('cookie');
 
 function AppModel(data) {

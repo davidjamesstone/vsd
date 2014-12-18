@@ -51,4 +51,9 @@ mod.directive('dbViewer', [
   require('./directives/db-viewer')
 ]);
 
+mod.directive('dbGraph', [
+  '$timeout',
+  require('./directives/db-graph')
+]);
+
 module.exports = mod;

@@ -1,5 +1,5 @@
-var utils = require('../../shared/utils');
-var FileSystemObject = require('../../shared/file-system-object');
+var utils = require('vsd-utils');
+var FileSystemObject = require('vsd-shared').FileSystemObject;
 var emitter = require('emitter-component');
 
 /*

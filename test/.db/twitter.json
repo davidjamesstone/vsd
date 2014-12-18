@@ -13,6 +13,7 @@
             "name": "text",
             "type": "String",
             "def": {
+              "unique": false,
               "required": true
             }
           },
@@ -42,35 +43,11 @@
             }
           },
           {
-            "id": "9901831",
-            "name": "latLong",
-            "type": "NestedDocument",
-            "def": {
-              "keys": {
-                "items": [
-                  {
-                    "id": "5857825",
-                    "name": "latitude",
-                    "type": "Number",
-                    "def": {}
-                  },
-                  {
-                    "id": "449560",
-                    "name": "longitude",
-                    "type": "Number",
-                    "def": {}
-                  }
-                ]
-              }
-            }
-          },
-          {
             "id": "6670062",
             "name": "location",
-            "type": "String",
+            "type": "ChildDocument",
             "def": {
-              "required": true,
-              "trim": true
+              "ref": "5784044"
             }
           }
         ]
@@ -105,6 +82,8 @@
             "name": "handle",
             "type": "String",
             "def": {
+              "unique": true,
+              "index": true,
               "required": true,
               "trim": true
             }
@@ -117,6 +96,101 @@
               "oftype": "ForeignKey",
               "def": {
                 "ref": "2081714"
+              }
+            }
+          },
+          {
+            "id": "9611117",
+            "name": "location",
+            "type": "ChildDocument",
+            "def": {
+              "ref": "5784044"
+            }
+          },
+          {
+            "id": "2005360",
+            "name": "email",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "4745346",
+            "name": "address",
+            "type": "NestedDocument",
+            "def": {
+              "required": true,
+              "keys": {
+                "items": [
+                  {
+                    "id": "2142711",
+                    "name": "line1",
+                    "type": "String",
+                    "def": {
+                      "required": true,
+                      "trim": true
+                    }
+                  },
+                  {
+                    "id": "4404867",
+                    "name": "line2",
+                    "type": "String",
+                    "def": {
+                      "required": true,
+                      "trim": true
+                    }
+                  },
+                  {
+                    "id": "8678959",
+                    "name": "town",
+                    "type": "String",
+                    "def": {
+                      "required": false,
+                      "trim": true
+                    }
+                  },
+                  {
+                    "id": "658913",
+                    "name": "county",
+                    "type": "String",
+                    "def": {
+                      "required": true,
+                      "trim": true
+                    }
+                  },
+                  {
+                    "id": "2033844",
+                    "name": "postcode",
+                    "type": "String",
+                    "def": {
+                      "required": true,
+                      "trim": true
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "id": "1989128",
+            "name": "profileImage",
+            "type": "String",
+            "def": {
+              "required": false,
+              "trim": true
+            }
+          },
+          {
+            "id": "6313172",
+            "name": "followingLists",
+            "type": "Array",
+            "def": {
+              "oftype": "ForeignKey",
+              "def": {
+                "required": true,
+                "ref": "265102"
               }
             }
           }
@@ -153,13 +227,17 @@
             "id": "1094861",
             "name": "latitude",
             "type": "Number",
-            "def": {}
+            "def": {
+              "required": true
+            }
           },
           {
             "id": "7224182",
             "name": "longitude",
             "type": "Number",
-            "def": {}
+            "def": {
+              "required": true
+            }
           }
         ]
       }

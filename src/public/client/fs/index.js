@@ -1,6 +1,6 @@
 // Load Module Dependencies
 require('../db');
-require('../api');
+require('../router');
 
 var mod = require('./module');
 
@@ -42,13 +42,6 @@ mod.controller('FsSearchCtrl', [
   '$scope',
   '$state',
   require('./controllers/search')
-]);
-
-mod.controller('FsDirCtrl', [
-  '$scope',
-  'dir',
-  'FileService',
-  require('./controllers/dir')
 ]);
 
 mod.controller('FsTreeCtrl', [

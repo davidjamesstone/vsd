@@ -1,4 +1,4 @@
-var utils = require('../../../../shared/utils');
+var utils = require('vsd-utils');
 var db = require('../models/db');
 var DbFinder = require('../models/db-finder');
 var dagre = require('dagre');
@@ -16,10 +16,15 @@ module.exports = function($scope, $http, $state, $modal, dialog, $interval) {
   function checkModelStateUpdateSession() {
     var oldValue = $scope.session.data.doc.getValue();
     var newValue = angular.toJson(JSON.parse(model.toJson()), true);
+
     if (newValue !== oldValue) {
 
-      console.log('set dbmodel schemas changed');
       $scope.session.data.doc.setValue(newValue);
+
+      console.log('set dbmodel schemas changed');
+      // console.log('set dbmodel schemas changed', newValue);
+      // console.log('set dbmodel schemas changed', oldValue);
+
     }
   }
 
@@ -48,7 +53,7 @@ module.exports = function($scope, $http, $state, $modal, dialog, $interval) {
 
   $scope.showModelDiagram = function() {
     $modal.open({
-      templateUrl: '/client/db/views/db-diagram.html',
+      templateUrl: '/client/db/views/db-graph.html',
       scope: $scope,
       size: 'lg'
     });
@@ -56,48 +61,20 @@ module.exports = function($scope, $http, $state, $modal, dialog, $interval) {
 
   $scope.gotoPath = function(obj) {
 
-      dbFinder.active = obj;
-      return;
-
-
-    var isModel = obj.schemas;
-    var isSchema = !isModel && !obj.type;
-
-    if (isModel) {
-
-      // $state.go('db.model.edit', {
-      //   modelName: obj.name
-      // });
-
-    } else if (isSchema) {
-
-      // $state.go('db.model.schema', {
-      //   schemaId: obj.id
-      // });
-
-    } else {
-
-      // $state.go('db.model.schema.key', {
-      //   schemaId: obj.keys.schema.id,
-      //   keyId: obj.id
-      // });
-
-    }
-
-
+    dbFinder.active = obj;
   };
 
-  var idempotentialize = function(f){
-      var previous;
-      var f_idempotent = function(){
-         var ret = f();
-         if (angular.equals(ret, previous)) {
-            ret = previous;
-         }
-         previous = ret;
-         return ret;
-      };
-      return f_idempotent;
+  var idempotentialize = function(f) {
+    var previous;
+    var f_idempotent = function() {
+      var ret = f();
+      if (angular.equals(ret, previous)) {
+        ret = previous;
+      }
+      previous = ret;
+      return ret;
+    };
+    return f_idempotent;
   };
 
   $scope.errors = idempotentialize(function() {

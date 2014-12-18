@@ -3,7 +3,7 @@ var isUtf8 = require('is-utf8');
 var p = require('path');
 var common = require('./common');
 var ncp = require('ncp').ncp;
-var FileSystemObject = require('../shared/file-system-object');
+var FileSystemObject = require('vsd-shared').FileSystemObject;
 var rimraf = require('rimraf');
 
 ncp.limit = 6;
@@ -73,17 +73,34 @@ exports.writeFile = function(path, contents, callback) {
 };
 
 exports.readFile = function(path, callback) {
-  fs.readFile(path, function(err, buffer) {
+
+  fs.stat(path, function(err, stat) {
+
     if (err) {
       callback(err);
       return;
     }
 
-    var contents = isUtf8(buffer) ? buffer.toString('utf8') : buffer;
+    var fileSizeInMegabytes = stat.size / 1e6;
+    var maxAllowedFileRead = 7;
+    if (fileSizeInMegabytes > maxAllowedFileRead) {
+      callback(new Error('File size limit ' + maxAllowedFileRead + 'MB'));
+      return;
+    }
 
-    callback(null, common.extend(new FileSystemObject(path, false), {
-      contents: contents
-    }));
+    fs.readFile(path, function(err, buffer) {
+      if (err) {
+        callback(err);
+        return;
+      }
+
+      var contents = isUtf8(buffer) ? buffer.toString('utf8') : buffer;
+
+      callback(null, common.extend(new FileSystemObject(path, false), {
+        contents: contents
+      }));
+
+    });
 
   });
 };

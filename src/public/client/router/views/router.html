@@ -1,0 +1,53 @@
+<script type="text/ng-template" id="action.html">
+  <a ui-sref="app.fs.finder.file.router.home.route.item.action({ actionId: action.id })"><small>{{ action.verb.toUpperCase() }}</small></a>
+</script>
+
+<!-- route.hasActions ||-->
+
+<script type="text/ng-template" id="route.html">
+  <a ui-sref="app.fs.finder.file.router.home.route.item({ routeId: route.id })">{{ route.url }}</a>
+  <ul ng-if="route.hasChildren">
+    <li ng-if="false" ng-repeat="action in route.actions" ng-include="'action.html'">
+    </li>
+    <li class="route" ng-repeat="route in route.children" ng-include="'route.html'">
+    </li>
+  </ul>
+</script>
+
+<div class="router container-fluid">
+  <div ng-if="showModelGraph" class="router-model-viewer">
+    <button type="button" class="btn btn-default btn-flat fa fa-close close-btn" ng-click="$parent.showModelGraph = false">
+    </button>
+    <div ng-controller="RouterDiagramCtrl">
+      <div id="router-diagram">
+      </div>
+    </div>
+  </div>
+  <div class="row router-ctnr">
+    <div class="hidden-xs col-sm-4 model-sidebar">
+      <ul class="tree">
+        <li>
+          <a ui-sref="app.fs.finder.file.router.home">{{router.name}}</a>
+          <ul class="routes">
+            <li ng-repeat="route in routes" ng-include="'route.html'">
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="col-xs-12 col-sm-8 model-editor">
+      <div style="position: absolute; right: 3px; top: 3px;">
+        <div class="btn-group" dropdown>
+          <button type="button" class="btn btn-primary dropdown-toggle btn-xs btn-flat" dropdown-toggle>
+            <i class="fa fa-bars"></i>
+          </button>
+          <ul class="dropdown-menu pull-right">
+            <li><a ui-sref1="app.fs.finder.file.router.home.diagram" ng-click="showModelGraph = true"><i class="fa fa-sitemap"></i>&nbsp;Dendrograph</a></li>
+          </ul>
+        </div>
+      </div>
+      <button type="button" ui-sref="router.diagram" class="btn btn-info hide">View Diagram</button>
+      <div ui-view class="editor"></div>
+    </div>
+  </div>
+</div>

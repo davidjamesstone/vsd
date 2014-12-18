@@ -140,6 +140,7 @@
             "def": {
               "oftype": "ChildDocument",
               "def": {
+                "required": true,
                 "ref": "04192730623541058"
               }
             }
@@ -279,6 +280,14 @@
                 ]
               }
             }
+          },
+          {
+            "id": "2010190",
+            "name": "referencedSchemaField",
+            "type": "ChildDocument",
+            "def": {
+              "ref": "0876443005652102"
+            }
           }
         ]
       }
@@ -403,6 +412,14 @@
             "def": {
               "required": true,
               "enumeration": "Mr Mrs Miss Dr"
+            }
+          },
+          {
+            "id": "8401796",
+            "name": "child",
+            "type": "ChildDocument",
+            "def": {
+              "ref": "0876443005652102"
             }
           },
           {

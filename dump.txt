@@ -1,4 +1,90 @@
 
+  <button ng-click="parse()">Parse</button>
+
+  <div id="xxx">
+    <pre>
+/* CJSM 0.0.1
+ * id: {{controller.id}}
+ * name: {{controller.name}}
+ */
+{{ controller.code }}
+</pre>
+    <pre ng-repeat="handler in controller.handlers">
+/* CJSME
+ * id: {{handler.id}}
+ * name: {{handler.name}}
+ */
+exports.{{handler.name}} = {{handler.code}}
+    </pre>
+  </div>
+  
+  
+  module.exports = function($scope, $state, $stateParams) {
+
+  var controller = $scope.api.findController($stateParams.controllerId);
+
+  $scope.controller = controller;
+
+  $scope.addHandler = function() {
+    var newHandler = controller.addHandler({
+      name: '',
+      code: 'function(req, res) {\n}'
+    });
+
+    $state.go('api.controller.item.handler', {
+      handlerId: newHandler.id
+    });
+  };
+
+
+  $scope.parse = function(s) {
+    
+    var el = document.getElementById('xxx');
+    s = el.innerText || el.textContent;
+    
+    // CommonJS Module search
+    var re1 = /\* CJSM ([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/gm;
+    
+    var mod = re1.exec(s);
+    
+    if (mod) {
+      
+      // CommonJS Module Export search
+      var re2 = /\* CJSME([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/gm;
+      
+      var exps;
+      while ((exps = re2.exec(s)) !== null)
+      {
+        var msg = "Found " + exps[0] + ".  ";
+        msg += "Next match starts at " + re2.lastIndex;
+        console.log(msg);
+      }
+    }
+  };
+  
+  // $scope.addRoute = function() {
+  //   var newRoute = controller.addRoute();
+  //
+  //   $state.go('api.controller.route', {
+  //     routeId: newRoute.id
+  //   });
+  // };
+
+  // $scope.tabs = [{
+  //   active: $scope.controllerTabIndex === 0
+  // }, {
+  //   active: $scope.controllerTabIndex === 1
+  // }, {
+  //   active: $scope.controllerTabIndex === 2
+  // }, {
+  //   active: $scope.controllerTabIndex === 3
+  // }];
+  //
+  // $scope.selectTab = function(index) {
+  //   $scope.$parent.controllerTabIndex = index;
+  // };
+
+};
     
 recentFiles: {
   get: function() {

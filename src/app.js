@@ -48,7 +48,10 @@ app.use(express.static(path.join(__dirname, 'public'), {
 //  * Register routes
 //  */
 app.get('/', routes.home);
-// app.get('/graph', routes.graph);
+app.get('/graph', routes.graph);
+
+app.use(require('./test-routes'));
+
 // //app.get('/run-db', routes.runDb);
 // // app.get('/header/:workspaceId', routes.header);
 // // app.get('/ide', routes.ide);

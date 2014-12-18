@@ -24,27 +24,28 @@ module.exports = function($scope, $state, session, fileService) {
 
   if (isUtf8) {
 
-    if (file.dir.endsWith('.db')) {
+    if (file.ext === '.json' && file.dir.endsWith('.db')) {
       $scope.viewer = 'db';
       $scope.$parent.showEditor = false;
-      $scope.$parent.editorSession = session.data;
-
-      // if the editor exists, load the editSession we just assigned
-      if ($scope.$parent.editor) {
-        $scope.$parent.loadSession();
-      }
-
+    } else if (file.ext === '.json' && file.dir.endsWith('.rtr')) {
+      $scope.viewer = 'router';
+      $scope.$parent.showEditor = false;
+      setTimeout(function() {
+        $state.go('app.fs.finder.file.router.home');
+      }, 100);
     } else {
       $scope.viewer = 'ace';
       $scope.$parent.showEditor = true;
-      $scope.$parent.editorSession = session.data;
-
-      // if the editor exists, load the editSession we just assigned
-      if ($scope.$parent.editor) {
-        $scope.$parent.loadSession();
-      }
     }
 
+    
+    $scope.$parent.editorSession = session.data;
+
+    // if the editor exists, load the editSession we just assigned
+    if ($scope.$parent.editor) {
+      $scope.$parent.loadSession();
+    }
+    
   } else {
 
     $scope.viewer = '';

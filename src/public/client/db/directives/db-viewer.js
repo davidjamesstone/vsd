@@ -52,7 +52,14 @@ module.exports = function($timeout) {
         var g = new Graph();
 
         // Set an object for the graph label
-        g.setGraph({});
+        g.setGraph({
+          //rankdir: 'TB',
+          nodesep: 250,
+          edgesep: 150,
+          marginx: 30,
+          marginy: 30
+
+        });
 
         // Default to assigning a new object as a label for each new edge.
         g.setDefaultEdgeLabel(function() {
@@ -80,9 +87,7 @@ module.exports = function($timeout) {
           g.setEdge(key.keys.schema.id, key.ref());
         });
 
-        var grp = dagre.layout(g, {
-          rankdir: 'LR',
-        });
+        var grp = dagre.layout(g);
 
         g.nodes().forEach(function(v) {
           console.log("Node " + v + ": " + JSON.stringify(g.node(v)));
@@ -93,10 +98,14 @@ module.exports = function($timeout) {
           var top = node.y - (node.height / 2);
           var left = node.x - (node.width / 2);
 
-          el.style.top = top + 50 + 'px';
-          el.style.left = left + 50 + 'px';
+          el.style.top = top + 'px';
+          el.style.left = left + 'px';
 
         });
+
+g.edges().forEach(function(e) {
+    console.log("Edge " + e.v + " -> " + e.w + ": " + JSON.stringify(g.edge(e)));
+});
 
       }
 
@@ -149,28 +158,31 @@ module.exports = function($timeout) {
 
             for (var j = 0; j < ends.length; j++) {
               var target = document.getElementById(ends[j]);
+              var connector = 'Flowchart';
+              var anchors = [
+                [
+                  [0.25, 0, 0, -1], 'Top', [0.75, 0, 0, -1], [0.25, 1, 0, 1], 'Bottom', [0.75, 1, 0, 1]
+                ],
+                [
+                  'Left', 'Right'
+                ]
+              ];
 
               plumb.connect({
                 source: source,
                 target: target,
-                anchors: [
-                  [
-                    'Top', 'Bottom'
-                  ],
-                  [
-                    'Left', 'Right'
-                  ]
-                ],
+                anchors: anchors,
+                connector: connector,
                 endpoint: 'Blank',
                 paintStyle: {
                   strokeStyle: '#3c8dbc',
-                  lineWidth: 3
+                  lineWidth: 2
                 },
                 overlays: [
                   ['PlainArrow', {
                     location: 1,
-                    width: 15,
-                    length: 12,
+                    width: 8,
+                    length: 6,
                     direction: 1
                   }]
                 ]

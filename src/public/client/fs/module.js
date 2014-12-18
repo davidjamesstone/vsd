@@ -1,1 +1,1 @@
-module.exports = angular.module('fs', ['db', 'api']);
+module.exports = angular.module('fs', ['db', 'router']);

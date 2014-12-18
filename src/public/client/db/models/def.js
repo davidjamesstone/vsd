@@ -6,6 +6,8 @@ var Msg = require('./msg');
 //
 
 var StringDef = function(data) {
+  this.unique = data.unique;
+  this.index = data.index;
   this.required = data.required;
   this.defaultValue = data.defaultValue;
   this.enumeration = data.enumeration;
@@ -21,6 +23,8 @@ var BooleanDef = function(data) {
 };
 
 var NumberDef = function(data) {
+  this.unique = data.unique;
+  this.index = data.index;
   this.required = data.required;
   this.defaultValue = data.defaultValue;
   this.min = data.min;
@@ -47,6 +51,8 @@ var NumberDef = function(data) {
 };
 
 var DateDef = function(data) {
+  this.index = data.index;
+  this.unique = data.unique;
   this.required = data.required;
   this.defaultValue = data.defaultValue;
 };
@@ -91,6 +97,8 @@ ArrayDef.prototype.define = function(data, key) {
 };
 
 var ForeignKeyDef = function(data) {
+  this.unique = data.unique;
+  this.index = data.index;
   this.required = data.required;
   this.ref = data.ref;
 };
@@ -100,6 +108,8 @@ var MixedDef = function(data) {
 };
 
 var ObjectIdDef = function(data) {
+  this.unique = data.unique;
+  this.index = data.index;
   this.required = data.required;
   this.auto = data.auto;
 };
@@ -110,6 +120,7 @@ var BufferDef = function(data) {
 };
 
 var ChildDocumentDef = function(data) {
+  this.required = data.required;
   this.ref = data.ref;
 };
 

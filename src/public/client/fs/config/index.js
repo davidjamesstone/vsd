@@ -1,6 +1,6 @@
 var filesystem = require('../../file-system');
 var watcher = require('../../file-system-watcher');
-var utils = require('../../../../shared/utils');
+var utils = require('vsd-utils');
 var EditSession = ace.require('ace/edit_session').EditSession;
 var UndoManager = ace.require('ace/undomanager').UndoManager;
 
@@ -25,11 +25,12 @@ var modes = {
 };
 
 
-module.exports = function($stateProvider) {
+module.exports = function($stateProvider, dialog) {
 
   $stateProvider
     .state('app.fs', {
-      abstract: true
+      abstract: true,
+      controller: 'FsCtrl'
     })
     .state('app.fs.finder', {
       url: '/finder',
@@ -80,6 +81,10 @@ module.exports = function($stateProvider) {
 
                 deferred.resolve(session);
 
+              }, function(err) {
+                
+                alert('File System Read Error' + JSON.stringify(err || {}));
+                
               });
             }
             return deferred.promise;
@@ -93,23 +98,6 @@ module.exports = function($stateProvider) {
         '@app': { // Target the ui-view='' in parent state 'app',
           controller: 'FsSearchCtrl',
           templateUrl: '/client/fs/views/search.html'
-        }
-      }
-    })
-    .state('app.fs.dir', {
-      url: '/dir/:path',
-      views: {
-        '@app': { // Target the ui-view='' in parent state 'app',
-          controller: 'FsDirCtrl',
-          templateUrl: '/client/fs/views/dir.html',
-          resolve: {
-            dir: ['$stateParams',
-              function($stateParams) {
-                var path = utils.decodeString($stateParams.path);
-                return watcher.map[path];
-              }
-            ]
-          }
         }
       }
     });

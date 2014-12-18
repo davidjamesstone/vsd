@@ -1,4 +1,4 @@
-var utils = require('../../../../shared/utils');
+var utils = require('vsd-utils');
 var base = require('./base');
 var def = require('./def');
 var Msg = require('./msg');
@@ -45,7 +45,7 @@ var key = _.extend({}, base, {
     }
   },
   ref: function() {
-    if (this.type === 'ForeignKey') {
+    if (this.type === 'ForeignKey' || this.type === 'ChildDocument') {
       return this.def.ref;
     } else if (this.type === 'Array' && this.def.oftype === 'ForeignKey') {
       return this.def.def.ref;
@@ -102,6 +102,9 @@ var key = _.extend({}, base, {
 
     var def = this.def;
     return def.errors ? errors.concat(def.errors()) : errors;
+  },
+  isRequired: function() {
+    return this.isArray() ? this.def.def.required : this.def.required; 
   }
 });
 

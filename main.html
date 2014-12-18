@@ -19,6 +19,9 @@
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
 
   <style type="text/css">
+
+
+    /* api-graph */
     .node circle {
       cursor: pointer;
       fill: #fff;
@@ -33,9 +36,26 @@
       stroke: #ccc;
       stroke-width: 1.5px;
     }
-    
-    
-    
+
+    /* db-graph */
+    text {
+      font-weight: 300;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+      font-size: 14px;
+    }
+    .node rect {
+      stroke: #333;
+      fill: #fff;
+    }
+
+    .edgePath path {
+      stroke: #333;
+      fill: #333;
+      stroke-width: 1.5px;
+    }
+
+
+
     html,
     body {
       height: 100%;
@@ -71,6 +91,9 @@
       .row-offcanvas-left .sidebar-offcanvas {
         left: 0;
       }
+      .left-side.collapse-left {
+        display: none;
+      }
     }
 
     @media screen and (max-width: 560px) {
@@ -89,7 +112,7 @@
 
   <!-- d3 -->
   <script src="http://d3js.org/d3.v3.js"></script>
-  <!--<script src="http://cpettitt.github.io/project/dagre-d3/latest/dagre-d3.js"></script>-->
+  <script src="http://cpettitt.github.io/project/dagre-d3/latest/dagre-d3.js"></script>
   <!--<script src="http://mbostock.github.io/d3/talk/20111018/d3/d3.layout.js"></script>-->
 
   <!--<script src="http://ace.c9.io/build/src/ace.js"></script>-->
@@ -116,7 +139,7 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
 
   <!-- angular ui -->
-  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.11/angular-ui-router.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.min.js"></script>
 

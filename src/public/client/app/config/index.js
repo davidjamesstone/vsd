@@ -1,6 +1,6 @@
 var filesystem = require('../../file-system');
 var watcher = require('../../file-system-watcher');
-var utils = require('../../../../shared/utils');
+var utils = require('vsd-utils');
 
 module.exports = function($stateProvider, $locationProvider, $urlRouterProvider) {
 

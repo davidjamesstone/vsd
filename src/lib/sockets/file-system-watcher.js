@@ -1,6 +1,6 @@
 var fsw = require('../services/file-system-watcher');
-var Response = require('../../shared/response');
-var FileSystemObject = require('../../shared/file-system-object');
+var Response = require('vsd-shared').Response;
+var FileSystemObject = require('vsd-shared').FileSystemObject;
 
 var watcher = fsw.watcher;
 var namespace = '/fswatch';

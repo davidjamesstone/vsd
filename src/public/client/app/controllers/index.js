@@ -1,6 +1,6 @@
 var AppModel = require('../models/app');
-var FileSystemObject = require('../../../../shared/file-system-object');
-var utils = require('../../../../shared/utils');
+var FileSystemObject = require('vsd-shared').FileSystemObject;
+var utils = require('vsd-utils');
 var parseCookie = require('cookie').parse;
 
 module.exports = function($scope, $state, fs, watcher, fileService, dialog, colorService, sessionService) {
@@ -122,41 +122,43 @@ module.exports = function($scope, $state, fs, watcher, fileService, dialog, colo
     var sessions = model.sessions;
     var session = sessions.findSession(entry.path);
 
-
     function remove() {
-      sessions.removeSession(session);
+      if (session) {
+        sessions.removeSession(session);
+      }
       model.removeRecentFile(entry);
       $scope.$broadcast('recent-removed', entry);
     }
 
-    if (session) {
+    if (session && session.isDirty) {
 
-      if (session.isDirty) {
-
-        dialog.confirm({
-          title: 'Save File',
-          message: 'File has changed. Would you like to Save [' + model.getRelativePath(session.path) + ']',
-          okButtonText: 'Yes',
-          cancelButtonText: 'No'
-        }).then(function() {
-          saveSession(session, function(err, session) {
-            if (!err) {
-              model.removeRecentFile(entry);
-              sessions.removeSession(session);
-              $scope.$broadcast('recent-removed', entry);
-            }
-          });
-        }, function(value) {
-          console.log('Remove recent (save) modal dismissed', value);
-          // Check if clicked 'No', otherwise do nothing
-          if (value === 'cancel') {
-            remove();
+      // There's an active dirty sesssion for this entry.
+      // Check with the user if we should save the file.
+      dialog.confirm({
+        title: 'Save File',
+        message: 'File has changed. Would you like to Save [' + model.getRelativePath(session.path) + ']',
+        okButtonText: 'Yes',
+        cancelButtonText: 'No'
+      }).then(function() {
+        saveSession(session, function(err, session) {
+          if (!err) {
+            model.removeRecentFile(entry);
+            sessions.removeSession(session);
+            $scope.$broadcast('recent-removed', entry);
           }
         });
+      }, function(value) {
+        console.log('Remove recent (save) modal dismissed', value);
+        // Check if clicked 'No', otherwise do nothing
+        if (value === 'cancel') {
+          remove();
+        }
+      });
 
-      } else {
-        remove();
-      }
+    } else {
+      // there's no active sesssion for this 
+      // entry, just need to remove the entry.
+      remove();
     }
   };
 
