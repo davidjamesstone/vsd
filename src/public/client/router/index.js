@@ -9,6 +9,7 @@ mod.controller('RouterCtrl', [
   '$scope',
   '$state',
   'DialogService',
+  '$modal',
   require('./controllers')
 ]);
 
@@ -50,5 +51,13 @@ mod.controller('RouterRouteCtrl', [
   'DialogService',
   require('./controllers/route')
 ]);
+
+mod.controller('RouterCodeGenCtrl', [
+  '$scope',
+  '$modalInstance',
+  'data',
+  require('./controllers/code-gen')
+]);
+
 
 module.exports = mod;

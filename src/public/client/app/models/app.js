@@ -7,10 +7,6 @@ function AppModel(data) {
   this.fs = data.fs;
   this.watcher = data.watcher;
   this.sessions = data.sessionService;
-
-  this.title = 'Title';
-  this.subTitle = 'Subtitle';
-
   this._recentFiles = data.recentFiles || [];
 }
 AppModel.prototype.addRecentFile = function(file) {
@@ -172,7 +168,7 @@ Object.defineProperties(AppModel.prototype, {
   readmeFile: {
     get: function() {
       return this.tree.children.find(function(item) {
-        return /^readme.(md|markdown)$/.test(item.name.toLowerCase());
+        return /^readme.$/.test(item.name.toLowerCase());
       });
     }
   },

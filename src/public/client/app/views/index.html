@@ -45,7 +45,7 @@
         </li>
         <!-- Notifications: style can be found in dropdown.less -->
         <li class="dropdown notifications-menu" dropdown>
-          <a href="#" dropdown-toggle class="dropdown-toggle" dropdown-toggle>
+          <a href="#" dropdown-toggle class="dropdown-toggle">
             <i class="fa fa-save"></i>
             <span class="label label-{{model.sessions.dirty.length ? 'warning': 'success'}}">{{model.sessions.dirty.length}}</span>
           </a>
@@ -68,7 +68,7 @@
           </ul>
         </li>
         <!-- Tasks: style can be found in dropdown.less -->
-        <li class="dropdown tasks-menu" dropdown>
+        <li class="dropdown tasks-menu hide" dropdown>
           <a href="#" class="dropdown-toggle" dropdown-toggle>
             <i class="fa fa-tasks"></i>
             <span class="label label-danger">9</span>
@@ -146,7 +146,7 @@
           </ul>
         </li>
         <!-- User Account: style can be found in dropdown.less -->
-        <li class="dropdown user user-menu" dropdown>
+        <li class="dropdown user user-menu hide" dropdown>
           <a href="#" class="dropdown-toggle" dropdown-toggle>
             <i class="glyphicon glyphicon-user"></i>
             <span>Jane Doe <i class="caret"></i></span>
@@ -194,7 +194,7 @@
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
       <!-- Sidebar user panel -->
-      <div class="user-panel">
+      <div class="user-panel hide">
         <div class="pull-left image">
           <img src="../../img/avatar3.png" class="img-circle" alt="User Image" />
         </div>
@@ -215,7 +215,7 @@
       </form>
       <!-- /.search form -->
       <!-- sidebar menu: : style can be found in sidebar.less -->
-      <ul class="sidebar-menu">
+      <ul class="sidebar-menu hide">
         <li>
           <a ui-sref="app.home">
             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
@@ -227,6 +227,7 @@
           </a>
         </li>
       </ul>
+      <ng-include src="'/client/fs/views/tree.html'" ng-controller="FsTreeCtrl" class="fs-tree-container"></ng-include>
     </section>
     <!-- /.sidebar -->
   </aside>

@@ -1,12 +1,9 @@
 function FinderModel(active) {
-  // this.tree = tree;
   this.active = active;
 }
 FinderModel.prototype._readCols = function(tree) {
 
-  //var tree = this._tree;
   var active = this._active;
-  //var activeIsDir = active.isDirectory;
 
   var cols = [];
 

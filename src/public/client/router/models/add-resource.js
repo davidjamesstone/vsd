@@ -7,41 +7,12 @@ var en = require('lingo').en;
 var AddResource = function(name, parent) {
   this.name = name;
   this.parent = parent;
+  this._location = null;
 
   this._route = new Route({
     parent: parent,
-    path: '/' + this.name,
-    description: 'Resource controller to access...'
+    path: '/' + this.name
   });
-
-  // var indexHandler = controller.addHandler({
-  //   name: 'index'
-  // });
-
-  // var newHandler = controller.addHandler({
-  //   name: 'new'
-  // });
-
-  // var createHandler = controller.addHandler({
-  //   name: 'create'
-  // });
-
-  // var showHandler = controller.addHandler({
-  //   name: 'show'
-  // });
-
-  // var editHandler = controller.addHandler({
-  //   name: 'edit'
-  // });
-
-  // var updateHandler = controller.addHandler({
-  //   name: 'update'
-  // });
-
-  // var destroyHandler = controller.addHandler({
-  //   name: 'destroy'
-  // });
-
 
   // GET     /forums              ->  index
   // GET     /forums/new          ->  new
@@ -53,19 +24,19 @@ var AddResource = function(name, parent) {
 
     var root = this._route;
 
-    root.addAction('GET', []);
-    root.addAction('POST', []);
+    root.addAction('GET', [{ location: '', name: 'index' }]);
+    root.addAction('POST', [{ location: '', name: 'create' }]);
 
     var newRoute = root.addChild('/new');
-    newRoute.addAction('GET', []);
+    newRoute.addAction('GET', [{ location: '', name: 'new' }]);
 
     var itemRoute = root.addChild('/:' + en.singularize(this.name));
-    itemRoute.addAction('GET', []);
-    itemRoute.addAction('PUT', []);
-    itemRoute.addAction('DELETE', []);
+    itemRoute.addAction('GET', [{ location: '', name: 'show' }]);
+    itemRoute.addAction('PUT', [{ location: '', name: 'update' }]);
+    itemRoute.addAction('DELETE', [{ location: '', name: 'destroy' }]);
 
     var itemEditRoute = itemRoute.addChild('/edit');
-    itemEditRoute.addAction('GET', []);
+    itemEditRoute.addAction('GET', [{ location: '', name: 'edit' }]);
 
     this._itemRoute = itemRoute;
 };
@@ -73,6 +44,14 @@ Object.defineProperties(AddResource.prototype, {
   url: {
     get: function() {
       return this.parent.url + '/' + this.name;
+    }
+  },
+  location: {
+    get: function() {
+      return this._location || './' + this.name;
+    },
+    set: function(value) {
+      this._location = value;
     }
   },
   route: {
@@ -101,6 +80,5 @@ Object.defineProperties(AddResource.prototype, {
     }
   }
 });
-
 
 module.exports = AddResource;

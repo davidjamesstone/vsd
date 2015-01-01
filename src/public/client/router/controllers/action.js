@@ -30,18 +30,22 @@ module.exports = function($scope, $state, $stateParams, $timeout, dialog) {
   var timeoutPromise;
   $scope.focusHandler = function(handler) {
     console.log('focus');
-    
-    if (timeoutPromise) {
-      $timeout.cancel(timeoutPromise);
+    $scope.$parent.$parent.activeAction = action;
+    if (handler) {
+      if (timeoutPromise) {
+        $timeout.cancel(timeoutPromise);
+      }
+      
+      $scope.activeHandler = handler;
+    } else {
+      $scope.activeHandler = null;
     }
-    
-    $scope.activeHandler = handler;
   };
 
   $scope.blurHandler = function() {
     console.log('blur');
     timeoutPromise = $timeout(function() {
       $scope.activeHandler = null;
-    }, 500);
+    }, 250);
   };
 };

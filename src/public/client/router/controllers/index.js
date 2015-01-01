@@ -1,7 +1,7 @@
 var Router = require('vsd-router-model').Router;
 var path = require('path');
 
-module.exports = function($scope, $state, $dialog) {
+module.exports = function($scope, $state, $dialog, $modal) {
 
   // Router uses the 'ace' session for now as a way
   // to back data and fit in with the way the app runs.
@@ -31,8 +31,6 @@ module.exports = function($scope, $state, $dialog) {
 
   }, true);
 
-
-
   $scope.checkHandlerFile = function(handler) {
 
     if (!handler || !handler.location) return;
@@ -46,7 +44,6 @@ module.exports = function($scope, $state, $dialog) {
   };
 
   $scope.getHandlerFileParams = function(handler) {
-    //ui-sref="app.fs.finder.file(fileParams(model.map[item.path]))"
 
     if (!handler || !handler.location) return;
 
@@ -57,5 +54,26 @@ module.exports = function($scope, $state, $dialog) {
     if (!handlerFile) return;
 
     return $scope.fileParams(handlerFile);
-  }
+  };
+  
+  $scope.viewCodeGen = function() {
+
+    var codeGenPromise = $modal.open({
+      templateUrl: '/client/router/views/code-gen.html',
+      controller: 'RouterCodeGenCtrl',
+      resolve: {
+        data: function() {
+          return {
+            route: router
+          };
+        }
+      }
+    }).result;
+
+    codeGenPromise.then(function(model) {
+
+    });
+
+  };
+
 };

@@ -47,26 +47,21 @@ Object.defineProperties(Sessions.prototype, {
   sessions: {
     get: function() {
       var sessions = this._sessions;
+      var map = this._map;
+      
+      // clean any files that may no longer exist
+      var i = sessions.length;
+      while (i--) {
+        if (!map[sessions[i].path]) {
+          sessions.splice(i, 1);
+        }
+      }
+      
       return sessions;
-      // var map = this._map;
-      //
-      // // clean any files that may no longer exist
-      // // var i = sessions.length;
-      // // while (i--) {
-      // //   if (!map[sessions[i].path]) {
-      // //     sessions.splice(i, 1);
-      // //   }
-      // // }
-      //
-      // return sessions.map(function(item) {
-      //   return map[item.path];
-      // }, this);
-
     }
   },
   dirty: {
     get: function() {
-      var sessions = this._sessions;
       return this.sessions.filter(function(item) {
         return item.isDirty;
       });

@@ -1,30 +1,38 @@
 <div ng-if="!action">Action Not Found</div>
-
-      <div class="form-group form-group-sm">  
-        <a ng-click="action.movePrev()" class="fa fa-chevron-up" style="position: absolute; left: 0;"></a>
-        <a ng-click="action.moveNext()" class="fa fa-chevron-down" style="position: absolute; left: 0; bottom: 8px;"></a>      
-        <div class="col-sm-2">
-          <select ng-model="action.verb" ng-options="verb for verb in action.verbs" class="form-control" style="margin-top: 16px">
-          </select>
-        </div>
-        <div class="col-sm-10">
-          <div class="row">
-            <div ng-repeat="handler in action.handlers" class="col-sm-4" style1="margin-bottom: 8px;">
-              <a ng-if="handler == activeHandler" ng-click="action.removeHandler(handler)" class="fa fa-trash text-danger" style="position: absolute; right: 5px; top: -4px; background-color: #fff;"></a>
-              <span ng-if="$first" style="position: absolute; left: -7px; top: 20px;">&rArr;</span>
-              <span ng-if="!$first" style="position: absolute; left: -7px; top: 20px;">&rarr;</span>
-              <input type="text" ng-model="handler.location" class="form-control input-sm" placeholder="Location" ng-focus="focusHandler(handler)" ng-blur="blurHandler()" />
-              <input type="text" ng-model="handler.name" class="form-control input-sm" placeholder="Name" ng-focus="focusHandler(handler)" ng-blur="blurHandler()" />
-            </div>
-            <a ng-click="deleteAction()" class="fa fa-trash text-danger" style="position: absolute; right: 0; bottom: 8px;"></a>
-            <a ng-click="action.addHandler()" class="fa fa-plus" style="position: absolute; right: 0;"></a>
-          </div>
+<div class="action">
+  <hr>
+  {{activeAction.name}}
+  <div class="btn-toolbar action-menu" ng-if="action == activeAction">
+    <div class="btn-group">
+      <a ng-click="action.addHandler()" class="btn btn-primary btn-xs btn-flat" tooltip="Add handler" tooltip-placement="bottom" tooltip-append-to-body="true"><i class="fa fa-plus"></i></a>
+    </div>
+    <div class="btn-group">
+      <a ng-click="action.movePrev()" class="btn btn-default btn-xs btn-flat" tooltip="Move action up" tooltip-placement="bottom" tooltip-append-to-body="true"><i class="fa fa-chevron-up"></i></a>
+      <a ng-click="action.moveNext()" class="btn btn-default btn-xs btn-flat" tooltip="Move action down" tooltip-placement="bottom" tooltip-append-to-body="true"><i class="fa fa-chevron-down"></i></a>
+    </div>
+    <div class="btn-group">
+      <a ng-click="deleteAction()" class="btn btn-default btn-xs btn-flat" tooltip="Delete action" tooltip-placement="bottom" tooltip-append-to-body="true"><i class="fa fa-trash text-danger"></i></a>
+    </div>
+  </div>
+  <div class="form-group form-group-sm">
+    <div class="col-sm-2">
+      <select ng-model="action.verb" ng-options="verb for verb in action.verbs" ng-focus="focusHandler()" ng-blur="blurHandler()" class="form-control">
+      </select>
+    </div>
+    <div class="col-sm-10">
+      <div class="row">
+        <div ng-repeat="handler in action.handlers" class="col-sm-4">
+          <a ng-if="handler == activeHandler" ng-click="action.removeHandler(handler)" class="fa fa-trash text-danger delete-handler"></a>
+          <span ng-if="$first" style="position: absolute; left: -7px; top: 20px;">&rArr;</span>
+          <span ng-if="!$first" style="position: absolute; left: -7px; top: 20px;">&rarr;</span>
+          <input type="text" ng-model="handler.location" class="form-control input-sm" placeholder="Location" ng-focus="focusHandler(handler)" ng-blur="blurHandler()" />
+          <input type="text" ng-model="handler.name" class="form-control input-sm" placeholder="Name" ng-focus="focusHandler(handler)" ng-blur="blurHandler()" />
         </div>
       </div>
-      <hr>
-      
-      
-      
+    </div>
+  </div>
+</div>
+
 <div ng-if="action" class="panel panel-info hide">
 
   <div class="panel-heading">
@@ -43,10 +51,11 @@
         <div class="col-sm-10">
           <select id="verb" ng-model="action.verb" ng-options="verb for verb in action.verbs" class="form-control">
           </select>
-          <div class="help-block"><a ui-sref="app.fs.finder.file.router.home.route.item({ routeId: action.route.id })">{{ action.url }}</a></div>
+          <div class="help-block"><a ui-sref="app.fs.finder.file.router.home.route.item({ routeId: action.route.id })">{{ action.url }}</a>
+          </div>
         </div>
       </div>
-      
+
       <div class="form-group form-group-sm">
         <label for="description" class="col-sm-2 control-label">Description</label>
         <div class="col-sm-10">
@@ -64,7 +73,7 @@
           <input type="text" id="name" ng-model="handler.name" class="form-control input-sm" placeholder="Name" />
         </div>
       </div>
-      
+
       <div>
         <button type="button" ng-click="action.addHandler()" class="btn btn-primary btn-xs pull-right">Add</button>
         <button type="button" ng-click="action.moveNext()" class="btn btn-primary btn-xs pull-right">&gt;</button>

@@ -1,3 +1,67 @@
+html,
+body {
+  height: 100%;
+}
+.wrapper {
+  height: 100%;
+  position: relative;
+}
+.right-side {
+  position: relative;
+  height: 100%;
+}
+.left-side {
+  top: 0!important;
+  bottom: 0;
+}
+
+
+body {
+  padding-top: 50px;
+}
+body > .header {
+  position: fixed;
+}
+.left-side {
+  position: fixed;
+  padding-top: 50px;
+  
+}
+.left-side .tree a {
+  color: #3c8dbc;
+}
+.skin-blue .left-side {
+  background-color: #F0F0F0;
+}
+.skin-blue .sidebar {
+  border-bottom: none;
+}
+.sidebar .fs-tree {
+  display: table;
+}
+.fs-tree-container {
+  position: absolute;
+  top: 104px;
+  bottom: 0;
+  max-width: 100%;
+  overflow: auto;
+}
+
+@media screen and (max-width: 992px) {
+  .row-offcanvas-left .sidebar-offcanvas {
+    left: 0;
+  }
+  .left-side.collapse-left {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 560px) {
+  body > .header .logo {
+    display: none;
+  }
+}
+
 a {
   cursor: pointer;
 }
@@ -168,3 +232,38 @@ i.file-type {
 }
 
 .MdPreview-markdown { display: none; }
+
+
+
+/* api-graph */
+.node circle {
+  cursor: pointer;
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+.node text {
+  font-size: 11px;
+}
+path.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+/* db-graph */
+text {
+  font-weight: 300;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+  font-size: 14px;
+}
+.node rect {
+  stroke: #333;
+  fill: #fff;
+}
+
+.edgePath path {
+  stroke: #333;
+  fill: #333;
+  stroke-width: 1.5px;
+}

@@ -39,7 +39,9 @@
         <a class="action list-group-item" ng-repeat="action in route.actions" ui-sref="app.fs.finder.file.router.home.route.item.action({ actionId: action.id })">{{action.verb}} {{route.url}}</a>
       </div>
 
-      <button type="button" ng-click="addAction()" class="btn btn-default btn-flat btn-xs">Add Action</button>
+      <hr>
+      
+      <button type="button" ng-click="addAction()" class="btn btn-primary btn-flat btn-xs">Add Action</button>
       <button type="button" ng-click="deleteRoute(route)" ng-show="!route.isRoot" class="btn btn-danger btn-flat btn-xs pull-right">Delete Route</button>
       
       <!-- Route Actions View -->

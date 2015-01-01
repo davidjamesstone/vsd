@@ -1,13 +1,9 @@
-// var filesystem = require('../file-system');
-// var watcher = require('../file-system-watcher');
-// var utils = require('../../../shared/utils');
-
 // Load Module Dependencies
 require('../dialog');
 require('../fs');
 
 var mod = require('./module');
-mod.value('$anchorScroll', angular.noop);
+
 mod.service('FileService', [
   '$q',
   require('./services/file')
@@ -35,18 +31,17 @@ mod.controller('AppCtrl', [
 ]);
 
 // ACE Global Defaults
+var aceConfig = require('../config.json').editor;
+
 mod.run(['uiAceConfig',
   function(uiAceConfig) {
     uiAceConfig.ace = {};
     angular.extend(uiAceConfig.ace, {
-      useSoftTabs: true,
-      tabSize: 2,
-      useWrapMode: false,
-      showPrintMargin: false,
-      showGutter: true,
-      // setAutoScrollEditorIntoView: true,
-      // maxLines: 600,
-      // minLines: 15,
+      useSoftTabs: aceConfig.useSoftTabs,
+      tabSize: aceConfig.tabSize,
+      useWrapMode: aceConfig.useWrapMode,
+      showPrintMargin: aceConfig.showPrintMargin,
+      showGutter: aceConfig.showGutter,
       mode: 'javascript',
       require: ['ace/ext/language_tools'],
       advanced: {

@@ -43,9 +43,6 @@
 
 		<div ng-if="!isCollapsed">
 			<div class="fs-finder well" ng-scrolled>
-			  <div ng-if="false" class="col">
-			    <ng-include src="'/client/fs/views/tree.html'" ng-controller="FsTreeCtrl"></ng-include>
-			  </div>
 				<div ng-repeat="col in finder.cols(model.tree)" class="col">
 					<div>
 						<a ng-repeat="data in col | orderBy : ['-isDirectory', 'name']" ng-click="clickNode(data);" ng-class="{ active: finder.isHighlighted(data) }" class="fso">
@@ -62,7 +59,7 @@
   <div class="bottom-box">
 		<div class="recent-file-tabs nav-tabs-custom">
 			<ul class="nav nav-tabs" ng-scrolled-into-view="finder.activeFile">
-				<li ng-repeat="item in model.recentFiles | orderBy: 'time'" ng-class="{ 'active': model.map[item.path] === finder.activeFile }" ng1-scrolled-into-view="model.map[item.path] === finder.activeFile">
+				<li ng-repeat="item in model.recentFiles | orderBy: 'time'" ng-class="{ 'active': model.map[item.path] === finder.activeFile }">
 					<a ui-sref="app.fs.finder.file(fileParams(model.map[item.path]))" title="{{model.getRelativePath(model.map[item.path].dir)}}">
 						<div class="pull-left">
 							<i class="fa fa-file file-type" style="color: {{color(model.map[item.path])}};">
@@ -74,13 +71,13 @@
 				</li>
 			</ul>
 		</div>
-		
+
     <!-- Files use a shared ace editor rather than one per tab -->
     <div ng-show="showEditor" ui-ace="{ onLoad: aceLoaded, onChange: aceChanged }" class="ace-editor"></div>
-    
+
     <!-- If the ace editor is hidden, this is the placeholder for custom ui -->
     <div ng-show="!showEditor" ui-view></div>
-    
+
   </div>
 
 </div>

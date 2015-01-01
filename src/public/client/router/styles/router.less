@@ -10,7 +10,16 @@
       height: 100%;
     }
   }
-
+  .options-menu {
+    position: absolute;
+    right: 3px;
+    top: 3px;
+  }
+  .error-indicator {
+    position: absolute;
+    right: 28px;
+    top: 3px;
+  }
   .model-sidebar {
     height: 100%;
     overflow-y: auto;
@@ -28,10 +37,7 @@
       }
     }
   }
-
-
   .model-editor {
-
     > div.editor {
       margin-right: -15px;
       margin-left: -15px;
@@ -40,15 +46,32 @@
       border-radius: 0;
       margin-bottom: 0;
       background-color: transparent;
-
       .breadcrumb {
         font-size: small;
       }
     }
+    .action {
+      position: relative;
+      hr {
+        margin-bottom: 26px;
+      }
+      .action-menu {
+        position: absolute;
+        right: 0;
+        top: 3px;
+      }
+      select {
+        margin-top: 16px;
+      }
+      .delete-handler {
+        position: absolute;
+        right: 5px;
+        top: -4px;
+        background-color: #fff;
+      }
+    }
   }
-
   @media screen and (min-width: 560px) {
-
     .model-editor {
       height: 100%;
       >div.editor {
@@ -70,10 +93,7 @@
         }
       }
     }
-
   }
-
-
   .router-model-viewer {
     position: fixed;
     top: 0;
@@ -100,13 +120,21 @@
     .panel {
       position: absolute;
       padding: 4px;
-
       .panel-body {
         padding: 6px;
       }
       // z-index: 1;
       // background-color: transparent;
       margin-bottom: 0;
+    }
+  }
+}
+.add-resource {
+  .table .form-group {
+    margin-bottom: 0;
+    span.dot {
+      position: absolute;
+      left: -1px;
     }
   }
 }

@@ -8,6 +8,21 @@ module.exports = function($scope, $modalInstance, data) {
 
   $scope.model = model;
 
+  $scope.$watch('model.location', function(newValue, oldValue) {
+    if (newValue === oldValue) {
+      return;
+    }
+    
+    for (var i = 0; i < model.actions.length; i++) {
+      var action = model.actions[i];
+      var currentLocation = action.handlers[0].location;
+      if (!currentLocation || currentLocation === oldValue) {
+        action.handlers[0].location = newValue;
+      }
+    }
+    
+  });
+
   $scope.ok = function() {
     $modalInstance.close(model);
   };

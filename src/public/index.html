@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:xlink="http://www.w3.org/1999/xlink">
-
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,7 +9,6 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="description" content="">
   <meta name="author" content="">
-  <link rel="icon" href="../../favicon.ico">
 
   <!-- Global Styles -->
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -18,112 +16,19 @@
   <link rel="stylesheet" href="/css/build.css">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
 
-  <style type="text/css">
-
-
-    /* api-graph */
-    .node circle {
-      cursor: pointer;
-      fill: #fff;
-      stroke: steelblue;
-      stroke-width: 1.5px;
-    }
-    .node text {
-      font-size: 11px;
-    }
-    path.link {
-      fill: none;
-      stroke: #ccc;
-      stroke-width: 1.5px;
-    }
-
-    /* db-graph */
-    text {
-      font-weight: 300;
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
-      font-size: 14px;
-    }
-    .node rect {
-      stroke: #333;
-      fill: #fff;
-    }
-
-    .edgePath path {
-      stroke: #333;
-      fill: #333;
-      stroke-width: 1.5px;
-    }
-
-
-
-    html,
-    body {
-      height: 100%;
-    }
-    .wrapper {
-      height: 100%;
-      position: relative;
-    }
-    .right-side {
-      position: relative;
-      height: 100%;
-    }
-    .left-side {
-      top: 0!important;
-      bottom: 0;
-    }
-
-
-    body {
-      padding-top: 50px;
-    }
-    body > .header {
-      position: fixed;
-    }
-    .left-side {
-      position: fixed;
-      padding-top: 50px;
-    }
-    .skin-blue .left-side {
-      background: #fff;
-    }
-    @media screen and (max-width: 992px) {
-      .row-offcanvas-left .sidebar-offcanvas {
-        left: 0;
-      }
-      .left-side.collapse-left {
-        display: none;
-      }
-    }
-
-    @media screen and (max-width: 560px) {
-      body > .header .logo {
-        display: none;
-      }
-    }
-
-  </style>
-
-  <title>DBUI</title>
-
-
-
-
+  <title>VisDev</title>
 
   <!-- d3 -->
   <script src="http://d3js.org/d3.v3.js"></script>
   <script src="http://cpettitt.github.io/project/dagre-d3/latest/dagre-d3.js"></script>
-  <!--<script src="http://mbostock.github.io/d3/talk/20111018/d3/d3.layout.js"></script>-->
 
-  <!--<script src="http://ace.c9.io/build/src/ace.js"></script>-->
+  <!-- ace -->
   <script src="/bower_components/ace-builds/src-min-noconflict/ace.js"></script>
   <script src="/bower_components/ace-builds/src-min-noconflict/ext-language_tools.js"></script>
 
-  <!-- angularjs
-  <script src="/bower_components/angular/angular.min.js"></script>-->
+  <!-- angularjs -->
   <script src="/js/angular.min.js"></script>
   <script src="/js/dom.jsPlumb-1.7.2.js"></script>
-  <script src="/js/jsplumb-angular.js"></script>
 
   <!-- angular ui-ace editor -->
   <script src="/js/ui-ace.js"></script>
@@ -135,7 +40,7 @@
   <!-- angular wait- -->
   <script src="/bower_components/angular-wait/dist/angular-wait.js"></script>
 
-  <!-- utils -->
+  <!-- underscore -->
   <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
 
   <!-- angular ui -->
@@ -147,10 +52,6 @@
 
   <script src="/js/build.js"></script>
 </head>
-
 <body ng-app="app" ui-view class="skin-blue">
-
-
 </body>
-
 </html>

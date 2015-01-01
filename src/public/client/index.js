@@ -1,7 +1,6 @@
-
-// ***********
-// Shims
-// ***********
+/**
+ * Shims
+ */
 require('./array'); // custom array prototype move method
 require('array.prototype.find');
 require('array.prototype.findindex');

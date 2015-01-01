@@ -53,7 +53,6 @@ module.exports = function($scope, $state, fs, watcher, fileService, dialog, colo
     };
   };
 
-
   $scope.dirUrl = function(dir) {
     return $state.href('app.fs.finder', {
       path: utils.encodeString(dir.path)

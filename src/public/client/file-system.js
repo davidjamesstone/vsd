@@ -1,5 +1,5 @@
 var utils = require('vsd-utils');
-var emitter = require('emitter-component');;
+var emitter = require('emitter-component');
 
 /*
  * FileSystem constructor

@@ -1,31 +1,10 @@
 {
   "editor": {
-    "theme": "monokai",
     "tabSize": 2,
     "useSoftTabs": true,
-    "highlightActiveLine": true,
     "showPrintMargin": false,
     "showGutter": true,
-    "fontSize": "12px",
-    "useWorker": true,
-    "showInvisibles": true,
-    "modes": {
-      ".js": "ace/mode/javascript",
-      ".css": "ace/mode/css",
-      ".html": "ace/mode/html",
-      ".htm": "ace/mode/html",
-      ".ejs": "ace/mode/html",
-      ".json": "ace/mode/json",
-      ".md": "ace/mode/markdown",
-      ".coffee": "ace/mode/coffee",
-      ".jade": "ace/mode/jade",
-      ".php": "ace/mode/php",
-      ".py": "ace/mode/python",
-      ".scss": "ace/mode/sass",
-      ".txt": "ace/mode/text",
-      ".typescript": "ace/mode/typescript",
-      ".xml": "ace/mode/xml"
-    }
+    "showInvisibles": true
   },
   "beautify": {
     "js": {

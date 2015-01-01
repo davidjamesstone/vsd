@@ -23,6 +23,7 @@
       </div>
     </div>
   </div>
+  
   <div class="row router-ctnr">
     <div class="hidden-xs col-sm-4 model-sidebar">
       <ul class="tree">
@@ -36,17 +37,25 @@
       </ul>
     </div>
     <div class="col-xs-12 col-sm-8 model-editor">
-      <div style="position: absolute; right: 3px; top: 3px;">
+    
+      <!-- Validation Errors -->
+      <div class="error-indicator">
+        <button ng-if="router.errors.length" popover="{{router.errors.join(',\n')}}" popover-placement="left" popover-append-to-body="true" 
+        popover-trigger="click" class="btn btn-xs btn-flat btn-danger"><i class="fa fa-exclamation-circle"></i></button>  
+      </div>
+      
+      <div class="options-menu">
         <div class="btn-group" dropdown>
           <button type="button" class="btn btn-primary dropdown-toggle btn-xs btn-flat" dropdown-toggle>
             <i class="fa fa-bars"></i>
           </button>
           <ul class="dropdown-menu pull-right">
-            <li><a ui-sref1="app.fs.finder.file.router.home.diagram" ng-click="showModelGraph = true"><i class="fa fa-sitemap"></i>&nbsp;Dendrograph</a></li>
+            <li><a ng-click="showModelGraph = true"><i class="fa fa-sitemap"></i>&nbsp;Dendrogram</a></li>
+            <li><a ng-click="viewCodeGen()"><i class="fa fa-code"></i>&nbsp;CodeGen</a></li>
           </ul>
         </div>
       </div>
-      <button type="button" ui-sref="router.diagram" class="btn btn-info hide">View Diagram</button>
+
       <div ui-view class="editor"></div>
     </div>
   </div>

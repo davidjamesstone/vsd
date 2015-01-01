@@ -1,0 +1,60 @@
+{
+  "name": "ecommerce router",
+  "root": {
+    "id": "1509301",
+    "path": "/",
+    "actions": [
+      {
+        "verb": "GET",
+        "handlers": [
+          {
+            "location": "./index",
+            "name": "getHomePage"
+          }
+        ]
+      }
+    ],
+    "routes": [
+      {
+        "id": "7763732",
+        "path": "/contact-us",
+        "actions": [
+          {
+            "verb": "GET",
+            "handlers": []
+          },
+          {
+            "verb": "POST",
+            "handlers": [
+              {
+                "location": "./index",
+                "name": "someMiddleware"
+              },
+              {
+                "location": "./index",
+                "name": "postContactUs"
+              }
+            ]
+          }
+        ],
+        "routes": []
+      },
+      {
+        "id": "3279828",
+        "path": "/category/:category",
+        "actions": [
+          {
+            "verb": "GET",
+            "handlers": [
+              {
+                "location": "./category",
+                "name": "getCategory"
+              }
+            ]
+          }
+        ],
+        "routes": []
+      }
+    ]
+  }
+}
