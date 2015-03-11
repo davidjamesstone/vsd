@@ -3,7 +3,15 @@ visdev
 
 `visdev`is a web-based code editor built using Node.js.
 
-instructions
+Screenshots
+===========
+
+![ide](https://s3-eu-west-1.amazonaws.com/djs-files/Screen+Shot+2015-03-11+at+20.02.58.png "File System Editor Features")
+
+![ide](https://s3-eu-west-1.amazonaws.com/djs-files/Screen+Shot+2015-03-11+at+20.08.46.png "Project Dashboard")
+
+
+Instructions
 =====
 
 TODO
