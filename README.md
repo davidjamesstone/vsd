@@ -14,11 +14,19 @@ Screenshots
 Instructions
 =====
 
-TODO
+npm install -g vsd
+
+Then `cd` into the directory you want to view and execute: 
+
+`vsd`
+
+The default port is 3000. To change this use the command
+
+`PORT=XXXX vsd`
 
 *** WARNING ***:
 ================
-If you'd like to try out this IDE that's great and thanks BUT USE CAUTION.
+If you'd like to try out this editor that's great BUT PLEASE USE CAUTION.
 
 Ensure any code is backed up regularly.
 I would not like it to be responsible for any work lost.
