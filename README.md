@@ -1,28 +1,12 @@
-noide
+visdev
 ====
 
-`noide`is a web-based code editor built using Node.js.
+`visdev`is a web-based code editor built using Node.js.
 
-At it's core it's a useful, lightweight editor so you don't leave your browser to write code.
+instructions
+=====
 
-Thanks for taking a look. Any comments, feedback or support use [Twitter](https://twitter.com/node_ide).
-
-
-Instructions
-============
-
-`npm install noide -g`
-
-Then cd to the directory you want to edit and execute
-
-`noide`
-
-Now point your browser to http://localhost:3000/
-
-You should see a page something like this:
-
-![ide](https://raw.github.com/davidjamesstone/noide/gh-pages/images/1.jpg "IDE")
-
+TODO
 
 *** WARNING ***:
 ================
@@ -37,9 +21,9 @@ Also, there is no authentication or security built in. That is left to you. Do n
 Features
 ========
 
-`noide`’s current features:
+`visdev`’s current features:
 
-- File explorer tree view
+- File explorer tree & finder-style view
 - File operations (create/delete/rename files and directories etc.)
 - Syntax highlighted code editing for many programming languages
 - HTML/CSS/JS beautifiers
@@ -47,7 +31,6 @@ Features
 - JSLINT validation warning
 - Emmet
 - Code snippets
-- Themeable
 
 Built using:
 ============
@@ -59,50 +42,12 @@ Built using:
 - [Browserify](https://github.com/substack/node-browserify)
 - [socket.io](https://github.com/LearnBoost/socket.io)
 
-
-Build
-=====
-
-To build `noide` you will need browserify and the less compiler installed:
-
-`npm i browserify -g`
-
-`npm i lessc -g`
-
-Then it's `npm run build` in the directory you installed `noide` to.
-
-This will compile the `js` and `less` files.
-You will need to do this if you want to change the editors settings.
-
-Settings
-========
-Settings for the editor can be found in `/src/client/editor/config.json`.
-You can change all the settings of the actual code editor in there. E.g. indentation and theme.
-
-All the theme names can be found on here [ACE Editor](http://ace.c9.io/build/kitchen-sink.html).
-
-To change the bootstrap theme of `noide` itself you can find the less files in `public/less/`.
-The `themes` directory contains two themes a light and dark one. Others can be downloaded
-from [bootswatch.com](http://bootswatch.com/) or just create your own. Edit the `bootstrap.less`
-file with the theme name and run the build.
-
-
-Screenshots
-===========
-
-![ide](https://raw.github.com/davidjamesstone/noide/gh-pages/images/2.jpg "File System Editor Features")
-
-![ide](https://raw.github.com/davidjamesstone/noide/gh-pages/images/3.jpg "Keyboard Shortcuts")
-
-![ide](https://raw.github.com/davidjamesstone/noide/gh-pages/images/4.jpg "Alternative themes")
-
-
 License
 =======
 
-noide is released under a **MIT License**:
+visdev is released under a **MIT License**:
 
-    Copyright (C) 2014 by David Stone
+    Copyright (C) 2015 by David Stone
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
