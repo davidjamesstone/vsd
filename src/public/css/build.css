@@ -304,9 +304,8 @@ text {
   flex-grow: 1;
   position: relative;
 }
-.fs-finder-page .toggle-menu,
-.fs-finder-page .toggle-finder {
-  margin-left: 5px;
+.fs-finder-page .toggle-menu {
+  margin-right: 5px;
 }
 .fs-finder-page .recent-file-tabs {
   margin-bottom: 0;

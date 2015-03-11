@@ -598,6 +598,18 @@
               "required": true,
               "ref": "0535980761854775"
             }
+          },
+          {
+            "id": "6141200",
+            "name": "NewKeyName",
+            "type": "Array",
+            "def": {
+              "oftype": "ForeignKey",
+              "def": {
+                "required": true,
+                "ref": "8315313"
+              }
+            }
           }
         ]
       }
@@ -646,6 +658,24 @@
             "type": "String",
             "def": {
               "required": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "8315313",
+      "name": "OrderLine",
+      "installed": true,
+      "keys": {
+        "items": [
+          {
+            "id": "6068767",
+            "name": "FirstKeyName",
+            "type": "Number",
+            "def": {
+              "min": 1,
+              "max": 100
             }
           }
         ]

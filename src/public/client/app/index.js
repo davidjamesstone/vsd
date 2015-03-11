@@ -37,6 +37,7 @@ mod.run(['uiAceConfig',
   function(uiAceConfig) {
     uiAceConfig.ace = {};
     angular.extend(uiAceConfig.ace, {
+      fontSize: aceConfig.fontSize,
       useSoftTabs: aceConfig.useSoftTabs,
       tabSize: aceConfig.tabSize,
       useWrapMode: aceConfig.useWrapMode,

@@ -34,7 +34,8 @@ var watcher = chokidar.watch(root, {
       } else {
 
         // Ignore dot files
-        return fso.name.startsWith('.');
+        // return fso.name.startsWith('.');
+        return false;
       }
     }
 

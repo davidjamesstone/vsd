@@ -8,9 +8,6 @@
     "cookie-parser": "^1.3.3",
     "body-parser": "^1.9.2",
     "express": "^4.10.2",
-    "morgan": "^1.5.0",
-    "mers": "^0.9.3",
-    "mongoose": "^3.9.6",
     "methods": "^1.1.0",
     "lingo": "0.0.5",
     "chokidar": "^0.9.0",
@@ -31,7 +28,6 @@
     "vsd-shared": "^0.0.1"
   },
   "devDependencies": {
-    "is-utf8": "^0.2.0"
   },
   "scripts": {
     "build": "npm run build-js && npm run build-css",

@@ -168,7 +168,7 @@ Object.defineProperties(AppModel.prototype, {
   readmeFile: {
     get: function() {
       return this.tree.children.find(function(item) {
-        return /^readme.$/.test(item.name.toLowerCase());
+        return !item.isDirectory && /^readme/.test(item.name.toLowerCase());
       });
     }
   },

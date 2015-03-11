@@ -53,10 +53,10 @@ module.exports = function($timeout) {
 
         // Set an object for the graph label
         g.setGraph({
-          //rankdir: 'TB',
-          nodesep: 250,
-          edgesep: 150,
-          marginx: 30,
+          rankdir: 'TB',
+          nodesep: 150,
+          edgesep: 70,
+          marginx: 10,
           marginy: 30
 
         });
@@ -102,10 +102,6 @@ module.exports = function($timeout) {
           el.style.left = left + 'px';
 
         });
-
-g.edges().forEach(function(e) {
-    console.log("Edge " + e.v + " -> " + e.w + ": " + JSON.stringify(g.edge(e)));
-});
 
       }
 
@@ -158,7 +154,7 @@ g.edges().forEach(function(e) {
 
             for (var j = 0; j < ends.length; j++) {
               var target = document.getElementById(ends[j]);
-              var connector = 'Flowchart';
+              var connector = '';//Flowchart';
               var anchors = [
                 [
                   [0.25, 0, 0, -1], 'Top', [0.75, 0, 0, -1], [0.25, 1, 0, 1], 'Bottom', [0.75, 1, 0, 1]

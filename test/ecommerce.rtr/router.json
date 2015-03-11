@@ -16,33 +16,18 @@
     ],
     "routes": [
       {
-        "id": "7763732",
-        "path": "/contact-us",
-        "actions": [
-          {
-            "verb": "GET",
-            "handlers": []
-          },
-          {
-            "verb": "POST",
-            "handlers": [
-              {
-                "location": "./index",
-                "name": "someMiddleware"
-              },
-              {
-                "location": "./index",
-                "name": "postContactUs"
-              }
-            ]
-          }
-        ],
-        "routes": []
-      },
-      {
         "id": "3279828",
         "path": "/category/:category",
         "actions": [
+          {
+            "verb": "ALL",
+            "handlers": [
+              {
+                "location": "loc",
+                "name": "fn"
+              }
+            ]
+          },
           {
             "verb": "GET",
             "handlers": [

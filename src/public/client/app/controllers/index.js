@@ -61,11 +61,11 @@ module.exports = function($scope, $state, fs, watcher, fileService, dialog, colo
 
   // Color function used to create deterministic colors from a string
   $scope.color = function(item) {
-    var str = (item instanceof FileSystemObject) ? item.ext : item;
+    var str = (item instanceof FileSystemObject) ? (!item.isDirectory && item.ext) : item;
     return str ? '#' + colorService(str).hex() : '';
   };
   $scope.colorText = function(item) {
-    var str = (item instanceof FileSystemObject) ? item.ext : item;
+    var str = (item instanceof FileSystemObject) ? (!item.isDirectory &&  item.ext) : item;
     return str ? '#' + colorService(str).readable().hex() : '';
   };
 
