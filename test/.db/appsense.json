@@ -1,0 +1,779 @@
+{
+  "name": "DesktopNow",
+  "schemas": [
+    {
+      "id": "9814058",
+      "name": "Tenant",
+      "installed": true,
+      "keys": {
+        "items": [
+          {
+            "id": "8432180",
+            "name": "name",
+            "type": "String",
+            "def": {
+              "required": true
+            }
+          },
+          {
+            "id": "6807669",
+            "name": "description",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "2378130",
+            "name": "owner",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "8696418",
+            "name": "apiKey",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "4745988",
+            "name": "master",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "1711720",
+            "name": "isPrivate",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "1063780",
+            "name": "created",
+            "type": "Date",
+            "def": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "9794629",
+      "name": "GroupMember",
+      "installed": false,
+      "keys": {
+        "items": [
+          {
+            "id": "9250465",
+            "name": "objectType",
+            "type": "String",
+            "def": {
+              "required": true,
+              "defaultValue": "",
+              "enumeration": "Ldap Local"
+            }
+          },
+          {
+            "id": "7705550",
+            "name": "objectName",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "3290824",
+            "name": "objectId",
+            "type": "String",
+            "def": {
+              "required": false,
+              "trim": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "6247147",
+      "name": "Group",
+      "installed": true,
+      "keys": {
+        "items": [
+          {
+            "id": "7772962",
+            "name": "tenantId",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "9814058"
+            }
+          },
+          {
+            "id": "3629344",
+            "name": "name",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "7238034",
+            "name": "description",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "2257251",
+            "name": "members",
+            "type": "Array",
+            "def": {
+              "oftype": "ChildDocument",
+              "def": {
+                "required": true,
+                "ref": "9794629"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "5792212",
+      "name": "Config",
+      "installed": true,
+      "keys": {
+        "items": [
+          {
+            "id": "3408233",
+            "name": "tenantId",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "9814058"
+            }
+          },
+          {
+            "id": "9896283",
+            "name": "name",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "9832346",
+            "name": "description",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "9198021",
+            "name": "groupId",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "6247147"
+            }
+          },
+          {
+            "id": "2609854",
+            "name": "personalizationGroup",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "5614336",
+            "name": "modified",
+            "type": "Date",
+            "def": {
+              "required": true
+            }
+          },
+          {
+            "id": "6886822",
+            "name": "apps",
+            "type": "Array",
+            "def": {
+              "oftype": "ChildDocument",
+              "def": {
+                "required": true,
+                "ref": "9571809"
+              }
+            }
+          },
+          {
+            "id": "9633852",
+            "name": "windowSettings",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "5162884"
+            }
+          },
+          {
+            "id": "9111461",
+            "name": "triggers",
+            "type": "Array",
+            "def": {
+              "oftype": "ChildDocument",
+              "def": {
+                "required": true,
+                "ref": "3764330"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "1495965",
+      "name": "Role",
+      "installed": true,
+      "keys": {
+        "items": [
+          {
+            "id": "555902",
+            "name": "tenantId",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "9814058"
+            }
+          },
+          {
+            "id": "9896397",
+            "name": "name",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "4469187",
+            "name": "description",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "1438268",
+            "name": "configRights",
+            "type": "String",
+            "def": {
+              "required": false,
+              "trim": true
+            }
+          },
+          {
+            "id": "909427",
+            "name": "applicationRights",
+            "type": "String",
+            "def": {
+              "required": false,
+              "trim": true
+            }
+          },
+          {
+            "id": "7307415",
+            "name": "windowsSettingRights",
+            "type": "String",
+            "def": {
+              "required": false,
+              "trim": true
+            }
+          },
+          {
+            "id": "535473",
+            "name": "actionRights",
+            "type": "String",
+            "def": {
+              "required": false,
+              "trim": true
+            }
+          },
+          {
+            "id": "5829632",
+            "name": "userRights",
+            "type": "String",
+            "def": {
+              "required": false,
+              "trim": true
+            }
+          },
+          {
+            "id": "8202377",
+            "name": "roleRights",
+            "type": "String",
+            "def": {
+              "required": false,
+              "trim": true
+            }
+          },
+          {
+            "id": "191762",
+            "name": "insightRights",
+            "type": "String",
+            "def": {
+              "required": false,
+              "trim": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "2886203",
+      "name": "User",
+      "installed": true,
+      "keys": {
+        "items": [
+          {
+            "id": "8338136",
+            "name": "tenantId",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "9814058"
+            }
+          },
+          {
+            "id": "7713257",
+            "name": "username",
+            "type": "String",
+            "def": {
+              "unique": true,
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "8422709",
+            "name": "password",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "3384474",
+            "name": "email",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "3038643",
+            "name": "role",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "1495965"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "5162884",
+      "name": "WindowSetting",
+      "installed": true,
+      "keys": {
+        "items": [
+          {
+            "id": "7781330",
+            "name": "tenantId",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "9814058"
+            }
+          },
+          {
+            "id": "8642077",
+            "name": "name",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "5980384",
+            "name": "description",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "8578458",
+            "name": "guid",
+            "type": "String",
+            "def": {
+              "unique": true,
+              "index": true,
+              "required": true,
+              "trim": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "4534360",
+      "name": "Snippet",
+      "installed": true,
+      "keys": {
+        "items": [
+          {
+            "id": "5780497",
+            "name": "tenantId",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "9814058"
+            }
+          },
+          {
+            "id": "8359571",
+            "name": "name",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "4599257",
+            "name": "configData",
+            "type": "Mixed",
+            "def": {}
+          },
+          {
+            "id": "5003402",
+            "name": "parameters",
+            "type": "Array",
+            "def": {
+              "oftype": "ChildDocument",
+              "def": {
+                "required": true,
+                "ref": "8805080"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "8805080",
+      "name": "SnippetParameter",
+      "installed": false,
+      "keys": {
+        "items": [
+          {
+            "id": "3210105",
+            "name": "tenantId",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "9814058"
+            }
+          },
+          {
+            "id": "8568305",
+            "name": "name",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "6751874",
+            "name": "description",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "8421417",
+            "name": "kind",
+            "type": "String",
+            "def": {
+              "required": true,
+              "enumeration": "String Boolean Integer",
+              "trim": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "1790920",
+      "name": "ConfiguredSnippet",
+      "installed": false,
+      "keys": {
+        "items": [
+          {
+            "id": "4538911",
+            "name": "tenantId",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "9814058"
+            }
+          },
+          {
+            "id": "8467822",
+            "name": "snippet",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "4534360"
+            }
+          },
+          {
+            "id": "4103256",
+            "name": "parameters",
+            "type": "Array",
+            "def": {
+              "oftype": "String",
+              "def": {
+                "required": true,
+                "trim": false
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "3764330",
+      "name": "Trigger",
+      "installed": false,
+      "keys": {
+        "items": [
+          {
+            "id": "9486789",
+            "name": "tenantId",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "9814058"
+            }
+          },
+          {
+            "id": "6134344",
+            "name": "kind",
+            "type": "String",
+            "def": {
+              "required": true,
+              "enumeration": "Startup Shutdown Logon Logoff NetworkConnected NetworkDisconnected SessionReconnected SessionDisconnected SessionLocked SessionUnlocked",
+              "trim": true
+            }
+          },
+          {
+            "id": "4730845",
+            "name": "snippets",
+            "type": "Array",
+            "def": {
+              "oftype": "ChildDocument",
+              "def": {
+                "required": true,
+                "ref": "1790920"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "3429176",
+      "name": "App",
+      "installed": true,
+      "keys": {
+        "items": [
+          {
+            "id": "8401595",
+            "name": "tenantId",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "9814058"
+            }
+          },
+          {
+            "id": "9090585",
+            "name": "name",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "5448402",
+            "name": "version",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "5408163",
+            "name": "path",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "8099961",
+            "name": "signature",
+            "type": "String",
+            "def": {
+              "required": true,
+              "trim": true
+            }
+          },
+          {
+            "id": "1296507",
+            "name": "icon",
+            "type": "String",
+            "def": {
+              "required": false,
+              "trim": true
+            }
+          },
+          {
+            "id": "6081070",
+            "name": "guid",
+            "type": "String",
+            "def": {
+              "required": false,
+              "trim": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "9571809",
+      "name": "ConfiguredApp",
+      "installed": false,
+      "keys": {
+        "items": [
+          {
+            "id": "9167743",
+            "name": "tenantId",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "9814058"
+            }
+          },
+          {
+            "id": "5057369",
+            "name": "appId",
+            "type": "ForeignKey",
+            "def": {
+              "required": true,
+              "ref": "3429176"
+            }
+          },
+          {
+            "id": "4207012",
+            "name": "isBlocked",
+            "type": "Boolean",
+            "def": {
+              "required": true
+            }
+          },
+          {
+            "id": "3614582",
+            "name": "isElevated",
+            "type": "Boolean",
+            "def": {
+              "required": true
+            }
+          },
+          {
+            "id": "627692",
+            "name": "isPersonalized",
+            "type": "Boolean",
+            "def": {
+              "required": true
+            }
+          },
+          {
+            "id": "6514164",
+            "name": "isMonitored",
+            "type": "Boolean",
+            "def": {
+              "required": true
+            }
+          },
+          {
+            "id": "9929981",
+            "name": "startSnippets",
+            "type": "Array",
+            "def": {
+              "oftype": "ChildDocument",
+              "def": {
+                "required": true,
+                "ref": "1790920"
+              }
+            }
+          },
+          {
+            "id": "9009712",
+            "name": "stopSnippets",
+            "type": "Array",
+            "def": {
+              "oftype": "ChildDocument",
+              "def": {
+                "required": true,
+                "ref": "1790920"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

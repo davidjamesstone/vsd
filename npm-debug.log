@@ -1,0 +1,26 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'run', 'build-css' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.38
+4 verbose run-script [ 'prebuild-css', 'build-css', 'postbuild-css' ]
+5 info prebuild-css vsd@0.0.4
+6 info build-css vsd@0.0.4
+7 verbose unsafe-perm in lifecycle true
+8 info vsd@0.0.4 Failed to exec build-css script
+9 error vsd@0.0.4 build-css: `lessc ./src/public/client/index.less > ./src/public/css/build.css`
+9 error Exit status 127
+10 error Failed at the vsd@0.0.4 build-css script.
+10 error This is most likely a problem with the vsd package,
+10 error not with npm itself.
+10 error Tell the author that this fails on your system:
+10 error     lessc ./src/public/client/index.less > ./src/public/css/build.css
+10 error You can get their info via:
+10 error     npm owner ls vsd
+10 error There is likely additional logging output above.
+11 error System Darwin 14.3.0
+12 error command "node" "/usr/local/bin/npm" "run" "build-css"
+13 error cwd /Users/davidstone/Documents/code/bench/vsd
+14 error node -v v0.10.38
+15 error npm -v 1.4.28
+16 error code ELIFECYCLE
+17 verbose exit [ 1, true ]

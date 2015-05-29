@@ -53,7 +53,7 @@ module.exports = function($timeout) {
 
         // Set an object for the graph label
         g.setGraph({
-          rankdir: 'TB',
+          rankdir: 'BT',
           nodesep: 150,
           edgesep: 70,
           marginx: 10,
@@ -154,10 +154,11 @@ module.exports = function($timeout) {
 
             for (var j = 0; j < ends.length; j++) {
               var target = document.getElementById(ends[j]);
-              var connector = '';//Flowchart';
+              var connector = ''; //Flowchart';
               var anchors = [
                 [
-                  [0.25, 0, 0, -1], 'Top', [0.75, 0, 0, -1], [0.25, 1, 0, 1], 'Bottom', [0.75, 1, 0, 1]
+                  [0.25, 0, 0, -1], 'Top', [0.75, 0, 0, -1],
+                  [0.25, 1, 0, 1], 'Bottom', [0.75, 1, 0, 1]
                 ],
                 [
                   'Left', 'Right'

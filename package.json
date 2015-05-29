@@ -31,6 +31,8 @@
     "vsd-shared": "^0.0.1"
   },
   "devDependencies": {
+    "browserify": "^10.1.1",
+    "less": "^2.5.0"
   },
   "scripts": {
     "build": "npm run build-js && npm run build-css",
