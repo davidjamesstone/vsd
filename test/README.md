@@ -30,5 +30,11 @@ You can create some neat visualizations of the schema:
 
 
 
+# Routing Models
 
- will  and  building a HTTP routing table
+Create any folder with the name ending in `.rtr` and `vsd` will treat this as a routing directory.
+Any `.json` file contained within will be assumed to be a route model definition.
+
+Routes are based on a Sinatra/Express.js style.
+Very much work-in-progress. Probably too much as is, needs to be simpler.
+

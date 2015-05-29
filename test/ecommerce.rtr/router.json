@@ -12,6 +12,15 @@
             "name": "getHomePage"
           }
         ]
+      },
+      {
+        "verb": "POST",
+        "handlers": [
+          {
+            "location": "loc",
+            "name": "fn"
+          }
+        ]
       }
     ],
     "routes": [
@@ -25,15 +34,6 @@
               {
                 "location": "loc",
                 "name": "fn"
-              }
-            ]
-          },
-          {
-            "verb": "GET",
-            "handlers": [
-              {
-                "location": "./category",
-                "name": "getCategory"
               }
             ]
           }
