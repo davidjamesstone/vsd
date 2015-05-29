@@ -55,12 +55,13 @@ There are two special folder names `vsd` looks for:
 
 Create any folder with the name ending in `.db` and `vsd` will treat this as a database directory.
 Any `.json` file contained within will be assumed to be a database model definition.
-`vsd` will then present a visual GUI db designer. While the designer is modelled heavily on
-functionality available in `mongoose`, the model created is abstracted and could be used to
-create db schema to generate databases than mongo.
+`vsd` will then present a visual GUI db designer. 
+
+While the designer is modelled heavily on functionality available in (mongoosejs)[http://mongoosejs.com/], 
+the model created is abstract and could be used to create db schema to generate databases other than mongo.
 
 The npm package [vsd-db-mongoose](https://www.npmjs.com/package/vsd-db-mongoose) converts
-the `.json` to mongoose schema that can then be used. This is currently the only generator
+the `.json` to mongoose schema and models. This is currently the only generator
 available.
 
 There are several demo models contained in the `test` directory. Here's some screenshots:
