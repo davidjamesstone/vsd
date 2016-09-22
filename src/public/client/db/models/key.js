@@ -23,9 +23,17 @@ var key = _.extend({}, base, {
     this.def.initialize(data);
   },
   typeAsString: function() {
-    var names = _.object(_.map(this.keys.schema.db.schemas, function(schema) {
-      return [schema.id, schema.name];
-    }));
+    // var names = _.object(_.map(this.keys.schema.db.schemas, function(schema) {
+    //   return [schema.id, schema.name];
+    // }));
+    var names = {};
+    var db = this.keys.schema.db;
+    db.availableDocumentRefs().forEach(function(item) {
+      names[item.id] = item.name;
+    });
+    db.availableChildDocumentRefs().forEach(function(item) {
+      names[item.id] = item.name;
+    });
 
     var def = this.def;
     var t = this.type;
@@ -55,11 +63,42 @@ var key = _.extend({}, base, {
       return;
     }
   },
+  refItem: function() {
+    var ref = this.ref();
+    if (ref) {
+      var db = this.keys.schema.db;
+      var item = db.getSchemaById(ref) || db.getKeyById(ref);
+      return item;
+    }
+  },
+  refSchema: function() {
+    var ref = this.ref();
+    if (ref) {
+      var db = this.keys.schema.db;
+      var item = db.getSchemaById(ref);
+      if (!item) {
+        item = db.getKeyById(ref);
+        if (item) {
+          item = item.keys.schema;
+        }
+      }
+      return item;
+    }
+  },
+  references: function() {
+    return this.keys.schema.db.references(this);
+  },
+  isReferenced: function() {
+    return this.keys.schema.db.isReferenced(this);
+  },
   isNestedType: function() {
     return this.type == 'NestedDocument';
   },
   isNestedTypeArray: function() {
     return this.isArray() && this.def.oftype === 'NestedDocument';
+  },
+  isChildDocumentTypeArray: function() {
+    return this.isArray() && this.def.oftype === 'ChildDocument';
   },
   isNested: function() {
     return this.isNestedType() || this.isNestedTypeArray();
@@ -74,10 +113,14 @@ var key = _.extend({}, base, {
     return path;
   },
   dotPath: function() {
-    return this.path().map(function(p) { return p.name; }).join('.');
+    return this.path().map(function(p) {
+      return p.name;
+    }).join('.');
   },
   slashPath: function() {
-    return this.path().map(function(p) { return p.name; }).join('/');
+    return this.path().map(function(p) {
+      return p.name;
+    }).join('/');
   },
   childKeys: function() {
     if (this.isNestedType()) {
@@ -104,7 +147,7 @@ var key = _.extend({}, base, {
     return def.errors ? errors.concat(def.errors()) : errors;
   },
   isRequired: function() {
-    return this.isArray() ? this.def.def.required : this.def.required; 
+    return this.isArray() ? this.def.def.required : this.def.required;
   }
 });
 

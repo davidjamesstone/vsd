@@ -1,19 +1,16 @@
 <div ng-controller="DbCtrl" class="db container-fluid">
-
   <!-- Templates -->
   <script type="text/ng-template" id="db-key.html">
     <a ng-click="gotoPath(key)">{{key.name}}</a><span class="small"><span ng-show="key.isRequired()" class="text-danger">&nbsp;*&nbsp;</span>&nbsp;{{key.typeAsString()}}</span>
     <div ng-if="key.isNested()" ng-repeat="keys in [key.isNestedTypeArray() ? key.def.def.keys : key.def.keys]" ng-include="'db-keys.html'">
     </div>
   </script>
-
   <script type="text/ng-template" id="db-keys.html">
     <ul>
       <li class="key tree-node" ng-repeat="key in keys.items" ng-include="'db-key.html'">
       </li>
     </ul>
   </script>
-
   <!-- Validation Errors -->
   <div ng-if="errors().length" class="small alert alert-danger">
     <h5>Validation Errors</h5>
@@ -23,36 +20,22 @@
       </li>
     </ul>
   </div>
-
   <div class="row db-ctnr">
     <div ng-if="showModelViewer" db-viewer></div>
     <div ng-if="showModelGraph" db-graph></div>
     <div class="hidden-xs col-sm-4 model-sidebar">
-
-      <ul ng-if="dbFinder.isModel" class="tree">
+      <ul ng-if="true" class="tree">
         <li>
           <a ng-click="gotoPath(model)">{{ model.name }}</a>
           <ul>
             <li class="schema" ng-repeat="schema in model.schemas">
               <a ng-click="gotoPath(schema)">{{ schema.name }}</a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-
-      <ul ng-if="!dbFinder.isModel" class="tree">
-        <li>
-          <a ng-click="gotoPath(model)">{{ model.name }}</a>
-          <ul>
-            <li class="schema" ng-repeat="schema in [dbFinder.activeSchema]">
-              <a ng-click="gotoPath(schema)">{{ schema.name }}</a>
-              <div ng-repeat="keys in [schema.keys]" ng-include="'db-keys.html'">
+              <div ng-if="dbFinder.activeSchema === schema" ng-repeat="keys in [schema.keys]" ng-include="'db-keys.html'">
               </div>
             </li>
           </ul>
         </li>
       </ul>
-
     </div>
     <div class="col-xs-12 col-sm-8 model-editor">
       <div style="position: absolute; right: 3px; top: 3px;">
@@ -73,5 +56,4 @@
       <div class="editor" ng-if="dbFinder.isKey" ng-include="'/client/db/views/key.html'" ng-controller="DbKeyCtrl"></div>
     </div>
   </div>
-
 </div>

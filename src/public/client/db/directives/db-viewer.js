@@ -38,12 +38,18 @@ module.exports = function($timeout) {
         $scope.$parent.showModelViewer = false;
       };
 
-      $scope.getRefs = function(schema) {
-        if (schema.isSchemaReferenced()) {
-          return schema.schemaReferences().map(function(item) {
-            return item.id;
-          });
-        }
+      // $scope.getRefs = function(schema) {
+      //   if (schema.isSchemaReferenced()) {
+      //     return schema.schemaReferences().map(function(item) {
+      //       return item.id;
+      //     });
+      //   }
+      // };
+
+      $scope.getRefs = function(schemaOrKey) {
+        return schemaOrKey.references().map(function(item) {
+          return item.id;
+        });;
       };
 
       function positionGraph() {
@@ -83,8 +89,11 @@ module.exports = function($timeout) {
 
         });
 
-        model.schemaReferences().forEach(function(key) {
-          g.setEdge(key.keys.schema.id, key.ref());
+        model.references().forEach(function(key) {
+          var e1 = key.keys.schema.id;
+          var e2 = key.refSchema().id;
+          console.log(e1, e2);
+          g.setEdge(e1, e2);
         });
 
         var grp = dagre.layout(g);

@@ -5,7 +5,7 @@ var dagre = require('dagre');
 
 module.exports = function($scope, $http, $state, $modal, dialog, $interval) {
 
-  var dbData = JSON.parse($scope.$parent.editorSession.getValue());
+  var dbData = JSON.parse($scope.$parent.editorSession.getValue() || {});
 
   var model = Object.create(db);
 

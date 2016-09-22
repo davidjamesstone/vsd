@@ -1,7 +1,5 @@
 <div ng-if="!dbFinder.schema">Schema Not Found</div>
-
 <div ng-if="dbFinder.schema" class="panel panel-info">
-
   <div class="panel-heading">
     <div class="panel-title">
       <ol class="breadcrumb">
@@ -12,11 +10,8 @@
       </ol>
     </div>
   </div>
-
   <div class="panel-body">
-
     <form class="form-horizontal">
-
       <!-- Schema Name -->
       <div class="form-group">
         <label for="name" class="col-sm-2 control-label">Schema Name</label>
@@ -24,7 +19,6 @@
           <input type="text" id="name" ng-model="dbFinder.schema.name" class="form-control" focus="true" required ng-pattern="model.nameRegexValidate" />
         </div>
       </div>
-
       <!-- Schema Description -->
       <div class="form-group">
         <label for="description" class="col-sm-2 control-label">Schema Description</label>
@@ -32,18 +26,16 @@
           <textarea id="description" ng-model="dbFinder.schema.description" class="form-control input-sm"></textarea>
         </div>
       </div>
-
       <!-- Schema Installed -->
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
           <div class="checkbox">
             <label>
-              <input type="checkbox" negate ng-model="dbFinder.schema.installed" ng-disabled="dbFinder.schema.isSchemaReferenced()" />Child Schema
+              <input type="checkbox" negate ng-model="dbFinder.schema.installed" ng-disabled="dbFinder.schema.isReferenced()" />Child Schema
             </label>
           </div>
         </div>
       </div>
-
       <div class="form-group">
         <label class="col-sm-2 control-label">Keys</label>
         <div class="col-sm-10">
@@ -53,27 +45,23 @@
           <button type="button" class="btn btn-primary btn-xs" ng-click="addKey(dbFinder.schema.keys)">Add key</button>
         </div>
       </div>
-
     </form>
-
   </div>
-
   <div class="panel-footer text-right">
-    <div ng-if="dbFinder.schema.isSchemaReferenced()">
+    <div ng-if="dbFinder.schema.isReferenced()">
       <!-- References -->
       <h6>References</h6>
       <ul class="list-inline small">
-        <li ng-repeat="key in dbFinder.schema.schemaReferences()"><a ng-click="gotoPath(key)" class="text-muted">{{ key.keys.schema.name + '.' + key.name }}</a>
+        <li ng-repeat="key in dbFinder.schema.references()"><a ng-click="gotoPath(key)" class="text-muted">{{ key.keys.schema.name + '.' + key.name }}</a>
         </li>
       </ul>
       <hr>
     </div>
-    <small ng-if="dbFinder.schema.isSchemaReferenced()" class="text-info">
+    <small ng-if="dbFinder.schema.isReferenced()" class="text-info">
       Schema [{{dbFinder.schema.name}}] cannot be deleted. First remove all references.
     </small>
-    <button type="button" class="btn btn-danger btn-xs" ng-click="deleteSchema(dbFinder.schema)" ng-disabled="dbFinder.schema.isSchemaReferenced()">
+    <button type="button" class="btn btn-danger btn-xs" ng-click="deleteSchema(dbFinder.schema)" ng-disabled="dbFinder.schema.isReferenced()">
       <i class="fa fa-trash"></i> Delete Schema
     </button>
-
   </div>
 </div>

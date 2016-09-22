@@ -1,7 +1,5 @@
 <div ng-if="!key">Key Not Found</div>
-
 <div ng-if="key" class="panel panel-info">
-
   <div class="panel-heading">
     <div class="panel-title">
       <ol class="breadcrumb">
@@ -15,17 +13,14 @@
     </div>
   </div>
   <div class="panel-body">
-
     <!-- Key Editor Form -->
     <form class="form-horizontal">
-
       <!-- Key Name -->
       <div class="form-group">
         <label for="name" class="col-sm-2 control-label">Key Name</label>
         <div class="col-sm-10">
           <div class="input-group">
             <input type="text" id="name" ng-model="key.name" class="form-control" focus="true" required ng-pattern="model.nameRegexValidate" />
-
             <!-- Key Actions Button Group -->
             <div class="input-group-btn" dropdown>
               <button type="button" class="btn btn-default" ng-click="moveKeyUp(key)" tooltip="Move key [{{key.name}}] up" tooltip-placement="top" tooltip-append-to-body="true"><i class="fa fa-arrow-up"></i>
@@ -42,16 +37,15 @@
                 </li>
                 <li><a ng-click="addKey(key.keys, key, true)">Add key above [{{ key.name }}]</a>
                 </li>
-                <li class="divider"></li>
-                <li><a ng-click="deleteKey(key)">Delete key [{{ key.name }}]</a>
+                <li ng1-if="!dbFinder.model.isKeyReferenced(key)" class="divider"></li>
+                <li ng1-if="!dbFinder.model.isKeyReferenced(key)">
+                  <a ng-click="deleteKey(key)">Delete key [{{ key.name }}]</a>
                 </li>
               </ul>
             </div>
           </div>
-
         </div>
       </div>
-
       <!-- Key Description -->
       <div class="form-group">
         <label for="description" class="col-sm-2 control-label">Key Description</label>
@@ -59,15 +53,12 @@
           <textarea id="description" ng-model="key.description" class="form-control input-sm"></textarea>
         </div>
       </div>
-
       <!-- Toggle Def -->
       <div class="clearfix hide">
         <a ng-click="data.isCollapsed = !data.isCollapsed" class="pull-right">{{ data.isCollapsed ? 'more' : 'less'  }}</a>
       </div>
-
       <div ng-show="!data.isCollapsed">
         <hr>
-
         <!-- Key Type (Proxied) -->
         <div class="form-group">
           <label for="type" class="col-sm-2 control-label">Type</label>
@@ -76,16 +67,12 @@
             </select>
           </div>
         </div>
-
         <!-- Key Def -->
         <div ng-repeat="def in [key.def]" ng-include="'/client/db/views/keys/' + key.type.toLowerCase() + '.html'"></div>
-
       </div>
     </form>
-
   </div>
   <div class="panel-footer">
-
     <!-- Siblings -->
     <ul class="list-inline small">
       <li ng-repeat="sibling in key.keys.items">
@@ -93,7 +80,5 @@
         <span ng-if="sibling === key" class="text-muted">{{sibling.name}}</span>
       </li>
     </ul>
-
   </div>
-
 </div>

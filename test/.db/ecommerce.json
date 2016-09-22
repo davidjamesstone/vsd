@@ -59,7 +59,8 @@
             "def": {
               "required": true,
               "enumeration": "Mr Mrs Miss Other",
-              "trim": true
+              "trim": true,
+              "casing": "uppercase"
             }
           },
           {

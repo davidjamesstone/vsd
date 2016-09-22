@@ -1,18 +1,15 @@
-
 <!-- Templates -->
 <script type="text/ng-template" id="key.html">
   <a ng-click="gotoPath(key)">{{key.name}}</a><span class="small"><span ng-show="key.def.required" class="text-danger">&nbsp;*&nbsp;</span>&nbsp;{{key.typeAsString()}}</span>
   <div ng-if="key.isNested()" ng-repeat="keys in [key.isNestedTypeArray() ? key.def.def.keys : key.def.keys]" ng-include="'keys.html'">
   </div>
 </script>
-
 <script type="text/ng-template" id="keys.html">
   <ul>
     <li class="key" ng-repeat="key in keys.items" ng-include="'key.html'">
     </li>
-  <ul>
+    <ul>
 </script>
-
 <div class="container-fluid">
   <div class="row">
     <div class="col-sm-3 col-md-2 sidebar">
@@ -26,15 +23,12 @@
       </ul>
     </div>
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-
       <h1 class="page-header">Db: {{ model.name }}</h1>
-
       <div class="btn-group">
         <button type="button" ng-disabled="errors().length" class="btn btn-default"><i class="fa fa-save"></i></button>
         <button type="button" class="btn btn-default" ng-click="showModelDiagram()"><i class="fa fa-sitemap"></i></button>
         <button type="button" class="btn btn-default" ng-click="showModelJson()"><i class="fa fa-file-o"></i></button>
       </div>
-
       <!-- Validation Errors -->
       <div ng-if="errors().length" class="alert alert-danger">
         <h5>Validation Errors</h5>
@@ -44,7 +38,6 @@
           </li>
         </ul>
       </div>
-
       <div class="row">
         <div ui-view class="col-md-6"></div>
       </div>

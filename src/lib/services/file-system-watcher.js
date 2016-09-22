@@ -1,7 +1,7 @@
 var chokidar = require('chokidar');
 var p = require('path');
 var FileSystemObject = require('vsd-shared').FileSystemObject;
-
+var path = require('path');
 var root = process.cwd();
 
 var watcher = chokidar.watch(root, {
@@ -27,15 +27,13 @@ var watcher = chokidar.watch(root, {
 
         // Otherwise ignore node_modules and bower_components and also ignore
         // any dir starting with a '.' e.g. '.git'
-        return fso.name === 'node_modules' ||
+        return (fso.name === 'node_modules' && root === fso.dir) ||
           fso.name === 'bower_components' ||
           /[\/\\]\./.test(path);
 
       } else {
 
-        // Ignore dot files
-        // return fso.name.startsWith('.');
-        return false;
+        return fso.name === '.DS_Store';
       }
     }
 

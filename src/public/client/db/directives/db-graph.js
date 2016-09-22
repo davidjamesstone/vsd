@@ -17,18 +17,29 @@ module.exports = function($timeout) {
       }).setGraph({});
 
       model.schemas.forEach(function(schema) {
-        
+
         g.setNode(schema.id, {
           label: schema.name,
           style: schema.installed ? 'fill: #d9edf7' : 'fill: #f5f5f5'
         });
 
-        schema.schemaReferences().forEach(function(key) {
-          var keyName = key.name;
-          g.setEdge(schema.id, key.keys.schema.id, {
-            label: key.isArray() ? '[' + keyName + ']' : keyName
-          }, key.name);
+        // schema.references().forEach(function(key) {
+        //   var keyName = key.name;
+        //   g.setEdge(schema.id, key.keys.schema.id, {
+        //     label: key.isArray() ? '[' + keyName + ']' : keyName
+        //   }, key.name);
+        // });
+
+        model.childKeys().forEach(function(key) {
+          var refSchema = key.refSchema();
+          if (refSchema && refSchema.id === schema.id) {
+            var keyName = key.name;
+            g.setEdge(schema.id, key.keys.schema.id, {
+              label: key.isArray() ? '[' + keyName + ']' : keyName
+            }, key.name);
+          }
         });
+
       });
 
       // Set some general styles

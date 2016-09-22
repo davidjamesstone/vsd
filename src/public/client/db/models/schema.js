@@ -17,16 +17,20 @@ var schema = _.extend({}, base, {
       }
     });
 
-    this.keys.initialize((data.keys && data.keys.items) || {} );
+    this.keys.initialize((data.keys && data.keys.items) || {});
   },
   path: function() {
     return [this.db, this];
   },
   dotPath: function() {
-    return this.path().map(function(p) { return p.name; }).join('.');
+    return this.path().map(function(p) {
+      return p.name;
+    }).join('.');
   },
   slashPath: function() {
-    return this.path().map(function(p) { return p.name; }).join('/');
+    return this.path().map(function(p) {
+      return p.name;
+    }).join('/');
   },
   errors: function() {
     var errors = [];
@@ -39,11 +43,11 @@ var schema = _.extend({}, base, {
 
     return errors;
   },
-  schemaReferences: function() {
-    return this.db.schemaReferences(this);
+  references: function() {
+    return this.db.references(this);
   },
-  isSchemaReferenced: function() {
-    return this.db.isSchemaReferenced(this);
+  isReferenced: function() {
+    return this.db.isReferenced(this);
   },
   childKeys: function() {
     return this.keys.childKeys();

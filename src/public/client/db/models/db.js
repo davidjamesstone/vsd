@@ -95,13 +95,13 @@ var db = _.extend({}, base, {
     });
     return dupes ? new Msg('Duplicate Schema name. Please supply a unique name.') : true;
   },
-  schemaReferences: function(schema) {
+  references: function(schemaOrKey) {
     return this.childKeys().filter(function(key) {
-      return schema ? key.ref() === schema.id : key.ref();
+      return schemaOrKey ? key.ref() === schemaOrKey.id : key.ref();
     });
   },
-  isSchemaReferenced: function(schema) {
-    return this.schemaReferences(schema).length > 0;
+  isReferenced: function(schemaOrKey) {
+    return this.references(schemaOrKey).length > 0;
   },
   staticTypes: staticTypes,
   childDocumentType: childDocumentType,
@@ -117,12 +117,37 @@ var db = _.extend({}, base, {
     });
   },
   availableDocumentRefs: function() {
-    return _.map(this.installedSchemas(), function(schema) {
-      return {
+    var refs = [];
+
+    function checkChildren(keys) {
+      var items, key;
+
+      items = keys.items;
+
+      for (var i = 0; i < items.length; i++) {
+        key = items[i];
+        if (key.isChildDocumentTypeArray()) {
+          var path = key.dotPath();
+          var name = path.substr(path.indexOf('.') + 1);
+          refs.push({
+            id: key.id,
+            name: name
+          });
+        } else if (key.isNestedType()) {
+          checkChildren(key.def.keys);
+        }
+      };
+    }
+
+    _.each(this.installedSchemas(), function(schema) {
+      refs.push({
         id: schema.id,
         name: schema.name
-      };
+      });
+      checkChildren(schema.keys);
     });
+
+    return refs;
   },
   availableChildDocumentRefs: function() {
     return _.map(this.notInstalledSchemas(), function(schema) {
