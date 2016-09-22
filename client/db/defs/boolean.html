@@ -1,0 +1,15 @@
+<div class="form-group">
+  <div>
+    <label class="checkbox-inline">
+      <input type="checkbox" checked="{model.required}" onchange="{model.required = this.checked}"> Required
+    </label>
+  </div>
+</div>
+<div class="form-group">
+  <label for="defaultValue">Default value</label>
+  <select id="defaultValue" value="{model.defaultValue}" onchange="{model.defaultValue = this.value ? this.value : null}" class="form-control input-sm">
+    <option></option>
+    <option value="true" selected="{model.defaultValue === true ? 'selected' : null}">true</option>
+    <option value="false" selected="{model.defaultValue === false ? 'selected' : null}">false</option>
+  </select>
+</div>

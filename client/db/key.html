@@ -1,0 +1,61 @@
+<template args="model root">
+  <script>
+    var keys = model.keys
+  </script>
+  <form class="form">
+    <!-- Key Errors -->
+    <ul if="model.errors.length" class="text-danger">
+      <li each="item in model.errors">
+        {item.error}
+      </li>
+    </ul>
+    <!-- Key Name -->
+    <div class="form-group">
+      <label for="name">Key Name</label>
+      <div class="input-group">
+        <input type="text" id="name" value="{model.name}" onchange="{model.name = this.value}" class="form-control" focus required>
+        <!-- Key Actions Button Group -->
+        <div class="input-group-btn">
+          <button type="button" class="btn btn-default" onclick="{keys.moveKeyUp(model)}" title="Move key [{model.name}] up"><i class="fa fa-arrow-up"></i>
+          </button>
+          <button type="button" class="btn btn-default" onclick="{keys.moveKeyDown(model)}" title="Move key [{model.name}] down"><i class="fa fa-arrow-down"></i>
+          </button>
+          <button type="button" class="btn btn-default" onclick="{root.currentItem = keys.insertKey(model.index + 1)}" title="Add key below [{model.name}]"><i class="fa fa-plus"></i>
+          </button>
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="More actions">
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu pull-right">
+            <li><a onclick="{root.currentItem = keys.insertKey(model.index + 1)}">Add key below [{model.name}]</a>
+            </li>
+            <li><a onclick="{root.currentItem = keys.insertKey(model.index)}">Add key above [{model.name}]</a>
+            </li>
+            <li ng1-if="!dbFinder.model.isKeyReferenced(key)" class="divider"></li>
+            <li ng1-if="!dbFinder.model.isKeyReferenced(key)">
+              <a onclick="{keys.deleteKey(model); root.currentItem = model.owner}">Delete key [{model.name}]</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Key Description -->
+    <div class="form-group">
+      <label for="description">Key Description</label>
+      <textarea id="description" value="{model.description}" onchange="{model.description = this.value}" class="form-control input-sm"></textarea>
+    </div>
+    <!-- Toggle Def -->
+    <hr>
+    <!-- Key Type (Proxied) -->
+    <div class="form-group">
+      <label for="type">Type</label>
+      <select id="type" value="{model.type}" onchange="{model.type = this.value}" class="form-control input-sm">
+        <option each="type in root.staticTypes" value="{type}" selected="{model.type === type ? 'selected' : null}">{type}</option>
+      </select>
+    </div>
+    <!-- Key Def -->
+    <script>
+      var defsView = require('./defs.html')
+      defsView(model.type, model.def, root)
+    </script>
+  </form>
+</template>

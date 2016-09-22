@@ -1,0 +1,22 @@
+<template args="model root">
+  <form class="form">
+    <!-- Schema Name -->
+    <div class="form-group">
+      <label for="name">Schema Name</label>
+      <input type="text" id="name" value="{model.name}" onchange="{model.name = this.value}" class="form-control" focus="true" required>
+    </div>
+    <!-- Schema Description -->
+    <div class="form-group">
+      <label for="description">Schema Description</label>
+      <textarea id="description" value="{model.description}" onchange="{model.description = this.value}" class="form-control input-sm"></textarea>
+    </div>
+    <!-- Schema Virtual -->
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" checked="{model.isVirtual}" onchange="{model.isVirtual = this.value}" disabled="{model.isReferenced() ? 'disabled' : null}"> Child Schema
+      </label>
+    </div>
+    <button type="button" class="btn btn-danger btn-xs pull-right" onclick="{model.model.removeSchema(model); root.currentItem = model.model}" disabled="{model.isReferenced() ? 'disabled' : null}">Remove schema</button>
+    <button type="button" class="btn btn-primary btn-xs" onclick="{root.currentItem = model.keys.addKey()}">Add key</button>
+  </form>
+</template>

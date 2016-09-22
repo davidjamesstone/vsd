@@ -1,0 +1,27 @@
+<template args="model root">
+  <ul>
+    <li each="key in model.items">
+      <script>
+        var isExpanded = root.isExpanded(key)
+      </script>
+      <div class="clearfix">
+        <i if="!key.isNested" class="fa fa-key"></i>
+        <i if="key.isNested" class="{isExpanded ? 'fa fa-folder-open-o' : 'fa fa-folder-o'}" 
+        onclick="{root.onClickToggleNode(key)}"></i>
+        <a onclick="{root.onClickTreeNode(key)}">{key.name}<span if="key.def.required" style="color: red"> *</span></a>
+        <span class="text-muted small">{root.keyAsString(key)}</span>
+      </div>
+      <div if="key.isNested" style="{display: isExpanded ? 'block' : 'none'}">
+        <if condition="key.isNestedDocument">
+          <script>
+            description(key.def.keys, root)
+          </script>
+        <elseif condition="key.isNestedDocumentArray">
+          <script>
+            description(key.def.def.keys, root)
+          </script>
+        </if>
+      </div>
+    </li>
+  </ul>
+</template>

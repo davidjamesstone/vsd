@@ -1,0 +1,92 @@
+<template args="ctrl modelView schemaView keysView keyView">
+  <script>
+    var model = ctrl.model
+    var breadcrumbs = ctrl.breadcrumbs
+  </script>
+  <!-- Custom Tabs -->
+  <div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#_{ctrl.id}_1" data-toggle="tab">Editor</a></li>
+      <li><a href="#_{ctrl.id}_2" class="graph" data-toggle="tab">Diagram</a></li>
+      <li><a href="#_{ctrl.id}_3" data-toggle="tab">JSON</a></li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane active" id="_{ctrl.id}_1">
+        <vsd-breadcrumbs skip model="{breadcrumbs}" icon="database" onclickcrumb="{ctrl.onClickTreeNode($event.item)}"></vsd-breadcrumbs>
+        <div if="model.errors.length" class="alert alert-danger">
+          <h4 class="text-danger">Errors</h4>
+          <ul>
+            <li each="item in model.errors">
+              <a href="javascript:void(0)" onclick="{ctrl.onClickErrorNode(item)}" class="text-danger">{item.error}</a>
+            </li>
+          </ul>
+        </div>
+        <div class="row">
+          <div class="col-xs-6">
+            <ul class="tree">
+              <li>
+                <i class="fa fa-database"></i>
+                <a onclick="{ctrl.currentItem = model}">{model.name || 'Enter name'}</a>
+                <ul>
+                  <script>
+                  var schemas = model.schemas.slice().sort(function (a, b) { return a.name > b.name })
+                </script>
+                  <li each="schema in schemas">
+                    <script>
+                    var isExpanded = ctrl.isExpanded(schema)
+                  </script>
+                    <i class="fa fa-table" style="{color: schema.isVirtual ? '#aaa' : '#000'}" onclick="{ctrl.onClickToggleNode(schema)}"></i>
+                    <a onclick="{ctrl.onClickTreeNode(schema)}">{schema.name}</a>
+                    <div style="{display: isExpanded ? 'block' : 'none'}">
+                      <script>
+                      keysView(schema.keys, ctrl)
+                    </script>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="col-xs-6" if="ctrl.currentItem">
+            <if condition="ctrl.currentItem === model">
+              <script>
+                modelView(model, ctrl)
+              </script>
+            <elseif condition="ctrl.currentItem.isSchema">
+              <script>
+                schemaView(ctrl.currentItem, ctrl)
+              </script>
+            <elseif condition="ctrl.currentItem.isKey">
+              <script>
+                keyView(ctrl.currentItem, ctrl)
+              </script>
+            </if>
+          </div>
+        </div>
+      </div>
+      <!-- /.tab-pane -->
+      <div class="tab-pane" id="_{ctrl.id}_2">
+        <div class="{ctrl.isGraphExpanded ? 'expanded' : ''}">
+          <button type="button" class="btn btn-box-tool expand" 
+            onclick="{ctrl.isGraphExpanded = true}"><i class="fa fa-expand"></i>
+          </button>
+          <button type="button" class="btn btn-box-tool collapse"
+            onclick="{ctrl.isGraphExpanded = false}"><i class="fa fa-compress"></i>
+          </button>
+          <svg class="model-graph">
+            <g skip/>
+          </svg>
+        </div>
+      </div>
+      <!-- /.tab-pane -->
+      <div class="tab-pane" id="_{ctrl.id}_3">
+        <pre style="height: 400px">{JSON.stringify(model, null, 2)}</pre>
+      </div>
+      <!-- /.tab-pane -->
+    </div>
+    <!-- /.tab-content -->
+  </div>
+  <!-- nav-tabs-custom -->
+  </div>
+  </div>
+</template>

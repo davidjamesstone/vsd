@@ -1,0 +1,61 @@
+<template args="type def root">
+    <script>
+      var defView
+    </script>
+  <if condition="type === 'String'">
+    <script>
+      defView = require('./defs/string.html')
+      defView(def, root)
+    </script>
+  <elseif condition="type === 'Number'">
+    <script>
+      defView = require('./defs/number.html')
+      defView(def, root)
+    </script>
+  <elseif condition="type === 'Boolean'">
+    <script>
+      defView = require('./defs/boolean.html')
+      defView(def, root)
+    </script>
+  <elseif condition="type === 'Date'">
+    <script>
+      defView = require('./defs/date.html')
+      defView(def, root)
+    </script>
+  <elseif condition="type === 'Mixed'">
+    <script>
+      defView = require('./defs/mixed.html')
+      defView(def, root)
+    </script>
+  <elseif condition="type === 'ObjectId'">
+    <script>
+      defView = require('./defs/objectid.html')
+      defView(def, root)
+    </script>
+  <elseif condition="type === 'Array'">
+    <script>
+      defView = require('./defs/array.html')
+      defView(def, root)
+    </script>
+  <elseif condition="type === 'NestedDocument'">
+    <script>
+      defView = require('./defs/nesteddocument.html')
+      defView(def, root)
+    </script>
+  <elseif condition="type === 'ForeignKey'">
+    <script>
+      defView = require('./defs/foreignkey.html')
+      defView(def, root)
+    </script>
+  <elseif condition="type === 'ChildDocument'">
+    <script>
+      defView = require('./defs/childdocument.html')
+      defView(def, root)
+    </script>
+  <elseif condition="type === 'Buffer'">
+    <script>
+      defView = require('./defs/buffer.html')
+      defView(def, root)
+    </script>
+  </if>
+</template>

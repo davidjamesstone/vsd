@@ -1,0 +1,224 @@
+vsd-db svg {
+  width: 100%;
+  height: 400px;
+}
+
+vsd-db button.expand {
+  right: 5px;
+  position: absolute;
+  display: block;
+}
+
+vsd-db button.collapse {
+  right: 5px;
+  position: absolute;
+  display: none;
+}
+
+vsd-db .expanded {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 2000;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+vsd-db .expanded svg {
+  width: 100%;
+  height: 100%;
+}
+
+vsd-db .expanded button.expand {
+  display: none;
+}
+
+vsd-db .expanded button.collapse {
+  display: block;
+}
+
+vsd-routes h4 {
+  margin-top: 0;
+}
+
+vsd-routes table {
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+#file-menu {
+  z-index: 10001;
+  position: absolute;
+}
+
+#file-menu ul.dropdown-menu {
+  display: block;
+  font-size: small;
+}
+
+#file-menu ul.dropdown-menu li a {
+  cursor: pointer;
+}
+
+a {
+  cursor: pointer;
+}
+
+.tree, .tree ul {
+  margin: 0;
+  list-style-type: none;
+  position: relative;
+}
+
+.tree {
+  padding: 0 0 0 6px;
+  display: block;
+}
+
+.tree ul {
+  padding: 0 0 0 16px;
+}
+
+.tree li {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  white-space: nowrap;
+}
+
+.tree li i {
+  margin-right: 3px;
+  cursor: pointer;
+  min-width: 8px;
+}
+
+.tree li a {
+  padding: 1px 4px;
+  margin: 1px 0;
+  display: inline-block;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* horizontal line on inner list items */
+/* vertical line on list items */
+/* lower line on list items from the first level because they don't have parents */
+.tree > li::after {
+  top: 10px;
+}
+
+/* hide line from the last of the first level list items */
+.tree > li:last-child::after {
+  display: none;
+}
+
+.tree ul:last-child li:last-child:after {
+  height: 20px;
+}
+
+text {
+  font-weight: 300;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+  font-size: 14px;
+}
+
+.node rect {
+  stroke: #333;
+  fill: #fff;
+  stroke-width: 1.5px;
+}
+
+.edgePath path.path {
+  stroke: #333;
+  fill: none;
+  stroke-width: 1.5px;
+}
+
+.arrowhead {
+  stroke: blue;
+  fill: blue;
+  stroke-width: 1.5px;
+}
+
+.popover {
+  font-family: inherit;
+}
+
+:-webkit-full-screen {
+  width: 100%;
+  height: 100%;
+}
+
+.box:-webkit-full-screen {
+  margin: 0;
+  overflow: auto;
+}
+
+.pad-10 {
+  padding: 10px;
+}
+
+/* Layout mods */
+header.main-header {
+  position: fixed;
+  width: 100%;
+}
+
+section.content {
+  padding-top: 60px;
+}
+
+@media (max-width: 768px) {
+  section.content {
+    padding-top: 110px;
+  }
+}
+
+.main-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: fixed;
+}
+
+.main-sidebar .sidebar {
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.sidebar-collapse .main-sidebar .sidebar {
+  overflow: initial;
+}
+
+.control-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: fixed;
+}
+
+.control-sidebar vsd-fs {
+  flex-grow: 1;
+  overflow: auto;
+}
+
+#file-editor {
+  padding: 5px;
+}
+
+vsd-notify {
+  position: absolute;
+  width: 80%;
+  left: 10%;
+  top: 10px;
+  opacity: 0.9;
+}
+
+.navbar-nav > .messages-menu > .dropdown-menu > li .menu > li > a > h4 {
+  font-family: 'ren__stimpyregular';
+  font-size: 18px;
+}

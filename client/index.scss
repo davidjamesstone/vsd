@@ -1,0 +1,181 @@
+@import './db/index.scss'; 
+@import './routes/index.scss'; 
+@import './file-menu/index.scss'; 
+
+a {
+  cursor: pointer;
+}
+
+.tree, .tree ul {
+  margin: 0;
+  list-style-type: none;
+  position: relative;
+  // overflow: hidden;
+}
+
+.tree {
+  padding: 0 0 0 6px;
+  display: block;
+  
+  ul {
+    padding: 0 0 0 16px;
+  }
+
+  li {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    white-space: nowrap;
+
+    i {
+      margin-right: 3px;
+      cursor: pointer;
+      min-width: 8px;
+    }
+
+    a {
+      padding: 1px 4px;
+      margin: 1px 0;
+      display: inline-block;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+  }
+}
+// .tree li::before, .tree li::after {
+//   content:'';
+//   position: absolute;
+//   left: 0;
+// }
+/* horizontal line on inner list items */
+// .tree li::before {
+//   border-top: 1px solid #999;
+//   top: 10px;
+//   width: 10px;
+//   height: 0;
+// }
+/* vertical line on list items */
+//  .tree li:after {
+//   border-left: 1px solid #999;
+//   height: 100%;
+//   width: 0px;
+//   top: -10px;
+// }
+/* lower line on list items from the first level because they don't have parents */
+ .tree > li::after {
+  top: 10px;
+}
+/* hide line from the last of the first level list items */
+ .tree > li:last-child::after {
+  display: none;
+}
+.tree ul:last-child li:last-child:after {
+  height: 20px;
+}
+
+text {
+  font-weight: 300;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+  font-size: 14px;
+}
+
+.node rect {
+  stroke: #333;
+  fill: #fff;
+  stroke-width: 1.5px;
+}
+
+.edgePath path.path {
+  stroke: #333;
+  fill: none;
+  stroke-width: 1.5px;
+}
+
+.arrowhead {
+ stroke: blue;
+ fill: blue;
+ stroke-width: 1.5px;
+}
+
+.popover {
+  font-family: inherit;
+}
+
+:-webkit-full-screen {
+  width: 100%;
+  height: 100%;
+}
+
+.box:-webkit-full-screen {
+  margin: 0;
+  overflow: auto;
+}
+
+.pad-10 {
+  padding: 10px;
+}
+
+/* Layout mods */
+header.main-header {
+  position: fixed;
+  width: 100%;
+}
+
+section.content {
+  padding-top: 60px;
+  @media (max-width: 768px) {
+    padding-top: 110px;
+  }
+}
+
+.main-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: fixed;
+
+  .sidebar {
+    flex-grow: 1;
+    overflow: auto;
+  }
+}
+
+.sidebar-collapse {
+  .main-sidebar {
+    .sidebar {
+      overflow: initial;
+    }
+  }
+}
+
+.control-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: fixed;
+
+  vsd-fs {
+    flex-grow: 1;
+    overflow: auto;
+  }
+}
+
+#file-editor {
+  padding: 5px;
+}
+
+vsd-notify {
+  position: absolute;
+  width: 80%;
+  left: 10%;
+  top: 10px;
+  opacity: 0.9;
+}
+
+.navbar-nav > .messages-menu > .dropdown-menu > li .menu > li > a > h4 {
+  font-family: 'ren__stimpyregular';
+  font-size: 18px;
+}

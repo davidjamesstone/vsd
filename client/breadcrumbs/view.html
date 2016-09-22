@@ -1,0 +1,17 @@
+<script>
+  var el = model
+  model = model.model
+</script>
+<ol class="breadcrumb">
+  <li each="crumb in model.crumbs" class="{model.isLast(crumb) ? 'active' : ''}">
+    <if condition="model.isFirst(crumb)">
+      <a onclick="{el.onclickcrumb && el.onclickcrumb(crumb)}">
+        <i if="model.icon" class="fa fa-{model.icon}"></i> {crumb.text || ''}
+      </a>
+    <elseif condition="model.isLast(crumb)">
+      {crumb.text}
+    <else>
+      <a onclick="{el.onclickcrumb && el.onclickcrumb(crumb)}"> {crumb.text}</a>
+    </if>
+  </li>
+</ol>

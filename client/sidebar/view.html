@@ -1,0 +1,68 @@
+<template args="ctrl">
+  <aside class="main-sidebar">
+    <section class="sidebar">
+      <!-- search form -->
+      <form onsubmit="{ctrl.query = this.q.value}" class="sidebar-form">
+        <div class="input-group">
+          <input onkeyup="{ctrl.query = this.value}" type="text" name="q" class="form-control" placeholder="Search...">
+          <span class="input-group-btn">
+            <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+            </button>
+          </span>
+        </div>
+      </form>
+      <ul class="sidebar-menu">
+        <if condition="ctrl.query">
+          <script>
+            var results = ctrl.searchFiles()
+          </script>
+          <li each="result in results">
+            <script>
+              var relativePath = result.getRelativePath()
+            </script>
+            <a class="file" href="#{relativePath}">
+              <span>{relativePath}</span>
+              <!--<small class="label pull-right bg-green">Hot</small>-->
+            </a>
+          </li>
+        </if>
+        <li class="header" style="text-transform: uppercase;">{ctrl.name}</li>
+        <li class="treeview active">
+          <a href="#">
+            <i class="fa fa-dashboard"></i> <span>Open editors</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu menu-open">
+            <li each="item, item.ref in ctrl.recent.items">
+              <a href="#{item.ref}"><i class="fa fa-file-o hide"></i> {item.getDisplayName()}</a>
+            </li>
+          </ul>
+        </li>
+
+        <li each="link in ctrl.getLinks()" class="{link.children ? 'treeview' : ''}">
+          <if condition="link.children">
+            <a>
+              <i class="fa fa-{link.icon}"></i>
+              <span>{link.text}</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li each="child, child.href in link.children">
+                <a class="file" href="{child.href}"><i class="fa fa-circle-o"></i> {child.text}</a>
+              </li>
+            </ul>
+          <else>
+            <a class="file" href="{link.href}">
+              <i class="fa fa-{link.icon}"></i> <span>{link.text}</span>
+              <!--<small class="label pull-right bg-green">Hot</small>-->
+            </a>
+          </if>
+        </li>
+      </ul>
+    </section>
+  </aside>
+</template>

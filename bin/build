@@ -1,0 +1,6 @@
+#!/bin/bash
+
+npm run clean:admin &&
+npm run copy:admin &&
+npm run build:css &&
+npm run build:js

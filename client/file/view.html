@@ -1,0 +1,50 @@
+<template args="model">
+  <div if="model.file" class="box">
+    <script>
+      var box = currentElement()
+    </script>
+    <div class="box-header with-border">
+      <h3 class="box-title">{model.file.name}</h3>
+      <div class="box-tools pull-right">
+        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+        </button>
+        <button type="button" class="btn btn-box-tool" onclick="{model.requestFullscreen(box)}"><i class="fa fa-square-o"></i>
+        </button>
+        <div class="btn-group hide">
+          <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-wrench"></i></button>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">Rename</a></li>
+            <li><a href="#">Delete</a></li>
+            <li><a href="#">Copy</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Delete</a></li>
+          </ul>
+        </div>
+        <button type="button" class="btn btn-box-tool" onclick="{model.onCloseClick($event, box)}"><i class="fa fa-times"></i></button>
+      </div>
+    </div>
+    <script>
+      var type = model.getType()
+    </script>
+    <div class="box-body no-padding">
+      <if condition="type === 'routes'">
+        <vsd-routes child contents="{model.contents}" skip 
+          path="{model.file.path}"
+          oncontentchange="{model.onContentChange($event)}"></vsd-routes>
+      <elseif condition="type === 'db'">
+        <vsd-db child contents="{model.contents}" skip 
+          oncontentchange="{model.onContentChange($event)}"></vsd-db>
+      <else>
+        <vsd-ace child mode="{model.getMode(model.file)}" skip 
+          contents="{model.contents}"
+          oncontentchange="{model.onContentChange($event)}"
+          style="height: 400px; display: block; -webkit-font-smoothing: auto;"></vsd-ace>
+      </if>
+    </div>
+    <div class="box-footer">
+      <strong class="text-muted pull-right">{model.getFilesize()}</strong>
+      <span class="text-muted">{model.getRelativePath(model.file.path)}</span>
+    </div>
+  </div>
+</template>

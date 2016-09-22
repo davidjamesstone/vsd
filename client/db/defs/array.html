@@ -1,0 +1,14 @@
+<template args="model root">
+  <!-- Key Def -->
+  <div class="form-group">
+    <label for="oftype">Of</label>
+    <select id="oftype" value="{model.oftype}" onchange="{model.oftype = this.value}" class="form-control input-sm">
+      <option each="type in root.staticTypes" value="{type}" selected="{model.oftype === type ? 'selected' : null}">{type}</option>
+    </select>
+  </div>
+  <!-- Key Def -->
+  <script>
+    var defsView = require('../defs.html')
+    defsView(model.oftype, model.def, root)
+  </script>
+</template>

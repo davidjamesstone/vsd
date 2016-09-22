@@ -1,0 +1,43 @@
+<template name="fileEditor" args="model hide">
+  <script>
+    var file = model.file
+  </script>
+  <div if="file" class="file-editor">
+    <form if="model.mode === 'mkfile'" key="mkfile" onsubmit="{model.mkfile($event)}">
+      <div class="form-group">
+        <label for="name">Add new file</label>
+        <div class="input-group">
+          <input type="text" class="form-control input-sm" id="filename">
+          <span class="input-group-btn">
+            <button class="btn btn-primary btn-sm" type="submit">OK</button>
+            <button class="btn btn-secondary btn-sm" type="button" onclick="{hide()}">Cancel</button>
+          </span>
+        </div>
+      </div>
+    </form>
+    <form if="model.mode === 'mkdir'" key="mkdir" onsubmit="{model.mkdir($event)}">
+      <div class="form-group">
+        <label for="name">Add new folder</label>
+        <div class="input-group">
+          <input type="text" class="form-control input-sm" id="dirname" value="{file.getRelativePath() ? file.getRelativePath() + '/' : ''}">
+          <span class="input-group-btn">
+            <button class="btn btn-primary btn-sm" type="submit">OK</button>
+            <button class="btn btn-secondary btn-sm" type="button" onclick="{hide()}">Cancel</button>
+          </span>
+        </div>
+      </div>
+    </form>
+    <form if="model.mode === 'rename'" key="rename" onsubmit="{model.rename($event, file)}">
+      <div class="form-group">
+        <label for="name">Rename</label>
+        <div class="input-group">
+          <input type="text" class="form-control input-sm" id="rename" value="{file.name}">
+          <span class="input-group-btn">
+            <button class="btn btn-primary btn-sm" type="submit">OK</button>
+            <button class="btn btn-secondary btn-sm" type="button" onclick="{hide()}">Cancel</button>
+          </span>
+        </div>
+      </div>
+    </form>
+  </div>
+</template>

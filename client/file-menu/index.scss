@@ -1,0 +1,11 @@
+#file-menu {
+  z-index: 10001;
+  position: absolute;
+  ul.dropdown-menu {
+    display: block;
+    font-size: small;
+    li a {
+      cursor: pointer;
+    }
+  }
+}

@@ -1,0 +1,124 @@
+<template args="ctrl">
+  <div if="ctrl && ctrl.model" class="routes">
+    <script>
+      var model = ctrl.model
+      var routes = ctrl.filtered
+    </script>
+    <div class="pad-10">
+      <h4>{model.name}</h4> {model.description}
+      <div if="!routes.length" class="callout callout-info">
+        <h4>No routes found</h4>
+        <p if="!model.routes.length">Click `Add Route` to add your first route.</p>
+        <p if="model.routes.length">Change the search query.</p>
+      </div>
+      <div if="model.errors.length" class="alert alert-danger">
+        <h4 class="text-danger">Errors</h4>
+        <ul>
+          <li each="item in model.errors">
+            <a onclick="{ctrl.onClickErrorNode(item)}" class="text-danger">{item.error}</a>
+          </li>
+        </ul>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="clearfix">
+            <div class="input-group input-group-sm pull-right" style="width: 180px;">
+              <input type="text" class="form-control pull-right"
+                value="{ctrl.query}" 
+                onkeyup="{ctrl.query = this.value}"
+                placeholder="Search">
+              <div class="input-group-btn">
+                <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+              </div>
+            </div>
+          </div>
+          <table class="table table-bordered table-hover" if="routes.length">
+            <tbody>
+              <tr each="route in routes" onclick="{ctrl.currentRoute = route}"
+                class="{route.getRowClassName(ctrl.currentRoute)}">
+                <td>
+                  <span class="label label-{route.className}">{route.method}</span>
+                </td>
+                <td>{route.path}</td>
+                <td>{route.description}</td>
+                <td>
+                  <a if="route.resourceDisplay" href="#{ctrl.getRelativePath(route)}" class="file">{route.resourceDisplay}</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="clearfix">
+            <button onclick="{ctrl.addRoute()}" class="btn btn-xs btn-primary pull-right">Add</button>
+          </div>
+          <ul class="pagination pagination-sm no-margin pull-right hide">
+            <li><a href="#">«</a></li>
+            <li><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">»</a></li>
+          </ul>
+        </div>      
+        <div if="ctrl.currentRoute" class="col-md-6">
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label for="method" class="col-md-4 control-label">Method</label>
+              <div class="col-md-8">
+                <select class="form-control" onchange="{ctrl.currentRoute.method = this.value}" id="method">
+                  <option value="GET" selected="{ctrl.currentRoute.method === 'GET' ? 'selected' : null}">GET</option>
+                  <option value="POST" selected="{ctrl.currentRoute.method === 'POST' ? 'selected' : null}">POST</option>
+                  <option value="PUT" selected="{ctrl.currentRoute.method === 'PUT' ? 'selected' : null}">PUT</option>
+                  <option value="DELETE" selected="{ctrl.currentRoute.method === 'DELETE' ? 'selected' : null}">DELETE</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="path" class="col-md-4 control-label">Path</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control"
+                  value="{ctrl.currentRoute.path}" 
+                  onchange="{ctrl.currentRoute.path = this.value}" id="path"
+                  placeholder="Path">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="resource-path" class="col-md-4 control-label">Resource path</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control"
+                  value="{ctrl.currentRoute.resource.path}" 
+                  onchange="{ctrl.currentRoute.resource.path = this.value}" id="resource-path"
+                  placeholder="Path">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="resource-name" class="col-md-4 control-label">Resource name</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control"
+                  value="{ctrl.currentRoute.resource.name}" 
+                  onchange="{ctrl.currentRoute.resource.name = this.value}" id="resource-name"
+                  placeholder="Name">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="description" class="col-md-4 control-label">Description</label>
+              <div class="col-md-8">
+                <textarea class="form-control" id="description"
+                  value="{ctrl.currentRoute.description}" 
+                  onchange="{ctrl.currentRoute.description = this.value}"
+                  placeholder="Description"></textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-4 col-sm-8">
+                <input type="checkbox"
+                  checked="{ctrl.currentRoute.ignore}" 
+                  onchange="{ctrl.currentRoute.ignore = this.checked}" id="ignore"> Ignore
+              </div>
+            </div>
+          </form>
+          <button onclick="{ctrl.removeRoute(ctrl.currentRoute)}" class="btn btn-xs btn-danger pull-right">Delete route</button>
+        </div>      
+      </div>
+    </div>
+  </div>
+</template>

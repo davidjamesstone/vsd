@@ -1,0 +1,33 @@
+{
+  "server": {
+    "host": "127.0.0.1",
+    "port": 3002,
+    "labels": "web"
+  },
+  "logging": {
+    "ops": {
+      "interval": 1000
+    },
+    "reporters": {
+      "console": [
+        {
+          "module": "good-squeeze",
+          "name": "Squeeze",
+          "args": [
+            {
+              "log": "*",
+              "response": "*"
+            }
+          ]
+        },
+        {
+          "module": "good-console"
+        },
+        "stdout"
+      ]
+    }
+  },
+  "views": {
+    "isCached": false
+  }
+}

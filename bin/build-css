@@ -1,0 +1,3 @@
+#!/bin/bash
+
+node-sass --output-style=expanded --output=server/public/stylesheets client/index.scss

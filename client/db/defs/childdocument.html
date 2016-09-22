@@ -1,0 +1,18 @@
+<template args="model root">
+  <div class="form-group">
+    <div>
+      <label class="checkbox-inline">
+        <input type="checkbox" checked="{model.required}" onchange="{model.required = this.checked}"> Required
+      </label>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="ref">Ref</label>
+    <select id="ref" value="{model.ref}" onchange="{model.ref = this.value}" class="form-control input-sm">
+      <option></option>
+      <option each="schema in root.availableChildDocumentRefs()" 
+        value="{schema.id}" 
+        selected="{model.ref === schema.id ? 'selected' : null}">{schema.name}</option>
+    </select>
+  </div>
+</template>

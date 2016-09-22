@@ -1,8 +1,0 @@
-<div class="form-group" ng-controller="DbArrayDefCtrl">
-  <label for="oftype" class="col-sm-2 control-label">Of</label>
-  <div class="col-sm-10">
-    <select id="oftype" ng-model="defData.oftype" ng-options="type for type in model.allTypes | filter: '!Array'" class="form-control input-sm">
-    </select>
-  </div>
-</div>
-<div ng-repeat="def in [def.def]" ng-include="'/client/db/views/keys/' + def.key.def.oftype.toLowerCase() + '.html'"></div>

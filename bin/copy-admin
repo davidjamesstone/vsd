@@ -1,0 +1,3 @@
+cp -R node_modules/admin-lte/dist server/public/admin
+cp -R node_modules/admin-lte/plugins server/public/admin
+cp -R node_modules/admin-lte/bootstrap server/public/admin

@@ -1,0 +1,53 @@
+<template name="tree" args="model data root">
+  <script>
+    var isRoot = root === data[0]
+    var current = model.current
+    function sorter (a, b) {
+      if (a.fso.isDirectory) {
+        if (b.fso.isDirectory) {
+          return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1
+        } else {
+          return -1
+        }
+      } else {
+        if (b.fso.isDirectory) {
+          return 1
+        } else {
+          return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1
+        }
+      }
+    }
+    data.sort(sorter)
+  </script>
+  <ul class="{isRoot ? 'tree noselect' : 'noselect'}">
+    <li each="node, node.path in data"
+      oncontextmenu="{model.onRightClick($event, node)}"
+      title="{node.fso.getRelativePath()}"
+      class="{node.fso.isDirectory ? 'dir' : 'file' + (node.fso === current ? ' selected' : '')}">
+      <script>
+        var fso = node.fso
+        var isExpanded = model.isExpanded(fso)
+      </script>
+      <if condition="!fso.isDirectory">
+        <a class="file" href="#{fso.getRelativePath()}">
+          <span data-name="{fso.name}" class="name icon icon-file-text"></span>
+          <span class="file-name">{fso.name}</span>
+        </a>
+      </if>
+      <if condition="fso.isDirectory">
+        <a onclick="{model.onClick(fso)}">
+          <small if="isExpanded" class="expanded"><i class="fa fa-angle-down"></i></small>
+          <small if="!isExpanded" class="collapsed"><i class="fa fa-angle-right"></i></small>
+          <span data-name="{fso.name}" class="name icon icon-file-directory"></span>
+          <span class="dir-name">{fso.name}</span>
+        </a>
+      </if>
+      <span if="!fso.isDirectory && fso === current" class="triangle-left"></span>
+      <if condition="fso.isDirectory && isExpanded">
+        <script>
+          tree(model, node.children, root)
+        </script>
+      </if>
+    </li>
+  </ul>
+</template>

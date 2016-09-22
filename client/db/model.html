@@ -1,0 +1,19 @@
+<template args="model root">
+  <!-- Model Name -->
+  <form class="form">
+    <div class="form-group">
+      <label for="name">Model Name</label>
+      <input type="text" id="name" value="{model.name}" onchange="{model.name = this.value}" class="form-control" focus="true" required>
+    </div>
+    <!-- Model Description -->
+    <div class="form-group">
+      <label for="description">Model Description</label>
+      <textarea id="description" value="{model.description}" onchange="{model.description = this.value}" class="form-control input-sm"></textarea>
+    </div>
+    <!-- Add Schema Button -->
+    <button type="button" class="btn btn-primary btn-xs" onclick="{root.currentItem = model.addSchema()}">
+      <i class="fa fa-plus"></i>
+      Add schema to [{ model.name }]
+    </button>
+  </form>
+</template>

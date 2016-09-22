@@ -1,0 +1,25 @@
+<div class="form-group">
+  <div>
+    <label class="checkbox-inline">
+      <input type="checkbox" checked="{model.required}" onchange="{model.required = this.checked}"> Required
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" checked="{model.unique}" onchange="{model.unique = this.checked}"> Unique
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" checked="{model.index}" onchange="{model.index = this.checked}"> Index
+    </label>
+  </div>
+</div>
+<div class="form-group">
+  <label for="defaultValue">Default value</label>
+  <input type="text" id="defaultValue" value="{model.defaultValue}" onchange="{model.defaultValue = this.value}" class="form-control input-sm" placeholder="Default value" />
+</div>
+<div class="form-group">
+  <label for="min">Minimum value</label>
+  <input type="number" id="min" value="{model.min}" onchange="{model.min = this.value}" class="form-control input-sm" placeholder="Minimum value" />
+</div>
+<div class="form-group">
+  <label for="defaultValue">Maximum value</label>
+  <input type="number" id="defaultValue" value="{model.max}" onchange="{model.max = this.value}" class="form-control input-sm" placeholder="Maximum value" />
+</div>

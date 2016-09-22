@@ -1,0 +1,3 @@
+#!/bin/bash
+
+browserify client/index.js -t [superviewify --args=model] -d | exorcist server/public/js/bundle.js.map > server/public/js/bundle.js

@@ -1,0 +1,36 @@
+<div class="form-group">
+  <div>
+    <label class="checkbox-inline">
+      <input type="checkbox" checked="{model.required}" onchange="{model.required = this.checked}"> Required
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" checked="{model.trim}" onchange="{model.trim = this.checked}"> Trim
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" checked="{model.unique}" onchange="{model.unique = this.checked}"> Unique
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" checked="{model.index}" onchange="{model.index = this.checked}"> Index
+    </label>
+  </div>
+</div>
+<div class="form-group">
+  <label for="defaultValue">Default value</label>
+  <input type="text" id="defaultValue" value="{model.defaultValue}" onchange="{model.defaultValue = this.value}" class="form-control input-sm" placeholder="Default value" />
+</div>
+<div class="form-group">
+  <label for="enumeration">Enumeration</label>
+  <input type="text" id="enumeration" value="{model.enumeration}" onchange="{model.enumeration = this.value}" class="form-control input-sm" placeholder="Enum e.g. Mr, Mrs, Ms, Miss" />
+</div>
+<div class="form-group">
+  <label for="casing">Casing</label>
+  <select id="casing" value="{model.casing}" onchange="{model.casing = this.value}" class="form-control input-sm">
+    <option value=""></option>
+    <option value="upper" selected="{model.casing === 'upper' ? 'selected' : null}">Uppercase</option>
+    <option value="lower" selected="{model.casing === 'lower' ? 'selected' : null}">Lowercase</option>
+  </select>
+</div>
+<div class="form-group">
+  <label for="match">Match (RegEx)</label>
+  <input type="text" id="match" value="{model.match}" onchange="{model.match = this.value}" class="form-control input-sm" placeholder="Match (RegEx)" />
+</div>

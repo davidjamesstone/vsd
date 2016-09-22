@@ -1,0 +1,7 @@
+<template args="ctrl">
+  <div each="item in ctrl.items" class="alert alert-{item.type} alert-dismissible">
+    <button type="button" class="close" onclick="{ctrl.items.splice($item, 1)}">×</button>
+    <h4><i class="icon fa fa-{item.icon}"></i> {item.title}</h4>
+    {item.message}
+  </div>
+</template>
