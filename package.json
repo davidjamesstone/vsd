@@ -1,7 +1,7 @@
 {
-  "name": "visual",
-  "version": "0.0.1",
-  "description": "Visual hapi mongoose IDE",
+  "name": "vsd",
+  "version": "0.0.5",
+  "description": "Visual hapi + mongoose IDE",
   "main": "index.js",
   "bin": {
     "vsd": "bin/vsd.js"
@@ -17,7 +17,6 @@
     "test": "npm run lint",
     "prepublish": "npm run build"
   },
-  "author": "",
   "license": "ISC",
   "dependencies": {
     "admin-lte": "2.3.5",
@@ -56,6 +55,15 @@
     "superviewify": "3.0.0",
     "wisk": "1.0.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/davidjamesstone/vsd.git"
+  },
+  "bugs": {
+    "url": "http://github.com/davidjamesstone/vsd/issues",
+    "email": "davidjamesstone@gmail.com"
+  },
+  "author": "David Stone <davidjamesstone@gmail.com>",
   "standard": {
     "ignore": [
       "server/public"
