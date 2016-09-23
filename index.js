@@ -2,7 +2,6 @@ const Glue = require('glue')
 const requireDirectory = require('require-directory')
 const config = require('./config')
 const manifest = require('./server/manifest')
-// const db = require('./db')
 const pkg = require('./package.json')
 const appName = pkg.name
 const appVersion = pkg.version
@@ -12,14 +11,11 @@ Glue.compose(manifest, function (err, server) {
     throw err
   }
 
-  // db.connect(config.db.connstr)
-
   const defaultMetaData = {
-    title: 'uris.co - All about connecting the web',
-    description: 'Comment on any web page',
-    keywords: 'Links,Web Page,Search,urls,uris,Articles,Comments,Social news,Twitter,oembed,News,Favorites,Favourite,Share,Facebook',
-    author: 'uris.co',
-    image: '/assets/meta.png'
+    title: 'VisualDEV',
+    description: 'Web application builder for hapi and mongo',
+    keywords: 'hapijs,mongoose,nodejs,ide,web,javascript,standardjs',
+    author: 'vsd'
   }
 
   const onPostHandler = function (request, reply) {
