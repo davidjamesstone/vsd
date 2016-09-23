@@ -24,10 +24,9 @@ rm -rf .git
 
 perl -pi -e s,glupe-base,$2,g package.json
 perl -pi -e s,glupe-base,$2,g readme.md
-perl -pi -e s,glupe-base,$2,g config/pm2.example.json
+perl -pi -e s,glupe-base,$2,g config/pm2.json
 
 cp config/server.example.json config/server.json
-cp config/pm2.example.json config/pm2.json
 
 npm i
 npm run build
