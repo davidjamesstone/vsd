@@ -58,18 +58,15 @@ These can be used to generate [mongoosejs](http://mongoosejs.com/) models.
 Files with the name ending in `routes.json` are data models that are edited with a custom route table designer UI.
 These can be used to generate `hapi` routes.
 
-![alt](https://raw.githubusercontent.com/davidjamesstone/vsd/gh-pages/images/db.png)
+![alt](http://davidjamesstone.github.io/vsd/Screen Shot 2016-09-24 at 00.03.53.png)
 
-![alt](https://raw.githubusercontent.com/davidjamesstone/vsd/gh-pages/images/db1.png)
+![alt](http://davidjamesstone.github.io/vsd/Screen Shot 2016-09-24 at 00.04.07.png)
 
-![alt](https://raw.githubusercontent.com/davidjamesstone/vsd/gh-pages/images/db2.png)
+![alt](http://davidjamesstone.github.io/vsd/Screen Shot 2016-09-24 at 00.04.32.png)
 
-You can create some neat visualizations of the schema:
+![alt](http://davidjamesstone.github.io/vsd/Screen Shot 2016-09-24 at 00.05.07.png)
 
-![alt](https://raw.githubusercontent.com/davidjamesstone/vsd/gh-pages/images/db3.png)
-
-![alt](https://raw.githubusercontent.com/davidjamesstone/vsd/gh-pages/images/db4.png)
-
+![alt](http://davidjamesstone.github.io/vsd/Screen Shot 2016-09-24 at 00.06.29.png)
 
 ## Built using
 
