@@ -12,7 +12,7 @@ if (args.s) {
   config.server.host = args.s
 }
 
-// Valid config
+// Validate config
 var result = Joi.validate(config, schema, {
   abortEarly: false
 })

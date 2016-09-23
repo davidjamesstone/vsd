@@ -9,11 +9,16 @@ $(function () {
 
   function loadFile () {
     var target = window.location.hash.slice(1)
+
+    if (!target) {
+      return
+    }
+
     var absolutePath = path.resolve(window.UCO.path, target)
     var relativePath = path.relative(window.UCO.path, absolutePath)
 
     var file = files.find(function (item) {
-      return item.path === absolutePath
+      return item.isFile && item.path === absolutePath
     })
 
     if (!file) {
