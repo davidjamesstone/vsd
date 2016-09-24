@@ -31,6 +31,8 @@ Replace `<my-dir>` with the path where you created the project.
 
 `http://localhost:3002/?path=/<my-dir>/myapp`
 
+Read the [wiki](https://github.com/davidjamesstone/vsd/wiki) docs for more info.
+
 ## Features
 
 `vsd`’s current features:
