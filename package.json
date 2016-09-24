@@ -1,6 +1,6 @@
 {
   "name": "vsd",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Visual hapi + mongoose IDE",
   "main": "index.js",
   "bin": {
@@ -15,7 +15,8 @@
     "watch": "bin/watch",
     "lint": "standard",
     "test": "npm run lint",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "start": "node index"
   },
   "license": "ISC",
   "dependencies": {
