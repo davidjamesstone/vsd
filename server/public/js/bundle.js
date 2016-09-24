@@ -160,12 +160,12 @@ var __target
 module.exports = function description (model) {
 var el = model
   model = model.model
-elementOpen("ol", "2b5ed0e6-ed1a-4035-9dbc-05662340629e", hoisted1)
+elementOpen("ol", "621550e5-5486-4ebf-9464-65eaa6980c78", hoisted1)
   __target = model.crumbs
   if (__target) {
     ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
       var crumb = $value
-      var $key = "b171f25e-25e8-4035-915c-361dccd33434_" + $item
+      var $key = "71d95f9c-2cc7-4212-9d5d-953c83db5966_" + $item
       elementOpen("li", $key, null, "class", model.isLast(crumb) ? 'active' : '')
         if (model.isFirst(crumb)) {
           elementOpen("a", null, null, "onclick", function ($event) {
@@ -198,7 +198,8 @@ elementClose("ol")
 },{"incremental-dom":170}],5:[function(require,module,exports){
 var Nes = require('nes/client')
 var host = window.location.host
-var client = new Nes.Client('ws://' + host)
+var protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+var client = new Nes.Client(protocol + '://' + host)
 
 module.exports = client
 
@@ -558,18 +559,18 @@ var hoisted3 = ["id", "oftype", "class", "form-control input-sm"]
 var __target
 
 module.exports = function description (model, root) {
-  elementOpen("div", "fd17b784-115c-40ff-a975-ab39d03210d0", hoisted1)
-    elementOpen("label", "fb7d32dd-d641-4f97-94ba-0b33e81e3c2d", hoisted2)
+  elementOpen("div", "3ed166a4-833d-4856-9b99-3b7e472b6ed7", hoisted1)
+    elementOpen("label", "78052f3a-84e8-407a-8f81-bdc35f406947", hoisted2)
       text("Of")
     elementClose("label")
-    elementOpen("select", "67e96d6b-74a2-4ab5-9a2b-61c9624a2eb8", hoisted3, "value", model.oftype, "onchange", function ($event) {
+    elementOpen("select", "1c80f26f-0bed-426d-99ea-6ed4135391ce", hoisted3, "value", model.oftype, "onchange", function ($event) {
       var $element = this;
     model.oftype = this.value})
       __target = root.staticTypes
       if (__target) {
         ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
           var type = $value
-          var $key = "b4c5b967-22b8-4729-b34f-4bba22a74ad1_" + $item
+          var $key = "a90da48a-8231-4a75-8a79-d9b3b2d106a4_" + $item
           elementOpen("option", $key, null, "value", type, "selected", model.oftype === type ? 'selected' : null)
             text("" + (type) + "")
           elementClose("option")
@@ -601,10 +602,10 @@ var hoisted8 = ["value", "false"]
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "ca05d164-b164-40be-888d-96d952e61715", hoisted1)
+elementOpen("div", "d452a2a0-1bd7-4ace-97d7-eb9fcf714fee", hoisted1)
   elementOpen("div")
-    elementOpen("label", "99a5a895-463a-4c3c-85f2-c8bc577ea12b", hoisted2)
-      elementOpen("input", "60b03ed9-c376-4f4f-8460-dec0950edf82", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "01590991-58d3-42f5-94a6-d6885cc8b448", hoisted2)
+      elementOpen("input", "dca32aa3-24b6-4cf8-9731-29e9f09b48ae", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
@@ -613,19 +614,19 @@ elementOpen("div", "ca05d164-b164-40be-888d-96d952e61715", hoisted1)
     elementClose("label")
   elementClose("div")
 elementClose("div")
-elementOpen("div", "55690351-a007-4f98-97af-ca93d5f1f6f4", hoisted4)
-  elementOpen("label", "bf5f4b13-9cb9-4005-b302-917bbdfafaf6", hoisted5)
+elementOpen("div", "1430a60f-3ddb-4637-8f88-f88d1ceeca9b", hoisted4)
+  elementOpen("label", "cd82193b-980b-48c7-ac16-a9c1958d3b86", hoisted5)
     text("Default value")
   elementClose("label")
-  elementOpen("select", "b7ede4ec-814d-4107-a757-905f833c5830", hoisted6, "value", model.defaultValue, "onchange", function ($event) {
+  elementOpen("select", "b4def010-fa5f-4a53-b104-73c4541117f5", hoisted6, "value", model.defaultValue, "onchange", function ($event) {
     var $element = this;
   model.defaultValue = this.value ? this.value : null})
     elementOpen("option")
     elementClose("option")
-    elementOpen("option", "080b6a79-df3e-4f19-b633-38ecd4135615", hoisted7, "selected", model.defaultValue === true ? 'selected' : null)
+    elementOpen("option", "a3e691b6-92cc-4e89-8ec8-3171d582f057", hoisted7, "selected", model.defaultValue === true ? 'selected' : null)
       text("true")
     elementClose("option")
-    elementOpen("option", "9aa2b4cc-f218-4a6b-a385-c5d49da506a4", hoisted8, "selected", model.defaultValue === false ? 'selected' : null)
+    elementOpen("option", "c0062b5b-a89a-4f14-87d0-177fdc0f21a1", hoisted8, "selected", model.defaultValue === false ? 'selected' : null)
       text("false")
     elementClose("option")
   elementClose("select")
@@ -647,10 +648,10 @@ var hoisted3 = ["type", "checkbox"]
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "c14f833f-2dae-48d5-aae1-b3f888aebd60", hoisted1)
+elementOpen("div", "a86e0204-9cff-43fe-b6ed-a805d8f04c0b", hoisted1)
   elementOpen("div")
-    elementOpen("label", "9c7d2ea1-45c8-4c82-b74b-06a34e21d5c8", hoisted2)
-      elementOpen("input", "56df76e8-cce6-4d0f-9075-1334b8a36c55", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "606f9e9d-b749-44c1-9b97-ab803003cf1c", hoisted2)
+      elementOpen("input", "d26b6db2-f18f-45b8-95a7-3d3962a1ce7c", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
@@ -679,10 +680,10 @@ var hoisted6 = ["id", "ref", "class", "form-control input-sm"]
 var __target
 
 module.exports = function description (model, root) {
-  elementOpen("div", "6de454be-1c0a-4e30-991b-86086b31c695", hoisted1)
+  elementOpen("div", "23e6ae52-8849-40a1-a82c-fd093c89bc87", hoisted1)
     elementOpen("div")
-      elementOpen("label", "0b825f2a-6277-43a0-9c61-9bb5aa0afd71", hoisted2)
-        elementOpen("input", "3d124346-36ad-487b-a6fd-a623243933e2", hoisted3, "checked", model.required, "onchange", function ($event) {
+      elementOpen("label", "466bf03c-b369-4858-bcfe-fa801d06a2d1", hoisted2)
+        elementOpen("input", "4d745af5-2c80-4dcc-8f4a-90f3afce6c6d", hoisted3, "checked", model.required, "onchange", function ($event) {
           var $element = this;
         model.required = this.checked})
         elementClose("input")
@@ -691,11 +692,11 @@ module.exports = function description (model, root) {
       elementClose("label")
     elementClose("div")
   elementClose("div")
-  elementOpen("div", "972559ef-4361-413c-9cbe-5eba1c6c3794", hoisted4)
-    elementOpen("label", "b7986e73-094d-4ae5-96ec-2c6db6233fc8", hoisted5)
+  elementOpen("div", "408c48ab-3f18-40f1-9611-b49ac3600445", hoisted4)
+    elementOpen("label", "afdeab86-fe0f-48e1-bc17-28dc7207832f", hoisted5)
       text("Ref")
     elementClose("label")
-    elementOpen("select", "a88afc5d-e9c9-46a0-b955-f936f7079bf2", hoisted6, "value", model.ref, "onchange", function ($event) {
+    elementOpen("select", "f7b72cc1-e9a7-47c0-aa3c-88a1fcd79b31", hoisted6, "value", model.ref, "onchange", function ($event) {
       var $element = this;
     model.ref = this.value})
       elementOpen("option")
@@ -704,7 +705,7 @@ module.exports = function description (model, root) {
       if (__target) {
         ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
           var schema = $value
-          var $key = "08f7628b-c9b7-44e0-bee3-8287c108ef1c_" + $item
+          var $key = "98c436b5-9f1e-42f3-9498-673cf2d31a67_" + $item
           elementOpen("option", $key, null, "value", schema.id, "selected", model.ref === schema.id ? 'selected' : null)
             text("" + (schema.name) + "")
           elementClose("option")
@@ -736,26 +737,26 @@ var hoisted10 = ["type", "text", "id", "defaultValue", "class", "form-control in
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "5b0921c6-d975-47ae-a69c-70627d2129a9", hoisted1)
+elementOpen("div", "fc2d3dc3-ba12-4b5f-80aa-4555bbdcf725", hoisted1)
   elementOpen("div")
-    elementOpen("label", "1bcb090e-f06f-4ada-9b31-7a36694d122a", hoisted2)
-      elementOpen("input", "39992e80-d20f-4cb9-8c9d-474525293b06", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "2fccf407-3ab7-4370-9ce6-06ed31635d7a", hoisted2)
+      elementOpen("input", "f760a9ee-1703-4a72-9890-5563ba4e8e6b", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
       text(" Required \
           ")
     elementClose("label")
-    elementOpen("label", "c9f92492-683d-4ca4-a8c1-baaa6676ef00", hoisted4)
-      elementOpen("input", "7dd5311f-2cb4-4bc5-9833-7aa145a680f8", hoisted5, "checked", model.unique, "onchange", function ($event) {
+    elementOpen("label", "bf334430-0a01-428b-a5b4-0e781977c0d6", hoisted4)
+      elementOpen("input", "ef30dd4a-ebae-4f23-8ad2-c60c9cc9d152", hoisted5, "checked", model.unique, "onchange", function ($event) {
         var $element = this;
       model.unique = this.checked})
       elementClose("input")
       text(" Unique \
           ")
     elementClose("label")
-    elementOpen("label", "de0d32fd-c948-45ef-9666-164e80cdff43", hoisted6)
-      elementOpen("input", "14e64f83-a65e-49f0-9719-edb383ff174b", hoisted7, "checked", model.index, "onchange", function ($event) {
+    elementOpen("label", "d23cd5a6-508e-42ad-a6a7-988dfbb5d797", hoisted6)
+      elementOpen("input", "20caeaf4-d919-4f56-a392-3d503165f1d5", hoisted7, "checked", model.index, "onchange", function ($event) {
         var $element = this;
       model.index = this.checked})
       elementClose("input")
@@ -764,11 +765,11 @@ elementOpen("div", "5b0921c6-d975-47ae-a69c-70627d2129a9", hoisted1)
     elementClose("label")
   elementClose("div")
 elementClose("div")
-elementOpen("div", "eadf9cfc-e5ea-4e69-a714-8108cef43386", hoisted8)
-  elementOpen("label", "89dc01b8-ca11-4932-b59f-bd376a0baaea", hoisted9)
+elementOpen("div", "316d7d06-b7f2-4241-9a49-5a72827c526c", hoisted8)
+  elementOpen("label", "c6587f5c-9b97-45a5-a53b-f484c1c054aa", hoisted9)
     text("Default value")
   elementClose("label")
-  elementOpen("input", "6ad6b837-eac5-4c9b-8149-d012ab86c170", hoisted10, "value", model.defaultValue, "onchange", function ($event) {
+  elementOpen("input", "3f6fa53a-11b4-4a37-8390-92a39711eb8f", hoisted10, "value", model.defaultValue, "onchange", function ($event) {
     var $element = this;
   model.defaultValue = this.value})
   elementClose("input")
@@ -793,10 +794,10 @@ var hoisted6 = ["id", "ref", "class", "form-control input-sm"]
 var __target
 
 module.exports = function description (model, root) {
-  elementOpen("div", "86a392ad-a0f2-4fcd-a2a1-37dfa713ab8f", hoisted1)
+  elementOpen("div", "a547af27-d73e-4063-8e47-d094f55ba9cc", hoisted1)
     elementOpen("div")
-      elementOpen("label", "b3a99fb7-3e97-4dd7-813f-999c090342bc", hoisted2)
-        elementOpen("input", "8e2a5d2e-076e-4be5-b1ea-8035b668bb56", hoisted3, "checked", model.required, "onchange", function ($event) {
+      elementOpen("label", "91b94271-daa3-4b19-a7a5-ef8de7a43325", hoisted2)
+        elementOpen("input", "a7ff9c91-01ce-412e-9c79-dafa59bf76b4", hoisted3, "checked", model.required, "onchange", function ($event) {
           var $element = this;
         model.required = this.checked})
         elementClose("input")
@@ -805,11 +806,11 @@ module.exports = function description (model, root) {
       elementClose("label")
     elementClose("div")
   elementClose("div")
-  elementOpen("div", "d7fd7abc-7f6c-475e-80ba-66b50263828e", hoisted4)
-    elementOpen("label", "d83fc3d9-a640-4d78-b424-e70c3d241bc0", hoisted5)
+  elementOpen("div", "1250d271-a656-44eb-b82d-4263ef96ca8c", hoisted4)
+    elementOpen("label", "c05bd890-1b7c-46cd-af38-3642fc90a069", hoisted5)
       text("Ref")
     elementClose("label")
-    elementOpen("select", "8025f669-d51b-4fb5-8956-a8cd8efa7145", hoisted6, "value", model.ref, "onchange", function ($event) {
+    elementOpen("select", "1a7857d8-3618-46c0-8354-5bfaa6b891d8", hoisted6, "value", model.ref, "onchange", function ($event) {
       var $element = this;
     model.ref = this.value})
       elementOpen("option")
@@ -818,7 +819,7 @@ module.exports = function description (model, root) {
       if (__target) {
         ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
           var schema = $value
-          var $key = "c131f4c5-7e31-489d-a0f0-50ac5ce2590b_" + $item
+          var $key = "aa5329f7-86f6-4434-88f8-03d53303873e_" + $item
           elementOpen("option", $key, null, "value", schema.id, "selected", model.ref === schema.id ? 'selected' : null)
             text("" + (schema.name) + "")
           elementClose("option")
@@ -843,10 +844,10 @@ var hoisted3 = ["type", "checkbox"]
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "e8c447fa-ec31-4616-b61f-7b3ba0dcc951", hoisted1)
+elementOpen("div", "1dfac7e5-4f4a-4e07-97b9-9527e4ab6d53", hoisted1)
   elementOpen("div")
-    elementOpen("label", "54373719-4662-4517-8371-ee3a50ade6a1", hoisted2)
-      elementOpen("input", "85e6b9c3-b5a5-41c5-89bf-4d79f8308a60", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "077c6dbf-04e6-40e9-a6f6-2be50921fb1f", hoisted2)
+      elementOpen("input", "a3587c63-436a-4a00-976b-f205f1fc8fde", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
@@ -870,7 +871,7 @@ var hoisted1 = ["type", "button", "class", "btn btn-primary btn-xs"]
 var __target
 
 module.exports = function description (model, root) {
-  elementOpen("button", "402e20f0-e36b-45c4-887f-c8c4204f7750", hoisted1, "onclick", function ($event) {
+  elementOpen("button", "05138855-5301-4fa8-a5fa-21c50d0661aa", hoisted1, "onclick", function ($event) {
     var $element = this;
   root.currentItem = model.keys.addKey()})
     text("Add key")
@@ -905,26 +906,26 @@ var hoisted16 = ["type", "number", "id", "defaultValue", "class", "form-control 
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "ee383296-c2c1-4a23-a6ab-5457f3b662ad", hoisted1)
+elementOpen("div", "f43958c2-9f5c-45f8-8bd6-a9f33596d9bd", hoisted1)
   elementOpen("div")
-    elementOpen("label", "d3cd64f5-ef29-4aa0-ba01-e1f6f97e4473", hoisted2)
-      elementOpen("input", "49688fa0-b02f-4e92-8d2b-198ebb723e89", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "308d2636-7c23-4ea6-abc7-9c7cec50c8c8", hoisted2)
+      elementOpen("input", "3d46c82e-2cf4-46c2-91b7-d567b08f2bd6", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
       text(" Required \
           ")
     elementClose("label")
-    elementOpen("label", "c3c7ca98-0736-4928-a8e7-df3a78a143b6", hoisted4)
-      elementOpen("input", "9a8696a5-521c-4e00-8dfb-f636872f69cb", hoisted5, "checked", model.unique, "onchange", function ($event) {
+    elementOpen("label", "0dbfe7e6-18e1-46cc-acce-9ef8a85968e8", hoisted4)
+      elementOpen("input", "1e862c20-bc8b-4917-8eaf-f4cdcef8016a", hoisted5, "checked", model.unique, "onchange", function ($event) {
         var $element = this;
       model.unique = this.checked})
       elementClose("input")
       text(" Unique \
           ")
     elementClose("label")
-    elementOpen("label", "91998b62-dd9f-41ca-8821-261bb3f43b34", hoisted6)
-      elementOpen("input", "674c2921-92f7-4e5a-81b5-4c43202e9e4b", hoisted7, "checked", model.index, "onchange", function ($event) {
+    elementOpen("label", "15399c95-dc1c-4754-bcff-f0a5a985a51a", hoisted6)
+      elementOpen("input", "242f114e-5c96-4983-9dd1-1d329d13df98", hoisted7, "checked", model.index, "onchange", function ($event) {
         var $element = this;
       model.index = this.checked})
       elementClose("input")
@@ -933,29 +934,29 @@ elementOpen("div", "ee383296-c2c1-4a23-a6ab-5457f3b662ad", hoisted1)
     elementClose("label")
   elementClose("div")
 elementClose("div")
-elementOpen("div", "3b5f9d47-7381-4052-b8f7-894b43d1c9f1", hoisted8)
-  elementOpen("label", "9a2bfee5-bbf7-4cab-8d98-7464fcc2abc5", hoisted9)
+elementOpen("div", "45ee4d98-78a5-4ec7-8387-2ef1abad49e8", hoisted8)
+  elementOpen("label", "b1efeec0-06b9-47f4-be4d-eda4d173c814", hoisted9)
     text("Default value")
   elementClose("label")
-  elementOpen("input", "5019e1b8-ebfe-40d0-80db-e216157542e1", hoisted10, "value", model.defaultValue, "onchange", function ($event) {
+  elementOpen("input", "c6ee572e-9569-4b37-87cf-68ff39c24e08", hoisted10, "value", model.defaultValue, "onchange", function ($event) {
     var $element = this;
   model.defaultValue = this.value})
   elementClose("input")
 elementClose("div")
-elementOpen("div", "4c1066d4-a53e-4d1f-8e4d-e6cff41a3523", hoisted11)
-  elementOpen("label", "f9723b4c-1480-491c-9313-8a650c1a4c1b", hoisted12)
+elementOpen("div", "e7761da0-6e2e-4c8f-b6bf-8f6eaef798a5", hoisted11)
+  elementOpen("label", "b0280420-4736-4aad-a8de-ab48ab3ab999", hoisted12)
     text("Minimum value")
   elementClose("label")
-  elementOpen("input", "d8d7f059-df6e-40f4-be14-7f38107e74d0", hoisted13, "value", model.min, "onchange", function ($event) {
+  elementOpen("input", "284b83a8-bfff-4f5f-8fe4-9fb3522bcbb1", hoisted13, "value", model.min, "onchange", function ($event) {
     var $element = this;
   model.min = this.value})
   elementClose("input")
 elementClose("div")
-elementOpen("div", "dfe21b39-f9e7-4c14-be73-bf2137e41f87", hoisted14)
-  elementOpen("label", "efd0bf57-becd-4fcb-9625-d77b9b73f9c5", hoisted15)
+elementOpen("div", "303efa52-7a1e-4050-aa5c-835a82de6c13", hoisted14)
+  elementOpen("label", "37faf28e-be8c-4566-a4fa-d655b7227dca", hoisted15)
     text("Maximum value")
   elementClose("label")
-  elementOpen("input", "be6b4ef6-5999-4d66-8e37-b9d3ea5ae010", hoisted16, "value", model.max, "onchange", function ($event) {
+  elementOpen("input", "099ff54d-f5cd-4b14-a3db-becb97118451", hoisted16, "value", model.max, "onchange", function ($event) {
     var $element = this;
   model.max = this.value})
   elementClose("input")
@@ -983,34 +984,34 @@ var hoisted9 = ["type", "checkbox"]
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "7b348b57-b71f-428e-9f09-cacb8c3c9b82", hoisted1)
+elementOpen("div", "5902ad2e-99c4-4c22-87a7-5b5659585f28", hoisted1)
   elementOpen("div")
-    elementOpen("label", "1e8afcae-43c8-4e37-9408-9f304a300850", hoisted2)
-      elementOpen("input", "6a3de0b7-8ee9-49fa-8b98-3852b9a2ce0b", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "501dd896-7d08-4cb9-94ed-8153444c5c6a", hoisted2)
+      elementOpen("input", "c128bd61-7119-4bda-b894-15543fb42f55", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
       text(" Required \
           ")
     elementClose("label")
-    elementOpen("label", "5fc043d2-dc3d-4a20-87a4-3c5905105649", hoisted4)
-      elementOpen("input", "bd08e517-299f-43b3-99e5-cbc6a010606c", hoisted5, "checked", model.unique, "onchange", function ($event) {
+    elementOpen("label", "a974bbff-39f8-450d-b1bc-c1f614e03742", hoisted4)
+      elementOpen("input", "f5d1eee1-9927-47d2-9efa-049df520a715", hoisted5, "checked", model.unique, "onchange", function ($event) {
         var $element = this;
       model.unique = this.checked})
       elementClose("input")
       text(" Unique \
           ")
     elementClose("label")
-    elementOpen("label", "eeb111d0-d4c1-4337-a19d-4c63bf384f12", hoisted6)
-      elementOpen("input", "517e510c-21ec-4853-9cc0-fbed302db89e", hoisted7, "checked", model.auto, "onchange", function ($event) {
+    elementOpen("label", "83ddaa2b-f08d-4d4e-8799-a23c670f783a", hoisted6)
+      elementOpen("input", "b6705dc7-a959-46aa-9353-fa7ff330fc08", hoisted7, "checked", model.auto, "onchange", function ($event) {
         var $element = this;
       model.auto = this.checked})
       elementClose("input")
       text(" Auto \
           ")
     elementClose("label")
-    elementOpen("label", "bb4d0dc4-24ef-415d-873e-906e0c13bd17", hoisted8)
-      elementOpen("input", "6e5e6fc7-5be9-488b-a23e-cc380bd42930", hoisted9, "checked", model.index, "onchange", function ($event) {
+    elementOpen("label", "36456632-871b-4d5f-8424-d77655bf63a1", hoisted8)
+      elementOpen("input", "db8ae70f-f50b-46a2-ac84-389a1cf04731", hoisted9, "checked", model.index, "onchange", function ($event) {
         var $element = this;
       model.index = this.checked})
       elementClose("input")
@@ -1057,34 +1058,34 @@ var hoisted24 = ["type", "text", "id", "match", "class", "form-control input-sm"
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "5ead4a76-51cf-4e7b-8cfe-7acd76e17187", hoisted1)
+elementOpen("div", "aa7a3a64-51f5-409f-9034-8b741bc7c4d0", hoisted1)
   elementOpen("div")
-    elementOpen("label", "7d01abba-2986-407f-b8de-e718c2f6059c", hoisted2)
-      elementOpen("input", "30367c9a-5efe-4d7e-8c06-4376c3395abd", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "ef4ecb7c-ad33-4a69-9f1f-8b7d78c1a480", hoisted2)
+      elementOpen("input", "e230e2a2-7291-44c1-8440-de8c35eec377", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
       text(" Required \
           ")
     elementClose("label")
-    elementOpen("label", "df308775-046b-4f4f-bb4e-25017182c08f", hoisted4)
-      elementOpen("input", "df802c4a-9b1d-4acc-86c0-97c468284823", hoisted5, "checked", model.trim, "onchange", function ($event) {
+    elementOpen("label", "63e4ac4c-31c8-431e-acb4-0a3c739ebaf8", hoisted4)
+      elementOpen("input", "f9cc3c61-06f0-4873-8ddd-a4765346cfea", hoisted5, "checked", model.trim, "onchange", function ($event) {
         var $element = this;
       model.trim = this.checked})
       elementClose("input")
       text(" Trim \
           ")
     elementClose("label")
-    elementOpen("label", "ffeb3b51-d20a-4579-924c-d72f6793a817", hoisted6)
-      elementOpen("input", "41cc4a96-1390-4d0d-80a4-48aa88b4ed09", hoisted7, "checked", model.unique, "onchange", function ($event) {
+    elementOpen("label", "a28d739b-621e-48f3-8da6-958e69383ee8", hoisted6)
+      elementOpen("input", "1a1c97bd-ee39-4068-bb31-c93affae8805", hoisted7, "checked", model.unique, "onchange", function ($event) {
         var $element = this;
       model.unique = this.checked})
       elementClose("input")
       text(" Unique \
           ")
     elementClose("label")
-    elementOpen("label", "44b57058-2748-495e-af1e-2bd6e83e46a8", hoisted8)
-      elementOpen("input", "f2fa77ad-2da0-49ae-aab0-adbd4edabba5", hoisted9, "checked", model.index, "onchange", function ($event) {
+    elementOpen("label", "aad8aa3d-66eb-41c7-b0c7-500996a07483", hoisted8)
+      elementOpen("input", "03b4b544-a4c7-49f7-8ab1-02e1bd5c644f", hoisted9, "checked", model.index, "onchange", function ($event) {
         var $element = this;
       model.index = this.checked})
       elementClose("input")
@@ -1093,46 +1094,46 @@ elementOpen("div", "5ead4a76-51cf-4e7b-8cfe-7acd76e17187", hoisted1)
     elementClose("label")
   elementClose("div")
 elementClose("div")
-elementOpen("div", "66212e52-4d1f-4b31-8899-3473120e24d2", hoisted10)
-  elementOpen("label", "21b5880a-5603-4c54-be84-8fb59fcfb6b4", hoisted11)
+elementOpen("div", "026811fa-ce32-4572-ba80-dedd29de70cc", hoisted10)
+  elementOpen("label", "249b1964-a150-4df2-8125-1bae834d180a", hoisted11)
     text("Default value")
   elementClose("label")
-  elementOpen("input", "f8c34f87-9b8e-4416-8017-1fe8c387da84", hoisted12, "value", model.defaultValue, "onchange", function ($event) {
+  elementOpen("input", "70831315-e857-492d-88a2-cc155cef5fa3", hoisted12, "value", model.defaultValue, "onchange", function ($event) {
     var $element = this;
   model.defaultValue = this.value})
   elementClose("input")
 elementClose("div")
-elementOpen("div", "d3f9cbd0-b6f8-4610-a464-2aebd1c4c7fa", hoisted13)
-  elementOpen("label", "c2f26ab6-c491-4368-9242-54d233c1d8e3", hoisted14)
+elementOpen("div", "4e174c79-66bc-4d90-96dc-1be5f5479228", hoisted13)
+  elementOpen("label", "8a151e98-41b4-4887-a45d-f653006b5d77", hoisted14)
     text("Enumeration")
   elementClose("label")
-  elementOpen("input", "5f17302f-5c66-4596-a9cb-59f816132d6f", hoisted15, "value", model.enumeration, "onchange", function ($event) {
+  elementOpen("input", "f838e566-d756-4333-82be-23e9a591ed31", hoisted15, "value", model.enumeration, "onchange", function ($event) {
     var $element = this;
   model.enumeration = this.value})
   elementClose("input")
 elementClose("div")
-elementOpen("div", "7823448f-0c95-426e-b5e0-f97d9e2cdff0", hoisted16)
-  elementOpen("label", "31aec5c4-eee6-4637-8206-9267a5ab9ada", hoisted17)
+elementOpen("div", "b0ebcee6-9f07-421a-a2b6-3ece3e489f9b", hoisted16)
+  elementOpen("label", "41541a9b-faff-445a-9202-704a5b450e04", hoisted17)
     text("Casing")
   elementClose("label")
-  elementOpen("select", "6190769b-cf58-44ff-83f6-03ea5a4c9cbe", hoisted18, "value", model.casing, "onchange", function ($event) {
+  elementOpen("select", "461b396a-2d2f-42dc-9fb5-e97bb69881fe", hoisted18, "value", model.casing, "onchange", function ($event) {
     var $element = this;
   model.casing = this.value})
-    elementOpen("option", "4ce897bb-fa9e-4f15-bb1e-91f34e437509", hoisted19)
+    elementOpen("option", "4c13928f-b55d-49f1-a095-4f171279055d", hoisted19)
     elementClose("option")
-    elementOpen("option", "787772d0-36a2-4536-9276-01039d96d4bf", hoisted20, "selected", model.casing === 'upper' ? 'selected' : null)
+    elementOpen("option", "95b2f86c-fdc7-44b5-ae22-af413dae7516", hoisted20, "selected", model.casing === 'upper' ? 'selected' : null)
       text("Uppercase")
     elementClose("option")
-    elementOpen("option", "f7d013c6-60b8-4938-aa26-df78938df40f", hoisted21, "selected", model.casing === 'lower' ? 'selected' : null)
+    elementOpen("option", "8a193a78-026c-405f-8c48-2ccf2d7caf8b", hoisted21, "selected", model.casing === 'lower' ? 'selected' : null)
       text("Lowercase")
     elementClose("option")
   elementClose("select")
 elementClose("div")
-elementOpen("div", "b186ad96-89b8-443d-a9b6-5caa6b7e9cd4", hoisted22)
-  elementOpen("label", "461d599a-5f6a-4338-90fb-08a7721bed4a", hoisted23)
+elementOpen("div", "3bdd3068-caef-4971-9389-633059c8c535", hoisted22)
+  elementOpen("label", "53bc382a-20ea-415f-8604-6f1e7f34c8de", hoisted23)
     text("Match (RegEx)")
   elementClose("label")
-  elementOpen("input", "60ef0477-6ca8-4e68-add2-f526a443c74f", hoisted24, "value", model.match, "onchange", function ($event) {
+  elementOpen("input", "09bb6ae1-2bb0-475b-83b5-8873792cb456", hoisted24, "value", model.match, "onchange", function ($event) {
     var $element = this;
   model.match = this.value})
   elementClose("input")
@@ -1309,14 +1310,14 @@ var __target
 
 module.exports = function description (model, root) {
   var keys = model.keys
-  elementOpen("form", "fee09c10-7a41-46ba-ae02-5a65ab454c39", hoisted1)
+  elementOpen("form", "31396afe-b23a-407f-a563-547a5f050056", hoisted1)
     if (model.errors.length) {
-      elementOpen("ul", "da202798-f4a0-494c-8260-7fbd9d1dda41", hoisted2)
+      elementOpen("ul", "4b4d89e6-1904-4c2d-970a-c52c9016b109", hoisted2)
         __target = model.errors
         if (__target) {
           ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
             var item = $value
-            var $key = "8afd2662-ba67-4255-840f-9b5575c63d86_" + $item
+            var $key = "de5412c8-3ef8-46a1-9383-ca60a0ab21f6_" + $item
             elementOpen("li", $key)
               text(" \
                       " + (item.error) + " \
@@ -1326,39 +1327,39 @@ module.exports = function description (model, root) {
         }
       elementClose("ul")
     }
-    elementOpen("div", "ffd03079-d608-419b-b4f7-e3683ef1d997", hoisted3)
-      elementOpen("label", "e9c94f0a-1c4d-4a1f-abaf-40a9b5a03890", hoisted4)
+    elementOpen("div", "09e997c9-a581-4dc5-abfd-a9285b9fd78f", hoisted3)
+      elementOpen("label", "cc871b3d-9c1d-4fd0-bf5a-94de297fcb7b", hoisted4)
         text("Key Name")
       elementClose("label")
-      elementOpen("div", "8f3a9811-61f3-4fc6-9f07-030e4b977076", hoisted5)
-        elementOpen("input", "752da0f4-76d5-4dca-b43c-e3fc26c4c90a", hoisted6, "value", model.name, "onchange", function ($event) {
+      elementOpen("div", "4f1d42e1-d612-4dfa-82fd-0d0e0d875d0e", hoisted5)
+        elementOpen("input", "234ce8c2-fa35-4bea-b3ae-4364b93ca4ec", hoisted6, "value", model.name, "onchange", function ($event) {
           var $element = this;
         model.name = this.value})
         elementClose("input")
-        elementOpen("div", "380a7f43-ccf0-42b3-b1eb-f4101324eff6", hoisted7)
-          elementOpen("button", "afbfa355-cdd3-4079-9b7a-f78f763f3c8f", hoisted8, "onclick", function ($event) {
+        elementOpen("div", "c7e4f0da-30bd-4499-9052-7351f4e2df6c", hoisted7)
+          elementOpen("button", "64c4213b-f6b1-450e-be74-15acd95490bb", hoisted8, "onclick", function ($event) {
             var $element = this;
           keys.moveKeyUp(model)}, "title", "Move key [" + (model.name) + "] up")
-            elementOpen("i", "cbbb3d35-ce2f-4a7a-969c-6639539fe81b", hoisted9)
+            elementOpen("i", "fa43c153-d9b1-4963-9773-db5abdc5241f", hoisted9)
             elementClose("i")
           elementClose("button")
-          elementOpen("button", "d4f146e0-1a2e-439d-be8e-dec7b8ba592c", hoisted10, "onclick", function ($event) {
+          elementOpen("button", "97175e20-b93b-4c56-aae9-daebc46756c6", hoisted10, "onclick", function ($event) {
             var $element = this;
           keys.moveKeyDown(model)}, "title", "Move key [" + (model.name) + "] down")
-            elementOpen("i", "a0965888-f26d-447e-89d9-0dd95918d830", hoisted11)
+            elementOpen("i", "ba0c9fe2-81c2-41f0-869c-8cec1b36bae4", hoisted11)
             elementClose("i")
           elementClose("button")
-          elementOpen("button", "e86fb04b-d585-4f98-93d9-2737052977fb", hoisted12, "onclick", function ($event) {
+          elementOpen("button", "bad0c639-9094-4755-963e-b579cfbea4f8", hoisted12, "onclick", function ($event) {
             var $element = this;
           root.currentItem = keys.insertKey(model.index + 1)}, "title", "Add key below [" + (model.name) + "]")
-            elementOpen("i", "14a8ab2e-6507-4fe4-8779-4294d141e263", hoisted13)
+            elementOpen("i", "9ed786ce-26c9-4fb2-92fe-be9c2ac8ea15", hoisted13)
             elementClose("i")
           elementClose("button")
-          elementOpen("button", "7d2ccb86-3ce4-49c4-bb28-6a7b045f1057", hoisted14)
-            elementOpen("span", "bfb3d593-d6fd-4d01-8f55-f89024e363ca", hoisted15)
+          elementOpen("button", "83946fef-39b7-4c3f-b540-95beba2846b6", hoisted14)
+            elementOpen("span", "72c9cbe9-c33d-4ce9-8329-48f1fb2023d4", hoisted15)
             elementClose("span")
           elementClose("button")
-          elementOpen("ul", "7fea9cc6-a8ff-4224-a0d7-b202170504bd", hoisted16)
+          elementOpen("ul", "8de9f456-c948-428f-9345-bc364f8a6cb8", hoisted16)
             elementOpen("li")
               elementOpen("a", null, null, "onclick", function ($event) {
                 var $element = this;
@@ -1373,9 +1374,9 @@ module.exports = function description (model, root) {
                 text("Add key above [" + (model.name) + "]")
               elementClose("a")
             elementClose("li")
-            elementOpen("li", "bd87f21a-7285-4174-9c56-0c64f1db88e6", hoisted17)
+            elementOpen("li", "a4ee9cd2-bd01-434a-919c-d19de8b2a578", hoisted17)
             elementClose("li")
-            elementOpen("li", "c6823a4d-754e-40e9-aa7f-c7609fa8bffc", hoisted18)
+            elementOpen("li", "93604827-a6c5-4c95-bf3a-6483d38bd5dc", hoisted18)
               elementOpen("a", null, null, "onclick", function ($event) {
                 var $element = this;
               keys.deleteKey(model); root.currentItem = model.owner})
@@ -1386,29 +1387,29 @@ module.exports = function description (model, root) {
         elementClose("div")
       elementClose("div")
     elementClose("div")
-    elementOpen("div", "47357f74-543c-4d15-9a9b-2c129b32eb9e", hoisted19)
-      elementOpen("label", "0208e31f-f1ce-4fc1-b804-5c9b356ef57c", hoisted20)
+    elementOpen("div", "03925b95-a767-4f3d-8205-7b376e07bf39", hoisted19)
+      elementOpen("label", "da1e58bf-a0d1-433b-880b-dc3134ac5dcd", hoisted20)
         text("Key Description")
       elementClose("label")
-      elementOpen("textarea", "1cccfee7-912d-4c2a-be55-41e8b5b8a04c", hoisted21, "value", model.description, "onchange", function ($event) {
+      elementOpen("textarea", "08d8aabc-08eb-4d4c-855c-ec021ed534e3", hoisted21, "value", model.description, "onchange", function ($event) {
         var $element = this;
       model.description = this.value})
       elementClose("textarea")
     elementClose("div")
     elementOpen("hr")
     elementClose("hr")
-    elementOpen("div", "2974af23-9d61-4453-b85a-0e83e62d8b53", hoisted22)
-      elementOpen("label", "716615e0-cdc7-4a4c-b8da-45e35493fa81", hoisted23)
+    elementOpen("div", "ebed380a-0088-4bbf-add8-93b4f6652733", hoisted22)
+      elementOpen("label", "a5491896-edfc-4b4b-9f21-10fdc7b8d507", hoisted23)
         text("Type")
       elementClose("label")
-      elementOpen("select", "738cb772-a35e-432b-b25a-7df190ed42ef", hoisted24, "value", model.type, "onchange", function ($event) {
+      elementOpen("select", "b2c745e2-5dcc-43ad-a38f-9440e1af92af", hoisted24, "value", model.type, "onchange", function ($event) {
         var $element = this;
       model.type = this.value})
         __target = root.staticTypes
         if (__target) {
           ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
             var type = $value
-            var $key = "cb2e8d2b-3fa5-41f7-a425-3e38d9e3fe6a_" + $item
+            var $key = "8dda62ed-fd22-41c1-88f1-a0155b3be014_" + $item
             elementOpen("option", $key, null, "value", type, "selected", model.type === type ? 'selected' : null)
               text("" + (type) + "")
             elementClose("option")
@@ -1548,12 +1549,12 @@ module.exports = function description (model, root) {
     if (__target) {
       ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
         var key = $value
-        var $key = "d6d7f4a7-11c5-48c5-95bf-89e4a249e548_" + $item
+        var $key = "8bed785f-1981-44a6-939d-98548d4892c9_" + $item
         elementOpen("li", $key)
           var isExpanded = root.isExpanded(key)
-          elementOpen("div", "96d5e56d-d5ab-4221-a899-0f861ea2eabf_" + $key, hoisted1)
+          elementOpen("div", "1653a54f-44ce-45a9-834a-84417a7c902f_" + $key, hoisted1)
             if (!key.isNested) {
-              elementOpen("i", "4992951a-7736-49a3-aa3d-dc3a0b3ff05d_" + $key, hoisted2)
+              elementOpen("i", "821db8c4-9f54-4f04-8794-56e3a2165e22_" + $key, hoisted2)
               elementClose("i")
             }
             if (key.isNested) {
@@ -1567,12 +1568,12 @@ module.exports = function description (model, root) {
             root.onClickTreeNode(key)})
               text("" + (key.name) + "")
               if (key.def.required) {
-                elementOpen("span", "0844bc0a-b54a-485d-a206-216940ed2390_" + $key, hoisted3)
+                elementOpen("span", "27581c2e-1b9d-4645-9111-79af7082d11f_" + $key, hoisted3)
                   text(" *")
                 elementClose("span")
               }
             elementClose("a")
-            elementOpen("span", "b1718eb9-aae3-4186-a09b-2616e8cbf04a_" + $key, hoisted4)
+            elementOpen("span", "ffb7e3fe-0d23-4d6a-beee-22ca655a65c4_" + $key, hoisted4)
               text("" + (root.keyAsString(key)) + "")
             elementClose("span")
           elementClose("div")
@@ -1686,29 +1687,29 @@ var hoisted9 = ["class", "fa fa-plus"]
 var __target
 
 module.exports = function description (model, root) {
-  elementOpen("form", "aa4296e4-2526-4595-ad9c-5d1961095522", hoisted1)
-    elementOpen("div", "7ef32299-b368-4848-9dba-11e47b9552b7", hoisted2)
-      elementOpen("label", "b0ea218b-4615-423a-8aec-d36af758c58c", hoisted3)
+  elementOpen("form", "58963b5e-fd2e-49f0-801d-e282816cfe1e", hoisted1)
+    elementOpen("div", "d8c0225c-fcc4-4b00-8519-e1c664d7216a", hoisted2)
+      elementOpen("label", "9ad845a0-4cfd-42cd-92de-b017dc3afc92", hoisted3)
         text("Model Name")
       elementClose("label")
-      elementOpen("input", "602bc3e4-35fa-4b88-a8c2-599de9d0dcd4", hoisted4, "value", model.name, "onchange", function ($event) {
+      elementOpen("input", "d6039b79-e23f-4643-9b1d-0f5cff37c153", hoisted4, "value", model.name, "onchange", function ($event) {
         var $element = this;
       model.name = this.value})
       elementClose("input")
     elementClose("div")
-    elementOpen("div", "59cda250-2010-4f44-8b40-9bb6aea7330e", hoisted5)
-      elementOpen("label", "94e421d2-b9ac-48fe-bcae-0094ab29078c", hoisted6)
+    elementOpen("div", "ae81e14a-01e3-47ab-999f-685b405a7eb7", hoisted5)
+      elementOpen("label", "a4743f61-2cd1-4ee1-99ec-87c8ba6df577", hoisted6)
         text("Model Description")
       elementClose("label")
-      elementOpen("textarea", "f8fd40c4-1f2c-4deb-9c9f-2af757e77676", hoisted7, "value", model.description, "onchange", function ($event) {
+      elementOpen("textarea", "6d6d5e92-49e1-4af2-8822-e774d1fac76d", hoisted7, "value", model.description, "onchange", function ($event) {
         var $element = this;
       model.description = this.value})
       elementClose("textarea")
     elementClose("div")
-    elementOpen("button", "dc0bde9a-a7d9-4271-9246-344f5e59daa6", hoisted8, "onclick", function ($event) {
+    elementOpen("button", "b84f4e21-4b37-469e-9af8-3b0176265fb7", hoisted8, "onclick", function ($event) {
       var $element = this;
     root.currentItem = model.addSchema()})
-      elementOpen("i", "70bfd95b-1486-4afc-b4a4-dacd294f72ce", hoisted9)
+      elementOpen("i", "2554691e-edf4-4f1c-876e-d726696b494b", hoisted9)
       elementClose("i")
       text(" \
             Add schema to [" + ( model.name ) + "] \
@@ -1782,28 +1783,28 @@ var hoisted11 = ["type", "button", "class", "btn btn-primary btn-xs"]
 var __target
 
 module.exports = function description (model, root) {
-  elementOpen("form", "0527c8d9-ddbd-4abe-90a9-5c41cf7ae69c", hoisted1)
-    elementOpen("div", "005622bf-4744-4c2b-835f-cd00824f37d1", hoisted2)
-      elementOpen("label", "c6497f38-4155-4ced-adb6-352298832759", hoisted3)
+  elementOpen("form", "4e27a99e-a1e2-4dc1-8838-c7ad15befd08", hoisted1)
+    elementOpen("div", "3df545ab-27dd-4e8b-a400-5e38423e9fce", hoisted2)
+      elementOpen("label", "8c9d1e06-dcb5-4e64-9a7a-320e346b7f9b", hoisted3)
         text("Schema Name")
       elementClose("label")
-      elementOpen("input", "13405677-3850-479d-9719-edd0fe3f3472", hoisted4, "value", model.name, "onchange", function ($event) {
+      elementOpen("input", "2b0174fa-6597-4a76-81c6-d215ca601bb8", hoisted4, "value", model.name, "onchange", function ($event) {
         var $element = this;
       model.name = this.value})
       elementClose("input")
     elementClose("div")
-    elementOpen("div", "634e3305-8856-4aaa-80a8-6976baca8e55", hoisted5)
-      elementOpen("label", "b01ef80d-6edc-4ee2-9ccb-f6a34adf729c", hoisted6)
+    elementOpen("div", "5386d1a8-b014-45ac-bb76-48769e476b9a", hoisted5)
+      elementOpen("label", "01e96ddf-080d-44cb-8fca-abc20c45e09c", hoisted6)
         text("Schema Description")
       elementClose("label")
-      elementOpen("textarea", "a722eaea-c8bc-4058-90d5-890efa26324d", hoisted7, "value", model.description, "onchange", function ($event) {
+      elementOpen("textarea", "b3f56b35-a031-4388-8d4e-2f8051720bcc", hoisted7, "value", model.description, "onchange", function ($event) {
         var $element = this;
       model.description = this.value})
       elementClose("textarea")
     elementClose("div")
-    elementOpen("div", "07a1df7b-b844-44dc-8958-eeb7a77a36a3", hoisted8)
+    elementOpen("div", "7114b792-d657-4ab7-8ab0-bcc92d858cc4", hoisted8)
       elementOpen("label")
-        elementOpen("input", "e1bcba40-c17b-4d4a-9ec1-e8eaf0ca917b", hoisted9, "checked", model.isVirtual, "onchange", function ($event) {
+        elementOpen("input", "f68d42e3-c783-49cb-a3e1-d073d3d1c104", hoisted9, "checked", model.isVirtual, "onchange", function ($event) {
           var $element = this;
         model.isVirtual = this.value}, "disabled", model.isReferenced() ? 'disabled' : null)
         elementClose("input")
@@ -1811,12 +1812,12 @@ module.exports = function description (model, root) {
               ")
       elementClose("label")
     elementClose("div")
-    elementOpen("button", "bfae7a5e-96af-472f-a21b-77fe4a56e5af", hoisted10, "onclick", function ($event) {
+    elementOpen("button", "8f864252-14c1-4267-9dff-34ea99bf380f", hoisted10, "onclick", function ($event) {
       var $element = this;
     model.model.removeSchema(model); root.currentItem = model.model}, "disabled", model.isReferenced() ? 'disabled' : null)
       text("Remove schema")
     elementClose("button")
-    elementOpen("button", "4e3a539b-4ecc-4d90-ad7c-1636d8aeb326", hoisted11, "onclick", function ($event) {
+    elementOpen("button", "ae2f285f-90ea-4ed4-add8-88bc555ac27a", hoisted11, "onclick", function ($event) {
       var $element = this;
     root.currentItem = model.keys.addKey()})
       text("Add key")
@@ -1907,27 +1908,27 @@ var __target
 module.exports = function description (ctrl, modelView, schemaView, keysView, keyView) {
   var model = ctrl.model
       var breadcrumbs = ctrl.breadcrumbs
-  elementOpen("div", "176bf019-b64c-47c5-a471-c572a20fd2be", hoisted1)
-    elementOpen("ul", "f8555f8c-fadb-401d-b464-edf078958be6", hoisted2)
-      elementOpen("li", "868ad83c-e921-446e-b09b-6fc608419fc3", hoisted3)
-        elementOpen("a", "0e373c0e-7850-4946-b39a-f3bf0c68e0f6", hoisted4, "href", "#_" + (ctrl.id) + "_1")
+  elementOpen("div", "5499dcd3-87cf-43b7-b452-c77e5796fc1c", hoisted1)
+    elementOpen("ul", "d1f06595-c3ed-4127-b321-7c27d6fdb5a4", hoisted2)
+      elementOpen("li", "10376dbc-a2fe-4e20-afa0-5ee41b78f069", hoisted3)
+        elementOpen("a", "d8e2054f-40c4-487f-869e-1cd8a7ef0348", hoisted4, "href", "#_" + (ctrl.id) + "_1")
           text("Editor")
         elementClose("a")
       elementClose("li")
       elementOpen("li")
-        elementOpen("a", "01ec5446-2f84-47e8-ad8f-8b025e865b24", hoisted5, "href", "#_" + (ctrl.id) + "_2")
+        elementOpen("a", "21fd511d-a8dc-48b5-9384-b3233b7762b4", hoisted5, "href", "#_" + (ctrl.id) + "_2")
           text("Diagram")
         elementClose("a")
       elementClose("li")
       elementOpen("li")
-        elementOpen("a", "d6053748-c737-45f1-b933-8c5758cdfc90", hoisted6, "href", "#_" + (ctrl.id) + "_3")
+        elementOpen("a", "4a4f0948-ed14-4ce6-8420-9edbd00101fa", hoisted6, "href", "#_" + (ctrl.id) + "_3")
           text("JSON")
         elementClose("a")
       elementClose("li")
     elementClose("ul")
-    elementOpen("div", "34765e65-bf2e-4139-8b07-dd3d35c72e12", hoisted7)
-      elementOpen("div", "ee08b3a5-dcdb-49ec-9810-5b3c9cb41120", hoisted8, "id", "_" + (ctrl.id) + "_1")
-        elementOpen("vsd-breadcrumbs", "96761d40-c154-4fca-9294-2d8bddc56e43", hoisted9, "model", breadcrumbs, "onclickcrumb", function ($event) {
+    elementOpen("div", "8ec8b9c7-dbbe-4cb6-af70-6d45ccae98be", hoisted7)
+      elementOpen("div", "e2d110f6-7c46-450e-adc6-1888bc465f94", hoisted8, "id", "_" + (ctrl.id) + "_1")
+        elementOpen("vsd-breadcrumbs", "fac83030-8a55-428c-beb5-ef803aa76cc9", hoisted9, "model", breadcrumbs, "onclickcrumb", function ($event) {
           var $element = this;
         ctrl.onClickTreeNode($event.item)})
           if (true) {
@@ -1936,8 +1937,8 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
           }
         elementClose("vsd-breadcrumbs")
         if (model.errors.length) {
-          elementOpen("div", "f95632a7-5507-44f6-a59b-8daeda0985ba", hoisted10)
-            elementOpen("h4", "613a03e5-d94e-4c9b-8bcd-00decc5f1dd0", hoisted11)
+          elementOpen("div", "8490afde-cbe3-40fe-b3bc-8604bf75a9c9", hoisted10)
+            elementOpen("h4", "1974b27c-5bb9-4e75-a8b4-d7ee2cede493", hoisted11)
               text("Errors")
             elementClose("h4")
             elementOpen("ul")
@@ -1945,9 +1946,9 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
               if (__target) {
                 ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
                   var item = $value
-                  var $key = "69b193ea-94a9-4d9e-aa2c-11b36e2246dc_" + $item
+                  var $key = "9c5352bf-1653-43ab-9b2e-39a1c7bc4cf5_" + $item
                   elementOpen("li", $key)
-                    elementOpen("a", "108bbfbe-ff41-4166-b1ef-824fb29d7de2_" + $key, hoisted12, "onclick", function ($event) {
+                    elementOpen("a", "53c9995f-edcd-4de1-9ff3-59cf6709fbea_" + $key, hoisted12, "onclick", function ($event) {
                       var $element = this;
                     ctrl.onClickErrorNode(item)})
                       text("" + (item.error) + "")
@@ -1958,11 +1959,11 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
             elementClose("ul")
           elementClose("div")
         }
-        elementOpen("div", "8342417a-6cce-4bf1-b512-bc42827dd130", hoisted13)
-          elementOpen("div", "034b8668-7f5e-4ffb-bc37-83f5db64b07e", hoisted14)
-            elementOpen("ul", "1ce846ae-9919-4662-9d39-771ea344fcef", hoisted15)
+        elementOpen("div", "b3914e49-46e1-4b03-81ac-512351a379c6", hoisted13)
+          elementOpen("div", "fc8d67fc-1822-4faf-8b01-8e7cefc5ebc7", hoisted14)
+            elementOpen("ul", "e72fb509-6f4f-4e20-ba75-9a3610a1e23b", hoisted15)
               elementOpen("li")
-                elementOpen("i", "25a0e666-28d2-46c0-a7b1-85beb9726d97", hoisted16)
+                elementOpen("i", "1d5e1b87-f076-4146-b2b1-4e3b8421000a", hoisted16)
                 elementClose("i")
                 elementOpen("a", null, null, "onclick", function ($event) {
                   var $element = this;
@@ -1975,10 +1976,10 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
                   if (__target) {
                     ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
                       var schema = $value
-                      var $key = "2ef91c56-39a0-4ede-a854-d731af0c2552_" + $item
+                      var $key = "b29433c3-fd5e-4374-a4f7-6c86d665b700_" + $item
                       elementOpen("li", $key)
                         var isExpanded = ctrl.isExpanded(schema)
-                        elementOpen("i", "10ad313b-716f-47bf-b690-bf53f8f0529a_" + $key, hoisted17, "style", {color: schema.isVirtual ? '#aaa' : '#000'}, "onclick", function ($event) {
+                        elementOpen("i", "2a60062b-33a1-4ba9-a810-ec256e611b45_" + $key, hoisted17, "style", {color: schema.isVirtual ? '#aaa' : '#000'}, "onclick", function ($event) {
                           var $element = this;
                         ctrl.onClickToggleNode(schema)})
                         elementClose("i")
@@ -1998,7 +1999,7 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
             elementClose("ul")
           elementClose("div")
           if (ctrl.currentItem) {
-            elementOpen("div", "1c18deaf-31c6-4fae-ab21-e7cbc6f03bf8", hoisted18)
+            elementOpen("div", "49b18470-20eb-489e-8836-9ccb1752d4f2", hoisted18)
               if (ctrl.currentItem === model) {
                 modelView(model, ctrl)
               } else if (ctrl.currentItem.isSchema) {
@@ -2010,21 +2011,21 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
           }
         elementClose("div")
       elementClose("div")
-      elementOpen("div", "706f5276-b30a-428a-a3ce-26382c0cd142", hoisted19, "id", "_" + (ctrl.id) + "_2")
+      elementOpen("div", "a43565c8-a8c6-44f2-a24d-2dad695a1d17", hoisted19, "id", "_" + (ctrl.id) + "_2")
         elementOpen("div", null, null, "class", ctrl.isGraphExpanded ? 'expanded' : '')
-          elementOpen("button", "2e843322-4897-451d-bcce-5a8796675c2c", hoisted20, "onclick", function ($event) {
+          elementOpen("button", "53d809af-8e9d-4063-86ca-1c7b15c82789", hoisted20, "onclick", function ($event) {
             var $element = this;
           ctrl.isGraphExpanded = true})
-            elementOpen("i", "40f8b394-e458-4554-b7ab-e610bfed0a1f", hoisted21)
+            elementOpen("i", "7c584e60-e122-49ae-885c-139b6d6b3823", hoisted21)
             elementClose("i")
           elementClose("button")
-          elementOpen("button", "883a1610-ec1c-4226-ac63-9ffa18597741", hoisted22, "onclick", function ($event) {
+          elementOpen("button", "0822d4e4-308c-4bcc-bb91-b54e0c959f1a", hoisted22, "onclick", function ($event) {
             var $element = this;
           ctrl.isGraphExpanded = false})
-            elementOpen("i", "0791de4f-10c8-49e7-bd01-1be9debdf80c", hoisted23)
+            elementOpen("i", "3152f06a-14b9-4e46-a621-512f14a4667e", hoisted23)
             elementClose("i")
           elementClose("button")
-          elementOpen("svg", "3d722d8b-d991-4c89-a68f-bf6a8a3c6065", hoisted24)
+          elementOpen("svg", "5bdb2fc4-094a-4973-8b8b-dc38bafa6f32", hoisted24)
             elementOpen("g")
               if (true) {
                 skip()
@@ -2034,8 +2035,8 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
           elementClose("svg")
         elementClose("div")
       elementClose("div")
-      elementOpen("div", "baea8e5b-ebb6-498f-b3a4-7f2bbcb6150b", hoisted25, "id", "_" + (ctrl.id) + "_3")
-        elementOpen("pre", "36a9d7de-9563-4fbd-aea0-168b3695fe64", hoisted26)
+      elementOpen("div", "eceb0f04-386c-4429-a709-10cfc2e888ed", hoisted25, "id", "_" + (ctrl.id) + "_3")
+        elementOpen("pre", "711df093-c5f4-458b-9d3f-a3137c52e7dd", hoisted26)
           text("" + (JSON.stringify(model, null, 2)) + "")
         elementClose("pre")
       elementClose("div")
@@ -2181,23 +2182,23 @@ var __target
 module.exports = function fileEditor (model, hide) {
   var file = model.file
   if (file) {
-    elementOpen("div", "8531899c-a1d0-4bb8-bf3f-1b48cfd23db1", hoisted1)
+    elementOpen("div", "ec945f1c-4dac-4635-b7b9-e1b63d6aa6b0", hoisted1)
       if (model.mode === 'mkfile') {
         elementOpen("form", "mkfile", null, "onsubmit", function ($event) {
           var $element = this;
         model.mkfile($event)})
-          elementOpen("div", "5667bff8-3703-4fd3-afd7-81c66b72fff3", hoisted2)
-            elementOpen("label", "553e9142-7d81-46c7-b9d3-649fa01ccda1", hoisted3)
+          elementOpen("div", "802832fe-e652-4840-8ea4-fb656bb4520b", hoisted2)
+            elementOpen("label", "34ee2905-1712-4bb8-b39b-541d3623a67e", hoisted3)
               text("Add new file")
             elementClose("label")
-            elementOpen("div", "1aa45bb2-8e16-42d8-9c6e-dec2c4886197", hoisted4)
-              elementOpen("input", "e90bf536-7915-4b37-8c1e-40db5eed32ca", hoisted5)
+            elementOpen("div", "4d14aa8f-54d0-422e-9e58-22d85a008b30", hoisted4)
+              elementOpen("input", "f21f2e2a-10d8-4714-b0f1-fe179b58e21e", hoisted5)
               elementClose("input")
-              elementOpen("span", "d38b77ba-63ab-4867-9745-a1e748e9ec89", hoisted6)
-                elementOpen("button", "d82db822-4824-47c3-a154-de8912cccb31", hoisted7)
+              elementOpen("span", "6f549bc5-e1ae-4ec7-99ed-6b3fb069980a", hoisted6)
+                elementOpen("button", "234efc7d-97f6-428e-99cd-f80169069116", hoisted7)
                   text("OK")
                 elementClose("button")
-                elementOpen("button", "416c831e-c78d-4856-bad4-44635766b022", hoisted8, "onclick", function ($event) {
+                elementOpen("button", "9ea45093-2f5a-4cf4-9bed-ca133dab7437", hoisted8, "onclick", function ($event) {
                   var $element = this;
                 hide()})
                   text("Cancel")
@@ -2211,18 +2212,18 @@ module.exports = function fileEditor (model, hide) {
         elementOpen("form", "mkdir", null, "onsubmit", function ($event) {
           var $element = this;
         model.mkdir($event)})
-          elementOpen("div", "fe8fba38-2d4e-49e8-b136-d356190c12c3", hoisted9)
-            elementOpen("label", "1fd51c18-3da6-4f24-b1cf-98d21259e545", hoisted10)
+          elementOpen("div", "7c36723a-67f1-4dfc-96d3-511fba08ae99", hoisted9)
+            elementOpen("label", "9876169a-0c84-4f46-8358-93117b6ea4fc", hoisted10)
               text("Add new folder")
             elementClose("label")
-            elementOpen("div", "d046a4f0-b090-4332-9561-2a972d18a95d", hoisted11)
-              elementOpen("input", "db4246d9-ddc8-4ba9-b64c-b647b49184e7", hoisted12, "value", file.getRelativePath() ? file.getRelativePath() + '/' : '')
+            elementOpen("div", "6f7588fc-6c37-4273-bd4c-b6e1df74d551", hoisted11)
+              elementOpen("input", "106276fa-17f8-4a8c-934e-37e0bf874421", hoisted12, "value", file.getRelativePath() ? file.getRelativePath() + '/' : '')
               elementClose("input")
-              elementOpen("span", "0337844d-8bca-4a9f-9a20-04343c3a5e9b", hoisted13)
-                elementOpen("button", "1b2d96fd-4b83-43e6-b37f-e150b961aa12", hoisted14)
+              elementOpen("span", "406103df-f93f-4c84-8eb3-9a0951bac5e9", hoisted13)
+                elementOpen("button", "b0567f34-44e7-437b-9169-daa8770a7de0", hoisted14)
                   text("OK")
                 elementClose("button")
-                elementOpen("button", "2398506d-4027-412b-aab0-07d1851747d1", hoisted15, "onclick", function ($event) {
+                elementOpen("button", "bb5c1cdb-ab56-4811-8a1e-5a2630f06bc5", hoisted15, "onclick", function ($event) {
                   var $element = this;
                 hide()})
                   text("Cancel")
@@ -2236,18 +2237,18 @@ module.exports = function fileEditor (model, hide) {
         elementOpen("form", "rename", null, "onsubmit", function ($event) {
           var $element = this;
         model.rename($event, file)})
-          elementOpen("div", "a1825c83-3152-439e-a9df-a16913e03e2a", hoisted16)
-            elementOpen("label", "5499053f-4aa4-4ee9-98bc-c5c1371df6c9", hoisted17)
+          elementOpen("div", "ffed109f-c6dd-447b-9110-4617e66af888", hoisted16)
+            elementOpen("label", "76f8d10b-b169-4c7d-8eae-496309e0b26b", hoisted17)
               text("Rename")
             elementClose("label")
-            elementOpen("div", "abea5269-728b-4429-b4f4-d40d15a587bb", hoisted18)
-              elementOpen("input", "2720e4ec-31e1-4f5b-9212-7a316bcdafff", hoisted19, "value", file.name)
+            elementOpen("div", "ad58e16b-cc7b-4764-ad3a-6c6ecfc181f4", hoisted18)
+              elementOpen("input", "654ee499-2aab-46ad-8bde-2e79c945e358", hoisted19, "value", file.name)
               elementClose("input")
-              elementOpen("span", "962a9612-c3f0-4fd2-8042-e147f96d507f", hoisted20)
-                elementOpen("button", "849cae39-1879-4d1c-87f7-869ab823a9e7", hoisted21)
+              elementOpen("span", "dab18f40-8422-4077-8095-b2eb15171707", hoisted20)
+                elementOpen("button", "71b8997d-d02d-46ce-9900-5b0e4e2d7d6c", hoisted21)
                   text("OK")
                 elementClose("button")
-                elementOpen("button", "977334dc-f63f-458c-85b6-b43894dd1ac0", hoisted22, "onclick", function ($event) {
+                elementOpen("button", "27277a82-8f88-4d43-ac51-9d5975b59a50", hoisted22, "onclick", function ($event) {
                   var $element = this;
                 hide()})
                   text("Cancel")
@@ -2424,7 +2425,7 @@ module.exports = function fileMenu (model) {
   var node = model.node
       var file = model.file
   if (file) {
-    elementOpen("ul", "6df59b3a-d8cc-44f6-ac1d-44bea4d4f825", hoisted1, "style", { top: model.y, left: model.x })
+    elementOpen("ul", "cc7f02c6-6231-45e7-94e2-c87202e008c9", hoisted1, "style", { top: model.y, left: model.x })
       elementOpen("li", "header", hoisted2)
         text("" + (file.name) + "")
       elementClose("li")
@@ -2432,7 +2433,7 @@ module.exports = function fileMenu (model) {
         elementOpen("a", null, null, "onclick", function ($event) {
           var $element = this;
         model.rename(file)})
-          elementOpen("i", "80649969-a0d6-461a-a0e1-1f34b9fae0cc", hoisted3)
+          elementOpen("i", "8882f982-5a47-43cc-ba83-a2133b38ab78", hoisted3)
           elementClose("i")
           text(" Rename")
         elementClose("a")
@@ -2443,7 +2444,7 @@ module.exports = function fileMenu (model) {
         elementOpen("a", null, null, "onclick", function ($event) {
           var $element = this;
         model.setPasteBuffer(file, 'cut')})
-          elementOpen("i", "d53b509e-6f8c-44aa-96f8-8a729765a665", hoisted5)
+          elementOpen("i", "06eb1bed-2f8c-4ab8-bbe9-fc4014386c75", hoisted5)
           elementClose("i")
           text(" Cut")
         elementClose("a")
@@ -2452,7 +2453,7 @@ module.exports = function fileMenu (model) {
         elementOpen("a", null, null, "onclick", function ($event) {
           var $element = this;
         model.setPasteBuffer(file, 'copy')})
-          elementOpen("i", "a3a88d66-59a0-41a5-b520-5def1b9fcd2c", hoisted6)
+          elementOpen("i", "2ddc6131-0026-43a5-9b77-04d3b67d1699", hoisted6)
           elementClose("i")
           text(" Copy")
         elementClose("a")
@@ -2462,7 +2463,7 @@ module.exports = function fileMenu (model) {
           elementOpen("a", null, null, "onclick", function ($event) {
             var $element = this;
           model.paste(file)})
-            elementOpen("i", "5868ddd3-fa51-454a-a6a5-5b12bcf6487e", hoisted7)
+            elementOpen("i", "22d88e69-1628-46d1-978d-5f356592e0bd", hoisted7)
             elementClose("i")
             text(" Paste")
           elementClose("a")
@@ -2474,7 +2475,7 @@ module.exports = function fileMenu (model) {
         elementOpen("a", null, null, "onclick", function ($event) {
           var $element = this;
         model.mkfile(node)})
-          elementOpen("i", "72dac148-03ed-4605-9a83-18fa78cb2bd6", hoisted9)
+          elementOpen("i", "c962f78b-5a46-45c3-806b-7a354872ea0a", hoisted9)
           elementClose("i")
           text(" Add new file")
         elementClose("a")
@@ -2483,7 +2484,7 @@ module.exports = function fileMenu (model) {
         elementOpen("a", null, null, "onclick", function ($event) {
           var $element = this;
         model.mkdir(node)})
-          elementOpen("i", "f2a9f4f0-4bdf-4d4c-b459-dd326d81f54b", hoisted10)
+          elementOpen("i", "cee5e3ad-3440-4ab8-a5bb-c63d8f314c1f", hoisted10)
           elementClose("i")
           text(" Add new folder")
         elementClose("a")
@@ -2494,7 +2495,7 @@ module.exports = function fileMenu (model) {
         elementOpen("a", null, null, "onclick", function ($event) {
           var $element = this;
         model.remove(file)})
-          elementOpen("i", "682c7e55-4bbd-43c5-94c1-5da9ac1b2372", hoisted12)
+          elementOpen("i", "40c71328-ee1a-4776-a452-ba2d92b68101", hoisted12)
           elementClose("i")
           text(" Delete")
         elementClose("a")
@@ -2742,65 +2743,65 @@ var __target
 
 module.exports = function description (model) {
   if (model.file) {
-    elementOpen("div", "f8fc6623-c4df-4708-8f81-4e2f27944fdd", hoisted1)
+    elementOpen("div", "35461e90-fdfd-4329-ab66-fc61d158532e", hoisted1)
       var box = currentElement()
-      elementOpen("div", "880ffcdb-35f5-4211-beff-b659928ab7c1", hoisted2)
-        elementOpen("h3", "ece1f4ea-efa1-4973-959f-e4cddcc76465", hoisted3)
+      elementOpen("div", "be85e323-5be0-4d7e-b5e7-cdf6455e773b", hoisted2)
+        elementOpen("h3", "a183ab9b-4c34-49c3-9fa8-994492e78b2a", hoisted3)
           text("" + (model.file.name) + "")
         elementClose("h3")
-        elementOpen("div", "37f5c26c-0f09-4a75-8234-47b663313da6", hoisted4)
-          elementOpen("button", "20030845-9a38-44ad-818c-384679a4138e", hoisted5)
-            elementOpen("i", "abbdba38-34ea-47ef-a8bd-fa22d2b96b26", hoisted6)
+        elementOpen("div", "8ad56582-9a47-42c3-a286-493547198637", hoisted4)
+          elementOpen("button", "9b638421-daad-4711-9545-41c50de58c25", hoisted5)
+            elementOpen("i", "642305f6-845c-421d-8d68-f3e7ae127281", hoisted6)
             elementClose("i")
           elementClose("button")
-          elementOpen("button", "6436038c-ad6f-47f9-9c33-234c70dccc19", hoisted7, "onclick", function ($event) {
+          elementOpen("button", "bd280155-0c55-4bbd-9049-7c26554384f3", hoisted7, "onclick", function ($event) {
             var $element = this;
           model.requestFullscreen(box)})
-            elementOpen("i", "24209302-2392-4614-9ea6-3808a169298d", hoisted8)
+            elementOpen("i", "91111f0b-13c2-406b-9bb9-b62adc1542c7", hoisted8)
             elementClose("i")
           elementClose("button")
-          elementOpen("div", "686849d5-2ebd-40b7-8567-de35dce8805f", hoisted9)
-            elementOpen("button", "79d7605c-f26c-43e8-bfe7-a6cd606344b4", hoisted10)
-              elementOpen("i", "5168527a-92be-4447-a47b-2fc9fe86c437", hoisted11)
+          elementOpen("div", "1019670c-8e5e-47fd-80e0-0f3206b3d32f", hoisted9)
+            elementOpen("button", "b1f49ae7-07ca-46d5-9182-923fe316b2cd", hoisted10)
+              elementOpen("i", "c89591a0-89a0-4e2f-98f4-698d05b44477", hoisted11)
               elementClose("i")
             elementClose("button")
-            elementOpen("ul", "11a3b9ea-317f-47dc-abc2-98624aa4c884", hoisted12)
+            elementOpen("ul", "1a98cdc8-5bd6-4837-b9e8-bd44b49557c2", hoisted12)
               elementOpen("li")
-                elementOpen("a", "6540b7eb-d197-4512-a7b5-864c2d469d44", hoisted13)
+                elementOpen("a", "ba33dc58-06a7-4a7d-aa29-0752149d249d", hoisted13)
                   text("Rename")
                 elementClose("a")
               elementClose("li")
               elementOpen("li")
-                elementOpen("a", "9cb77bc4-52d0-4361-b85c-9d4ed6b9d577", hoisted14)
+                elementOpen("a", "15794976-83c7-4fa2-b516-f6828622bec9", hoisted14)
                   text("Delete")
                 elementClose("a")
               elementClose("li")
               elementOpen("li")
-                elementOpen("a", "c7bd8c41-6a26-4fd3-99f1-d5b6b97d20fd", hoisted15)
+                elementOpen("a", "2016733e-f286-4e07-906c-6c56b07ab679", hoisted15)
                   text("Copy")
                 elementClose("a")
               elementClose("li")
-              elementOpen("li", "8f831bed-f8cc-422b-a363-106bb214a650", hoisted16)
+              elementOpen("li", "f9da702f-b25c-49e8-98af-dac5dbde1b37", hoisted16)
               elementClose("li")
               elementOpen("li")
-                elementOpen("a", "1baaf3f7-f87c-4520-a405-3d26c1efc9ca", hoisted17)
+                elementOpen("a", "a6a4b068-817f-410e-b2fb-1002be507556", hoisted17)
                   text("Delete")
                 elementClose("a")
               elementClose("li")
             elementClose("ul")
           elementClose("div")
-          elementOpen("button", "bd576919-7998-4429-a1ef-d8e6b33901e0", hoisted18, "onclick", function ($event) {
+          elementOpen("button", "35fc9e96-0b44-4101-86b0-9de7e248136c", hoisted18, "onclick", function ($event) {
             var $element = this;
           model.onCloseClick($event, box)})
-            elementOpen("i", "86a3ec5a-d58a-4d46-bf05-ecf08a734e6e", hoisted19)
+            elementOpen("i", "6f6682bf-da8d-4855-8e4d-574541ee449f", hoisted19)
             elementClose("i")
           elementClose("button")
         elementClose("div")
       elementClose("div")
       var type = model.getType()
-      elementOpen("div", "bb44448c-4efc-4aea-b50f-b1204e888973", hoisted20)
+      elementOpen("div", "da60841a-61bf-4b0c-9c1f-3757ac5a53d7", hoisted20)
         if (type === 'routes') {
-          elementOpen("vsd-routes", "7986d941-3d63-4e9a-b6ce-1d29bd963eea", hoisted21, "contents", model.contents, "path", model.file.path, "oncontentchange", function ($event) {
+          elementOpen("vsd-routes", "2404646e-1962-41ea-adb4-3eaada2ed5db", hoisted21, "contents", model.contents, "path", model.file.path, "oncontentchange", function ($event) {
             var $element = this;
           model.onContentChange($event)})
             if (true) {
@@ -2809,7 +2810,7 @@ module.exports = function description (model) {
             }
           elementClose("vsd-routes")
         } else if (type === 'db') {
-          elementOpen("vsd-db", "40eb47ec-82c1-4cdd-8258-969c7c005e5e", hoisted22, "contents", model.contents, "oncontentchange", function ($event) {
+          elementOpen("vsd-db", "5e509e26-7cfa-4e3b-b8ce-a93f9e7e0689", hoisted22, "contents", model.contents, "oncontentchange", function ($event) {
             var $element = this;
           model.onContentChange($event)})
             if (true) {
@@ -2818,7 +2819,7 @@ module.exports = function description (model) {
             }
           elementClose("vsd-db")
         } else {
-          elementOpen("vsd-ace", "17d516b7-82b2-49d3-a32e-ed032e01e55c", hoisted23, "mode", model.getMode(model.file), "contents", model.contents, "oncontentchange", function ($event) {
+          elementOpen("vsd-ace", "667945e8-013d-479d-9d5f-7c93d3a5774e", hoisted23, "mode", model.getMode(model.file), "contents", model.contents, "oncontentchange", function ($event) {
             var $element = this;
           model.onContentChange($event)})
             if (true) {
@@ -2828,11 +2829,11 @@ module.exports = function description (model) {
           elementClose("vsd-ace")
         }
       elementClose("div")
-      elementOpen("div", "368be7af-c131-47d6-9ecb-319ceb1e9d0e", hoisted24)
-        elementOpen("strong", "809a6b0c-d08e-41d1-b2f9-f3b4c98d4dbe", hoisted25)
+      elementOpen("div", "2e157868-ef95-4f0f-8cdc-9e44a79a441e", hoisted24)
+        elementOpen("strong", "1bf48118-5cb1-4cda-8dca-0b907f2721f0", hoisted25)
           text("" + (model.getFilesize()) + "")
         elementClose("strong")
-        elementOpen("span", "fb77271f-9e43-4412-8766-daf8fc469f0f", hoisted26)
+        elementOpen("span", "e20b93ee-c48f-4567-9a52-a65ec15f8d43", hoisted26)
           text("" + (model.getRelativePath(model.file.path)) + "")
         elementClose("span")
       elementClose("div")
@@ -3026,9 +3027,9 @@ module.exports = function description (ctrl) {
   if (__target) {
     ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
       var item = $value
-      var $key = "0148708a-f111-48da-9ae2-ebd3edbdae76_" + $item
+      var $key = "7f7519a8-ba1e-4394-af82-221e54ac82c6_" + $item
       elementOpen("div", $key, null, "class", "alert alert-" + (item.type) + " alert-dismissible")
-        elementOpen("button", "d27a5687-901a-48ab-ae42-43e4103c6020_" + $key, hoisted1, "onclick", function ($event) {
+        elementOpen("button", "c9ba02c5-3830-46f1-8b3d-89b8c28ee5b1_" + $key, hoisted1, "onclick", function ($event) {
           var $element = this;
         ctrl.items.splice($item, 1)})
           text("×")
@@ -3472,17 +3473,17 @@ var __target
 
 module.exports = function description (ctrl) {
   if (ctrl && ctrl.model) {
-    elementOpen("div", "26b2552a-f3e8-41b6-96f9-7a621108d632", hoisted1)
+    elementOpen("div", "4f92e7ed-cb6d-4406-b54e-db403a2aeb03", hoisted1)
       var model = ctrl.model
             var routes = ctrl.filtered
-      elementOpen("div", "611bc47b-9990-4f5b-b489-d8097326978c", hoisted2)
+      elementOpen("div", "2388a3a0-305a-4d6e-b02c-5fd60377cb48", hoisted2)
         elementOpen("h4")
           text("" + (model.name) + "")
         elementClose("h4")
         text(" " + (model.description) + " \
               ")
         if (!routes.length) {
-          elementOpen("div", "d1b5686a-029b-413f-bfbc-58f69076320a", hoisted3)
+          elementOpen("div", "2f2e1e78-6369-4319-93b3-1e10fec6bc1d", hoisted3)
             elementOpen("h4")
               text("No routes found")
             elementClose("h4")
@@ -3499,8 +3500,8 @@ module.exports = function description (ctrl) {
           elementClose("div")
         }
         if (model.errors.length) {
-          elementOpen("div", "93336a3e-9fd6-4264-9f74-c20fefbfb82a", hoisted4)
-            elementOpen("h4", "d34c4246-78d1-4ebd-9dd3-fb2f158db5d1", hoisted5)
+          elementOpen("div", "f70d528c-9ce2-44b1-bcce-fd85b2cbf412", hoisted4)
+            elementOpen("h4", "44219010-da66-4dcb-b2e1-88d1340ef5b9", hoisted5)
               text("Errors")
             elementClose("h4")
             elementOpen("ul")
@@ -3508,9 +3509,9 @@ module.exports = function description (ctrl) {
               if (__target) {
                 ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
                   var item = $value
-                  var $key = "f222ffc0-c183-4f54-9535-584922a980b1_" + $item
+                  var $key = "46842c59-4e13-4f34-91d3-50e40030ee99_" + $item
                   elementOpen("li", $key)
-                    elementOpen("a", "21cac762-2d87-4311-b64a-0fdd00d039f1_" + $key, hoisted6, "onclick", function ($event) {
+                    elementOpen("a", "f9af5d76-b1ed-4550-adbe-0f0494b04e04_" + $key, hoisted6, "onclick", function ($event) {
                       var $element = this;
                     ctrl.onClickErrorNode(item)})
                       text("" + (item.error) + "")
@@ -3521,30 +3522,30 @@ module.exports = function description (ctrl) {
             elementClose("ul")
           elementClose("div")
         }
-        elementOpen("div", "81fb0321-fd8e-4369-b541-87de29d96ffb", hoisted7)
-          elementOpen("div", "10169cf4-46c3-48d3-8bda-c854ed535f05", hoisted8)
-            elementOpen("div", "835a1caf-a2ee-4dd7-a06c-fa8e75cec498", hoisted9)
-              elementOpen("div", "fc902796-44a0-4cc4-abd3-0dfd8834a854", hoisted10)
-                elementOpen("input", "b3874e67-74d8-43c0-a039-45b86310104e", hoisted11, "value", ctrl.query, "onkeyup", function ($event) {
+        elementOpen("div", "940f6686-905a-483e-8358-76098522102b", hoisted7)
+          elementOpen("div", "c960cd66-963d-4a11-a03d-d0449beeb6c6", hoisted8)
+            elementOpen("div", "2bf6544b-cc76-4eb2-99b3-303f882dd433", hoisted9)
+              elementOpen("div", "b5b22e30-59f2-4501-bf63-1099de256e7d", hoisted10)
+                elementOpen("input", "45a78cc3-c4cf-40b5-8eea-d1c521d2cde3", hoisted11, "value", ctrl.query, "onkeyup", function ($event) {
                   var $element = this;
                 ctrl.query = this.value})
                 elementClose("input")
-                elementOpen("div", "6d623c2c-be93-4656-8d93-b9d360826d73", hoisted12)
-                  elementOpen("button", "4d169125-f003-4b5d-b3d6-1f7543767c39", hoisted13)
-                    elementOpen("i", "00bf9b2c-a11e-4668-aa07-627eb5b9c73a", hoisted14)
+                elementOpen("div", "414ea351-6568-4172-af08-054dda1eeccd", hoisted12)
+                  elementOpen("button", "1eab2747-3b41-4098-9f90-fc3d94642f93", hoisted13)
+                    elementOpen("i", "e698bc6c-2590-420f-afd6-033d6166c4cc", hoisted14)
                     elementClose("i")
                   elementClose("button")
                 elementClose("div")
               elementClose("div")
             elementClose("div")
             if (routes.length) {
-              elementOpen("table", "e1bfe0fe-63e2-43b6-a2df-0d048594fb8e", hoisted15)
+              elementOpen("table", "477da976-fd38-49dd-92fb-15f96f1c7b9c", hoisted15)
                 elementOpen("tbody")
                   __target = routes
                   if (__target) {
                     ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
                       var route = $value
-                      var $key = "9acdd6ec-a3b1-42e7-b099-ae515d8d4512_" + $item
+                      var $key = "2cc9c96d-9049-447a-b737-61567f74ca89_" + $item
                       elementOpen("tr", $key, null, "onclick", function ($event) {
                         var $element = this;
                       ctrl.currentRoute = route}, "class", route.getRowClassName(ctrl.currentRoute))
@@ -3561,7 +3562,7 @@ module.exports = function description (ctrl) {
                         elementClose("td")
                         elementOpen("td")
                           if (route.resourceDisplay) {
-                            elementOpen("a", "4b240b12-d3ee-4b07-aedc-718840708ba6_" + $key, hoisted16, "href", "#" + (ctrl.getRelativePath(route)) + "")
+                            elementOpen("a", "fa01ff16-32a2-478c-a2b1-8327981c79ab_" + $key, hoisted16, "href", "#" + (ctrl.getRelativePath(route)) + "")
                               text("" + (route.resourceDisplay) + "")
                             elementClose("a")
                           }
@@ -3572,114 +3573,114 @@ module.exports = function description (ctrl) {
                 elementClose("tbody")
               elementClose("table")
             }
-            elementOpen("div", "29412848-6531-44c7-8e94-83bfbb072850", hoisted17)
-              elementOpen("button", "82243d43-5054-449e-9a3e-40e7288469d6", hoisted18, "onclick", function ($event) {
+            elementOpen("div", "be44cd6f-9f87-46c7-ba58-ac816caa1670", hoisted17)
+              elementOpen("button", "c6ded1da-b3a8-4e9e-8d79-44544ddb5938", hoisted18, "onclick", function ($event) {
                 var $element = this;
               ctrl.addRoute()})
                 text("Add")
               elementClose("button")
             elementClose("div")
-            elementOpen("ul", "fcb18b3a-e2c2-4a7a-b988-629c52ce8292", hoisted19)
+            elementOpen("ul", "17e5bc1e-0e37-45b5-b54b-3175e6c897d0", hoisted19)
               elementOpen("li")
-                elementOpen("a", "5372fd99-20a0-4655-88ef-52efc559a5ba", hoisted20)
+                elementOpen("a", "b26e1981-d12f-461b-9486-22c02542c287", hoisted20)
                   text("«")
                 elementClose("a")
               elementClose("li")
               elementOpen("li")
-                elementOpen("a", "7c6aa559-a443-4323-bfb1-7b60bd150cca", hoisted21)
+                elementOpen("a", "c5f64eba-f463-4d32-9ef8-389164b930c0", hoisted21)
                   text("1")
                 elementClose("a")
               elementClose("li")
               elementOpen("li")
-                elementOpen("a", "babfc319-f29d-4882-a930-4255d6334dbe", hoisted22)
+                elementOpen("a", "ef9f826d-10b7-4c1d-b4dc-f27a615e1797", hoisted22)
                   text("2")
                 elementClose("a")
               elementClose("li")
               elementOpen("li")
-                elementOpen("a", "2c2c4ad0-c9f0-4f64-b3e1-a4820b1077a5", hoisted23)
+                elementOpen("a", "8b381762-950f-42dc-bedf-68414c51d59d", hoisted23)
                   text("3")
                 elementClose("a")
               elementClose("li")
               elementOpen("li")
-                elementOpen("a", "7bde367d-6da4-4501-a29c-b0c5e5dc5f3e", hoisted24)
+                elementOpen("a", "8bdc3494-93db-4260-b7dd-aa1a0f969681", hoisted24)
                   text("»")
                 elementClose("a")
               elementClose("li")
             elementClose("ul")
           elementClose("div")
           if (ctrl.currentRoute) {
-            elementOpen("div", "4e542aca-b314-42cf-80c9-7e52362e36c0", hoisted25)
-              elementOpen("form", "e449262e-e729-47b3-ace0-38b84aa00080", hoisted26)
-                elementOpen("div", "94586f3a-a2f4-484e-a478-9765a1e7d623", hoisted27)
-                  elementOpen("label", "9c4352ab-f2bc-4343-83ef-0be37b729a4f", hoisted28)
+            elementOpen("div", "ed94a078-99e1-4757-895c-1a6d5bfa2283", hoisted25)
+              elementOpen("form", "d7259dd2-030d-4065-8a7a-68b19aa1fccf", hoisted26)
+                elementOpen("div", "44a6e0a9-3b8e-4a2f-b13f-a05140083c48", hoisted27)
+                  elementOpen("label", "b063da37-7a67-4ee7-8dae-ecf694161f71", hoisted28)
                     text("Method")
                   elementClose("label")
-                  elementOpen("div", "293ed9bd-11d4-454b-bdc9-e7dd5b3d3c9e", hoisted29)
-                    elementOpen("select", "e774c14a-ff36-48c0-ae26-998360ce0c03", hoisted30, "onchange", function ($event) {
+                  elementOpen("div", "c82139d8-c399-47b2-9f1c-cbe5f0600c50", hoisted29)
+                    elementOpen("select", "48c654ec-7ff4-43be-bc4d-dba444157a84", hoisted30, "onchange", function ($event) {
                       var $element = this;
                     ctrl.currentRoute.method = this.value})
-                      elementOpen("option", "76ca5971-36e7-4d13-9aae-03e5bd23aab7", hoisted31, "selected", ctrl.currentRoute.method === 'GET' ? 'selected' : null)
+                      elementOpen("option", "2679753c-6479-48ce-87ca-4e1e3e4e344c", hoisted31, "selected", ctrl.currentRoute.method === 'GET' ? 'selected' : null)
                         text("GET")
                       elementClose("option")
-                      elementOpen("option", "1c0352d8-9504-49fe-b563-38a0c550b6bf", hoisted32, "selected", ctrl.currentRoute.method === 'POST' ? 'selected' : null)
+                      elementOpen("option", "a6777c58-b2c8-4303-9c4c-61af417641a5", hoisted32, "selected", ctrl.currentRoute.method === 'POST' ? 'selected' : null)
                         text("POST")
                       elementClose("option")
-                      elementOpen("option", "a245bacf-8ddf-47be-bec1-5219f701d5f6", hoisted33, "selected", ctrl.currentRoute.method === 'PUT' ? 'selected' : null)
+                      elementOpen("option", "714480fe-682d-43e7-b86a-532f01121ff2", hoisted33, "selected", ctrl.currentRoute.method === 'PUT' ? 'selected' : null)
                         text("PUT")
                       elementClose("option")
-                      elementOpen("option", "71a4a66b-e151-4073-93be-4e5bc5d41512", hoisted34, "selected", ctrl.currentRoute.method === 'DELETE' ? 'selected' : null)
+                      elementOpen("option", "183da0c8-f929-4e51-b0f7-798203a627fd", hoisted34, "selected", ctrl.currentRoute.method === 'DELETE' ? 'selected' : null)
                         text("DELETE")
                       elementClose("option")
                     elementClose("select")
                   elementClose("div")
                 elementClose("div")
-                elementOpen("div", "d7c6a6bd-ba0d-404a-991f-2fd3431ab037", hoisted35)
-                  elementOpen("label", "1ccdb2f0-a9c8-4b95-b899-3f666d2ac631", hoisted36)
+                elementOpen("div", "55165743-1f52-4478-9450-9c4158b9eb27", hoisted35)
+                  elementOpen("label", "a0aa1ef5-05d0-4da7-8c46-a0525c680020", hoisted36)
                     text("Path")
                   elementClose("label")
-                  elementOpen("div", "f109a323-fea4-4e79-877a-58f13d053403", hoisted37)
-                    elementOpen("input", "82c3df14-5913-43c4-990e-7d1002805b14", hoisted38, "value", ctrl.currentRoute.path, "onchange", function ($event) {
+                  elementOpen("div", "0676e0fd-f198-485f-b4dd-c3d9e49c398d", hoisted37)
+                    elementOpen("input", "91716a20-869d-4dae-b6ff-89bc14023b04", hoisted38, "value", ctrl.currentRoute.path, "onchange", function ($event) {
                       var $element = this;
                     ctrl.currentRoute.path = this.value})
                     elementClose("input")
                   elementClose("div")
                 elementClose("div")
-                elementOpen("div", "ce71f228-ced4-4853-95b2-8a5c5ad1577d", hoisted39)
-                  elementOpen("label", "eb779682-7240-4fc4-ae2d-df84f88334f0", hoisted40)
+                elementOpen("div", "0aa154b0-107e-410c-b58b-c8ca3098f98b", hoisted39)
+                  elementOpen("label", "03ee5e7f-bb60-40ae-ad9d-487be2630cc4", hoisted40)
                     text("Resource path")
                   elementClose("label")
-                  elementOpen("div", "1739e51c-9b27-4277-915a-8a7bd51976e0", hoisted41)
-                    elementOpen("input", "738de61e-1f6a-49ba-b27e-71cdbe65ee21", hoisted42, "value", ctrl.currentRoute.resource.path, "onchange", function ($event) {
+                  elementOpen("div", "b8136e5d-d105-41b3-8d5c-3f8364bdfc0c", hoisted41)
+                    elementOpen("input", "a5fd7f04-adab-4086-8477-c312b3f22a62", hoisted42, "value", ctrl.currentRoute.resource.path, "onchange", function ($event) {
                       var $element = this;
                     ctrl.currentRoute.resource.path = this.value})
                     elementClose("input")
                   elementClose("div")
                 elementClose("div")
-                elementOpen("div", "01998a97-cd58-4442-bf49-da846be01a1b", hoisted43)
-                  elementOpen("label", "9021c095-1258-4fb7-b1cf-8f3ba8f064b5", hoisted44)
+                elementOpen("div", "43c71966-0f88-4a67-96c0-e32a84917ea9", hoisted43)
+                  elementOpen("label", "5f55658f-34e4-414b-b712-a85c095a12c4", hoisted44)
                     text("Resource name")
                   elementClose("label")
-                  elementOpen("div", "3c730959-664d-49a3-8b10-097bfe52bc99", hoisted45)
-                    elementOpen("input", "2b4e6443-c8dd-4f1b-9da1-7b06752b9feb", hoisted46, "value", ctrl.currentRoute.resource.name, "onchange", function ($event) {
+                  elementOpen("div", "ec90b3f7-863f-4db6-99a7-04f3b1a1ef89", hoisted45)
+                    elementOpen("input", "30e07557-171d-4dc9-93d5-61310a23b505", hoisted46, "value", ctrl.currentRoute.resource.name, "onchange", function ($event) {
                       var $element = this;
                     ctrl.currentRoute.resource.name = this.value})
                     elementClose("input")
                   elementClose("div")
                 elementClose("div")
-                elementOpen("div", "0510cd99-8a5a-4f8f-be66-4855586edf4b", hoisted47)
-                  elementOpen("label", "82693868-96f4-4216-a40b-fc74b4685111", hoisted48)
+                elementOpen("div", "003636f1-a91c-4c88-a893-ace2d9fa1a5f", hoisted47)
+                  elementOpen("label", "21fe11ae-a999-4149-a365-ec618f3e6530", hoisted48)
                     text("Description")
                   elementClose("label")
-                  elementOpen("div", "0bd81767-b9f9-4756-a40c-1569f909c662", hoisted49)
-                    elementOpen("textarea", "4569d34c-86b3-4d57-ab2b-cef4e362a2f8", hoisted50, "value", ctrl.currentRoute.description, "onchange", function ($event) {
+                  elementOpen("div", "7419fead-76c2-4c6a-9d85-428fc3cb1432", hoisted49)
+                    elementOpen("textarea", "da0ea401-d683-4246-b967-cc319e19a493", hoisted50, "value", ctrl.currentRoute.description, "onchange", function ($event) {
                       var $element = this;
                     ctrl.currentRoute.description = this.value})
                     elementClose("textarea")
                   elementClose("div")
                 elementClose("div")
-                elementOpen("div", "46168f24-f625-49ed-b2a6-f3264faab542", hoisted51)
-                  elementOpen("div", "a272ea58-bca9-469d-aa87-1e7a241de2bf", hoisted52)
-                    elementOpen("input", "08a4124b-2de1-4906-8f5b-19b0097ee51f", hoisted53, "checked", ctrl.currentRoute.ignore, "onchange", function ($event) {
+                elementOpen("div", "29655c72-3df6-4a89-b542-96cd66e56093", hoisted51)
+                  elementOpen("div", "f94d957b-5ff6-4975-97d0-f1074c3a283a", hoisted52)
+                    elementOpen("input", "e625bd5b-d0a6-4f04-aa2c-c7572f66bf61", hoisted53, "checked", ctrl.currentRoute.ignore, "onchange", function ($event) {
                       var $element = this;
                     ctrl.currentRoute.ignore = this.checked})
                     elementClose("input")
@@ -3688,7 +3689,7 @@ module.exports = function description (ctrl) {
                   elementClose("div")
                 elementClose("div")
               elementClose("form")
-              elementOpen("button", "342a2d25-9af1-40c5-957f-7f70e55fc596", hoisted54, "onclick", function ($event) {
+              elementOpen("button", "2aef5d14-6c6b-4293-aecb-34cbad68daa5", hoisted54, "onclick", function ($event) {
                 var $element = this;
               ctrl.removeRoute(ctrl.currentRoute)})
                 text("Delete route")
@@ -3905,35 +3906,35 @@ var hoisted24 = ["class", "file"]
 var __target
 
 module.exports = function description (ctrl) {
-  elementOpen("aside", "07d262be-d921-4590-95db-0759e79ace66", hoisted1)
-    elementOpen("section", "6a58ad2e-f846-4d55-a558-da5e125d2064", hoisted2)
-      elementOpen("form", "ada9ff58-1c46-419c-af5d-e839e057f042", hoisted3, "onsubmit", function ($event) {
+  elementOpen("aside", "4d27078f-e888-47e4-b3ba-bf131e93bdf0", hoisted1)
+    elementOpen("section", "63d54f55-3a68-4af4-8322-63ea0ca0821d", hoisted2)
+      elementOpen("form", "5fe0f922-ecc9-4a32-8fdb-e331fbb433a5", hoisted3, "onsubmit", function ($event) {
         var $element = this;
       ctrl.query = this.q.value})
-        elementOpen("div", "c95ada88-2d22-494d-8a13-d99b0036a823", hoisted4)
-          elementOpen("input", "384f06b1-f045-416e-8508-d4899c8c0a4a", hoisted5, "onkeyup", function ($event) {
+        elementOpen("div", "c0be0286-b16a-4e22-9385-40ce57574c26", hoisted4)
+          elementOpen("input", "9f768c29-2e26-4408-8c73-49b898774973", hoisted5, "onkeyup", function ($event) {
             var $element = this;
           ctrl.query = this.value})
           elementClose("input")
-          elementOpen("span", "cf046aba-c3bd-4e7f-aeef-a3b34097daad", hoisted6)
-            elementOpen("button", "d7bab8e6-3b55-46fd-b2db-b7eb73c3ad47", hoisted7)
-              elementOpen("i", "54123940-fdd4-4ac3-bbf9-534591be458c", hoisted8)
+          elementOpen("span", "d4ad9300-d174-42ba-bb2c-2ad92f33db07", hoisted6)
+            elementOpen("button", "1b23b213-f30d-4c1b-bb3a-3cb5a4de046e", hoisted7)
+              elementOpen("i", "7e41d6bc-3949-4c6b-9665-9b869f167644", hoisted8)
               elementClose("i")
             elementClose("button")
           elementClose("span")
         elementClose("div")
       elementClose("form")
-      elementOpen("ul", "59bdd3de-6923-4913-a9a9-89fc2138d209", hoisted9)
+      elementOpen("ul", "912bc525-1f68-4fa6-8be3-d3fbca306dcb", hoisted9)
         if (ctrl.query) {
           var results = ctrl.searchFiles()
           __target = results
           if (__target) {
             ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
               var result = $value
-              var $key = "7bb40989-f3d3-471a-82b9-635e045d887e_" + $item
+              var $key = "72cfb9a1-9313-41ab-ab78-b3ab94139bd3_" + $item
               elementOpen("li", $key)
                 var relativePath = result.getRelativePath()
-                elementOpen("a", "175e9fd9-abad-41eb-8f5f-540eda97f8e4_" + $key, hoisted10, "href", "#" + (relativePath) + "")
+                elementOpen("a", "c567be61-f781-47c3-a8aa-2d986605e7a0_" + $key, hoisted10, "href", "#" + (relativePath) + "")
                   elementOpen("span")
                     text("" + (relativePath) + "")
                   elementClose("span")
@@ -3942,30 +3943,30 @@ module.exports = function description (ctrl) {
             }, this)
           }
         }
-        elementOpen("li", "b68f4823-2762-4d77-8f11-509a83630a76", hoisted11)
+        elementOpen("li", "c5315c27-f875-4f16-8b27-f6a5008b2c9b", hoisted11)
           text("" + (ctrl.name) + "")
         elementClose("li")
-        elementOpen("li", "4c1e1505-bfbf-4e10-916b-4ff6903b9ca7", hoisted12)
-          elementOpen("a", "5af196d6-62ec-48d2-9516-3c4880c04d06", hoisted13)
-            elementOpen("i", "0356f22b-cb33-4969-af18-8e1efc905751", hoisted14)
+        elementOpen("li", "e86b8563-5357-45f6-8790-7ad2a4cab845", hoisted12)
+          elementOpen("a", "1da3742c-c557-401f-ae25-0caae88b7ccd", hoisted13)
+            elementOpen("i", "5809dbe9-9b84-47c8-b592-50009097370d", hoisted14)
             elementClose("i")
             elementOpen("span")
               text("Open editors")
             elementClose("span")
-            elementOpen("span", "202ab772-f14e-4617-8ab9-6fb7e39e135b", hoisted15)
-              elementOpen("i", "b1a092b5-4359-4f77-9b96-7b8518a04b7c", hoisted16)
+            elementOpen("span", "c98d1645-97b3-462e-b7a6-c29134b5a45f", hoisted15)
+              elementOpen("i", "55467d49-2ea1-4460-a01f-1329d595a28b", hoisted16)
               elementClose("i")
             elementClose("span")
           elementClose("a")
-          elementOpen("ul", "ed93c7e3-aef5-4d4a-9efd-7ff089d6f8c0", hoisted17)
+          elementOpen("ul", "b7a923e4-af4a-4af9-ace7-7a331d3b62b2", hoisted17)
             __target = ctrl.recent.items
             if (__target) {
               ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
                 var item = $value
-                var $key = "1986e2ef-dd4a-4e60-9ec6-fe439334b115_" + item.ref
+                var $key = "f9d0bc0a-db49-4dbf-bf37-45162e136912_" + item.ref
                 elementOpen("li", $key)
                   elementOpen("a", null, null, "href", "#" + (item.ref) + "")
-                    elementOpen("i", "c27a1248-2764-4906-b44e-ca0e295ad60a_" + $key, hoisted18)
+                    elementOpen("i", "3b51ec82-0820-4473-a6ea-1a082e3b1c2d_" + $key, hoisted18)
                     elementClose("i")
                     text(" " + (item.getDisplayName()) + "")
                   elementClose("a")
@@ -3978,7 +3979,7 @@ module.exports = function description (ctrl) {
         if (__target) {
           ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
             var link = $value
-            var $key = "13b4734e-2cb2-40cd-b128-04c5e3f4d224_" + $item
+            var $key = "38c952ee-b972-4c3d-b162-d604c0293baf_" + $item
             elementOpen("li", $key, null, "class", link.children ? 'treeview' : '')
               if (link.children) {
                 elementOpen("a")
@@ -3987,20 +3988,20 @@ module.exports = function description (ctrl) {
                   elementOpen("span")
                     text("" + (link.text) + "")
                   elementClose("span")
-                  elementOpen("span", "e88353e3-47c7-4475-83b5-1e8341962fbe_" + $key, hoisted19)
-                    elementOpen("i", "b0e3ee2c-38e3-47c9-9829-ece794b05af0_" + $key, hoisted20)
+                  elementOpen("span", "b0ffcd1f-34c8-477e-ba98-32bdfd416aa3_" + $key, hoisted19)
+                    elementOpen("i", "88a7e1ea-6fdc-46e0-9245-6bc8c488855e_" + $key, hoisted20)
                     elementClose("i")
                   elementClose("span")
                 elementClose("a")
-                elementOpen("ul", "bdbb24b7-b042-4c3a-89cf-e3a57616c80a_" + $key, hoisted21)
+                elementOpen("ul", "efd4c8b5-a9f5-41f6-9498-8b05b2e940ef_" + $key, hoisted21)
                   __target = link.children
                   if (__target) {
                     ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
                       var child = $value
-                      var $key = "b50cffd0-69e5-4376-8848-e0f501d76f26_" + child.href
+                      var $key = "9bad83fb-d6c4-4474-b6c9-f8e75fc576d2_" + child.href
                       elementOpen("li", $key)
-                        elementOpen("a", "5c662ab2-915e-4a2e-891b-1a3d0f68bad1_" + $key, hoisted22, "href", child.href)
-                          elementOpen("i", "9b2137cd-2eca-43a8-9989-f54a31f434cf_" + $key, hoisted23)
+                        elementOpen("a", "80883aa0-5784-4e64-8dca-d0c3fb035c50_" + $key, hoisted22, "href", child.href)
+                          elementOpen("i", "02a592ec-c554-4f32-8e82-6aab668b2c15_" + $key, hoisted23)
                           elementClose("i")
                           text(" " + (child.text) + "")
                         elementClose("a")
@@ -4009,7 +4010,7 @@ module.exports = function description (ctrl) {
                   }
                 elementClose("ul")
               } else {
-                elementOpen("a", "78ee57c2-37bd-4b7f-b928-13a3b9e7ebc5_" + $key, hoisted24, "href", link.href)
+                elementOpen("a", "d955947d-ae24-4601-b288-2009f6d9817f_" + $key, hoisted24, "href", link.href)
                   elementOpen("i", null, null, "class", "fa fa-" + (link.icon) + "")
                   elementClose("i")
                   elementOpen("span")
@@ -4202,17 +4203,17 @@ module.exports = function tree (model, data, root) {
     if (__target) {
       ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
         var node = $value
-        var $key = "19fc621a-73c5-4e7d-8030-1cfa90de8fcf_" + node.path
+        var $key = "b3debdb6-7d63-4a62-8a63-24538e967c6a_" + node.path
         elementOpen("li", $key, null, "oncontextmenu", function ($event) {
           var $element = this;
         model.onRightClick($event, node)}, "title", node.fso.getRelativePath(), "class", node.fso.isDirectory ? 'dir' : 'file' + (node.fso === current ? ' selected' : ''))
           var fso = node.fso
                   var isExpanded = model.isExpanded(fso)
           if (!fso.isDirectory) {
-            elementOpen("a", "d0db790a-0e5d-41ef-82cc-34382887d920_" + $key, hoisted1, "href", "#" + (fso.getRelativePath()) + "")
-              elementOpen("span", "f41cf495-e60d-41e7-99fd-0811c719784c_" + $key, hoisted2, "data-name", fso.name)
+            elementOpen("a", "1cf5b7f8-8c85-48a2-b211-df354b8a01a0_" + $key, hoisted1, "href", "#" + (fso.getRelativePath()) + "")
+              elementOpen("span", "ec91bba3-6ba3-4bf5-862c-b8698656cfd7_" + $key, hoisted2, "data-name", fso.name)
               elementClose("span")
-              elementOpen("span", "d1141fb8-ab81-4fc1-8722-78aa97c27932_" + $key, hoisted3)
+              elementOpen("span", "637af386-bc4c-45aa-9826-8da2e8d84009_" + $key, hoisted3)
                 text("" + (fso.name) + "")
               elementClose("span")
             elementClose("a")
@@ -4222,26 +4223,26 @@ module.exports = function tree (model, data, root) {
               var $element = this;
             model.onClick(fso)})
               if (isExpanded) {
-                elementOpen("small", "8c48820c-ad10-45da-8cc8-7bd4faa31f58_" + $key, hoisted4)
-                  elementOpen("i", "be13a8ee-d9c0-42b3-9e6e-837bea9216f8_" + $key, hoisted5)
+                elementOpen("small", "73e3fb04-e1af-46cc-b561-08f10395c886_" + $key, hoisted4)
+                  elementOpen("i", "bc6abd82-b0a1-4c11-a7fe-c9d34605b9f4_" + $key, hoisted5)
                   elementClose("i")
                 elementClose("small")
               }
               if (!isExpanded) {
-                elementOpen("small", "d8af38ad-0799-4afd-8851-43ae28a3b723_" + $key, hoisted6)
-                  elementOpen("i", "90149499-7a2e-418e-8385-1a0044bc0d84_" + $key, hoisted7)
+                elementOpen("small", "427bc3d2-7514-4408-a23f-220d3c723720_" + $key, hoisted6)
+                  elementOpen("i", "a5f8fd89-4290-449f-837e-24761f70bc36_" + $key, hoisted7)
                   elementClose("i")
                 elementClose("small")
               }
-              elementOpen("span", "688730c0-4de2-4310-af7f-710781f76488_" + $key, hoisted8, "data-name", fso.name)
+              elementOpen("span", "ccd4909d-619e-4ad5-81f5-398862787920_" + $key, hoisted8, "data-name", fso.name)
               elementClose("span")
-              elementOpen("span", "91eefd05-c7af-43dc-9796-9c43d6b728c5_" + $key, hoisted9)
+              elementOpen("span", "27728bac-e4f4-422e-8aab-faa2eec6ce4c_" + $key, hoisted9)
                 text("" + (fso.name) + "")
               elementClose("span")
             elementClose("a")
           }
           if (!fso.isDirectory && fso === current) {
-            elementOpen("span", "16b11517-c91c-4341-902b-03aa5d53139d_" + $key, hoisted10)
+            elementOpen("span", "cbdf7e02-6846-4c5a-8cdd-18ad2bf970f6_" + $key, hoisted10)
             elementClose("span")
           }
           if (fso.isDirectory && isExpanded) {
