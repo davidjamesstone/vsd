@@ -74,10 +74,7 @@ Glue.compose(manifest, function (err, server) {
       })
 
       // The return the `500` view
-      return reply.view('500', {
-        data: response.data,
-        message: response.message + ' ' + __dirname
-      }).code(statusCode)
+      return reply.view('500').code(statusCode)
     }
     return reply.continue()
   }

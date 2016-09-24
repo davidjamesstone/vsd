@@ -52,7 +52,7 @@
     "incremental-dom": "0.4.1",
     "node-sass": "3.7.0",
     "page": "1.7.1",
-    "supermodels.js": "0.2.0",
+    "supermodels.js": "0.2.1",
     "superviewify": "3.0.0",
     "wisk": "1.0.0"
   },
