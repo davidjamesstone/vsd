@@ -43,7 +43,7 @@
     "standard": "8.0.0",
     "standard-format": "2.2.3",
     "vision": "4.1.0",
-    "vsd-plugin-fs": "1.0.1",
+    "vsd-plugin-fs": "1.0.2",
     "vsd-plugin-fs-watch": "1.0.0"
   },
   "devDependencies": {
