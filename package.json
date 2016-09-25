@@ -14,8 +14,10 @@
     "build": "bin/build",
     "watch": "bin/watch",
     "lint": "standard",
+    "create:example": "cd docs && vsd -c demo",
     "test": "npm run lint",
     "prepublish": "npm run build",
+    "postinstall": "npm run create:example",
     "start": "node index"
   },
   "license": "ISC",
