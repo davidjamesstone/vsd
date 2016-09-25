@@ -5,6 +5,8 @@ It can be used to edit any text content but it is designed specifically to build
 
 It encourages using configuration, conventions and metadata to build and test robust [node.js](https://nodejs.org/) applications.
 
+Checkout out a live demo [here](https://visual-dev.herokuapp.com/?path=/app/docs/demo)
+
 ## Install
 `npm i -g vsd`
 
@@ -57,18 +59,24 @@ There are two special files names `vsd` looks for.
 Files with the name ending in `db.json` are data models that are edited with a custom database designer UI.
 These can be used to generate [mongoosejs](http://mongoosejs.com/) models.
 
+Checkout out a live demo [here](https://visual-dev.herokuapp.com/?path=/app/docs/demo#db/db.json)
+
+
+
 Files with the name ending in `routes.json` are data models that are edited with a custom route table designer UI.
 These can be used to generate `hapi` routes.
 
-![alt](http://davidjamesstone.github.io/vsd/Screen Shot 2016-09-24 at 00.03.53.png)
+Checkout out a live demo [here](https://visual-dev.herokuapp.com/?path=/app/docs/demo#server/routes/routes.json)
 
-![alt](http://davidjamesstone.github.io/vsd/Screen Shot 2016-09-24 at 00.04.07.png)
+![alt](http://davidjamesstone.github.io/vsd/1.png)
 
-![alt](http://davidjamesstone.github.io/vsd/Screen Shot 2016-09-24 at 00.04.32.png)
+![alt](http://davidjamesstone.github.io/vsd/2.png)
 
-![alt](http://davidjamesstone.github.io/vsd/Screen Shot 2016-09-24 at 00.05.07.png)
+![alt](http://davidjamesstone.github.io/vsd/3.png)
 
-![alt](http://davidjamesstone.github.io/vsd/Screen Shot 2016-09-24 at 00.06.29.png)
+![alt](http://davidjamesstone.github.io/vsd/4.png)
+
+![alt](http://davidjamesstone.github.io/vsd/5.png)
 
 ## Built using
 
