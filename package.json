@@ -1,6 +1,6 @@
 {
   "name": "vsd",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "description": "Visual hapi + mongoose IDE",
   "main": "index.js",
   "bin": {
@@ -15,9 +15,10 @@
     "watch": "bin/watch",
     "lint": "standard",
     "create:example": "cd docs && ../bin/vsd.js -c demo",
+    "clone:todo": "cd docs && git clone https://github.com/davidjamesstone/vsd-example-todo",
     "test": "npm run lint",
     "prepublish": "npm run build",
-    "postinstall": "npm run create:example",
+    "postinstall": "npm run create:example && npm run clone:todo",
     "start": "node index"
   },
   "license": "ISC",

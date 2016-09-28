@@ -7,7 +7,7 @@ It encourages using configuration, conventions and metadata to build and test ro
 
 Checkout out a live demo [here](https://visual-dev.herokuapp.com/?path=/app/docs/demo)
 
-An example Todo List [here](https://github.com/davidjamesstone/vsd-example-todo)
+An example [Todo List](https://github.com/davidjamesstone/vsd-example-todo) can be viewed live [here](https://visual-dev.herokuapp.com/?path=/app/docs/vsd-example-todo)
 
 ## Install
 `npm i -g vsd`

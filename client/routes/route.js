@@ -26,13 +26,16 @@ var route = {
   className: prop(String).enumerable(false).get(function () {
     switch (this.method) {
       case 'GET':
-        return 'success'
+        return 'primary'
       case 'POST':
-        return 'info'
+        return 'success'
       case 'PUT':
         return 'warning'
       case 'DELETE':
         return 'danger'
+      case 'HEAD':
+      case 'OPTIONS':
+        return 'info'
       default:
         return 'default'
     }

@@ -34,8 +34,17 @@ function FileEditor (el) {
         }
         hide()
 
-        var file = files.create(payload)
-        files.push(file)
+        // Create it only if it
+        // doesn't already exist.
+        // It could've been added by the watcher'
+        var file = files.find(function (item) {
+          return item.path === payload.path
+        })
+
+        if (!file) {
+          file = files.create(payload)
+          files.push(file)
+        }
 
         window.location.hash = file.getRelativePath()
       })

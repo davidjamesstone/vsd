@@ -201,7 +201,7 @@ section.content {
   position: fixed;
 }
 
-.control-sidebar vsd-fs {
+.control-sidebar vsd-tree {
   flex-grow: 1;
   overflow: auto;
 }
