@@ -1,5 +1,29 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var config = require('../../config/client')
+// var client = require('../client')
+var el = document.getElementById('ace')
+var editor = window.ace.edit(el)
+
+// Set editor options
+editor.setOptions({
+  enableSnippets: true,
+  enableBasicAutocompletion: true,
+  enableLiveAutocompletion: true,
+  tabSize: config.ace.tabSize,
+  fontSize: config.ace.fontSize,
+  autoScrollEditorIntoView: true // ,
+  // maxLines: config.ace.maxLines
+})
+
+// Set theme
+if (config.ace.theme) {
+  editor.setTheme('ace/theme/' + config.ace.theme)
+}
+
+module.exports = editor
+
+},{"../../config/client":68}],2:[function(require,module,exports){
+var config = require('../../config/client')
 var client = require('../client')
 
 function lint (session) {
@@ -37,7 +61,7 @@ var Ace = document.registerElement(
               tabSize: config.ace.tabSize,
               fontSize: config.ace.fontSize,
               autoScrollEditorIntoView: true,
-              maxLines: config.ace.maxLines
+              // maxLines: config.ace.maxLines
             })
 
             // Set theme
@@ -91,7 +115,51 @@ var Ace = document.registerElement(
 
 module.exports = Ace
 
-},{"../../config/client":65,"../client":5}],2:[function(require,module,exports){
+},{"../../config/client":68,"../client":7}],3:[function(require,module,exports){
+var config = require('../../config/client')
+var modes = require('../modes')
+var EditSession = window.ace.require('ace/edit_session').EditSession
+var UndoManager = window.ace.require('ace/undomanager').UndoManager
+
+function Session (file, contents) {
+  var editSession = new EditSession(contents, modes(file))
+  editSession.setUseWorker(false)
+  editSession.setTabSize(config.ace.tabSize)
+  editSession.setUseSoftTabs(config.ace.useSoftTabs)
+  editSession.setUndoManager(new UndoManager())
+
+  this.file = file
+  this.editSession = editSession
+}
+Session.prototype.markClean = function () {
+  this.editSession.getUndoManager().markClean()
+}
+Session.prototype.getValue = function () {
+  return this.editSession.getValue()
+}
+Session.prototype.setValue = function (content, markClean) {
+  this.editSession.setValue(content)
+
+  if (markClean) {
+    this.markClean()
+  }
+}
+Object.defineProperties(Session.prototype, {
+  isClean: {
+    get: function () {
+      return this.editSession.getUndoManager().isClean()
+    }
+  },
+  isDirty: {
+    get: function () {
+      return !this.isClean
+    }
+  }
+})
+
+module.exports = Session
+
+},{"../../config/client":68,"../modes":45}],4:[function(require,module,exports){
 var patch = require('incremental-dom').patch
 var view = require('./view.html')
 var Model = require('./model')
@@ -131,7 +199,7 @@ var Breadcrumbs = document.registerElement(
 
 module.exports = Breadcrumbs
 
-},{"./model":3,"./view.html":4,"incremental-dom":170}],3:[function(require,module,exports){
+},{"./model":5,"./view.html":6,"incremental-dom":173}],5:[function(require,module,exports){
 function Model (crumbs, icon) {
   this.crumbs = crumbs || []
   this.icon = icon
@@ -145,7 +213,7 @@ Model.prototype.isLast = function (crumb) {
 
 module.exports = Model
 
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -160,12 +228,12 @@ var __target
 module.exports = function description (model) {
 var el = model
   model = model.model
-elementOpen("ol", "0650bf09-19d1-44b7-8e1c-1ec871cab63e", hoisted1)
+elementOpen("ol", "e86f155e-d939-4255-b9c4-7de6809a8bce", hoisted1)
   __target = model.crumbs
   if (__target) {
     ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
       var crumb = $value
-      var $key = "608277ff-4372-4bda-af15-c2a6c460b010_" + $item
+      var $key = "c6efdad9-3544-4563-9008-3779c9a4e005_" + $item
       elementOpen("li", $key, null, "class", model.isLast(crumb) ? 'active' : '')
         if (model.isFirst(crumb)) {
           elementOpen("a", null, null, "onclick", function ($event) {
@@ -195,7 +263,7 @@ elementOpen("ol", "0650bf09-19d1-44b7-8e1c-1ec871cab63e", hoisted1)
 elementClose("ol")
 }
 
-},{"incremental-dom":170}],5:[function(require,module,exports){
+},{"incremental-dom":173}],7:[function(require,module,exports){
 var Nes = require('nes/client')
 var host = window.location.host
 var protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
@@ -203,7 +271,7 @@ var client = new Nes.Client(protocol + '//' + host)
 
 module.exports = client
 
-},{"nes/client":171}],6:[function(require,module,exports){
+},{"nes/client":174}],8:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var Model = require('./model')
 var prop = require('../prop')
@@ -346,7 +414,7 @@ var model = {
 
 module.exports = supermodels(model)
 
-},{"../prop":48,"./model":27,"supermodels.js":174}],7:[function(require,module,exports){
+},{"../prop":50,"./model":29,"supermodels.js":177}],9:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -395,7 +463,7 @@ module.exports = function description (type, def, root) {
   }
 }
 
-},{"./defs/array.html":9,"./defs/boolean.html":10,"./defs/buffer.html":11,"./defs/childdocument.html":12,"./defs/date.html":13,"./defs/foreignkey.html":14,"./defs/mixed.html":15,"./defs/nesteddocument.html":16,"./defs/number.html":17,"./defs/objectid.html":18,"./defs/string.html":19,"incremental-dom":170}],8:[function(require,module,exports){
+},{"./defs/array.html":11,"./defs/boolean.html":12,"./defs/buffer.html":13,"./defs/childdocument.html":14,"./defs/date.html":15,"./defs/foreignkey.html":16,"./defs/mixed.html":17,"./defs/nesteddocument.html":18,"./defs/number.html":19,"./defs/objectid.html":20,"./defs/string.html":21,"incremental-dom":173}],10:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var prop = require('../prop')
 var Keys = require('./keys')
@@ -544,7 +612,7 @@ module.exports = {
   factory: factory
 }
 
-},{"../prop":48,"./keys":25,"supermodels.js":174}],9:[function(require,module,exports){
+},{"../prop":50,"./keys":27,"supermodels.js":177}],11:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -559,18 +627,18 @@ var hoisted3 = ["id", "oftype", "class", "form-control input-sm"]
 var __target
 
 module.exports = function description (model, root) {
-  elementOpen("div", "a65bdcf9-6866-4541-a7a9-5e6468943cd6", hoisted1)
-    elementOpen("label", "94999e61-63b5-4974-946d-eb8e9821b8c2", hoisted2)
+  elementOpen("div", "b7ae005a-c4c4-47fd-8122-908efc1584ec", hoisted1)
+    elementOpen("label", "42613e94-7ec6-4264-b859-bfd2094a79ea", hoisted2)
       text("Of")
     elementClose("label")
-    elementOpen("select", "86c433b5-80f0-4d95-b0d0-53cccdd48ff3", hoisted3, "value", model.oftype, "onchange", function ($event) {
+    elementOpen("select", "db65fd28-392f-4b2a-9cfd-f1509e1c1e0c", hoisted3, "value", model.oftype, "onchange", function ($event) {
       var $element = this;
     model.oftype = this.value})
       __target = root.staticTypes
       if (__target) {
         ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
           var type = $value
-          var $key = "c3a33c97-5f6e-4510-b9df-9571782ab293_" + $item
+          var $key = "0fe4199d-549c-4578-b702-b42d1e16d948_" + $item
           elementOpen("option", $key, null, "value", type, "selected", model.oftype === type ? 'selected' : null)
             text("" + (type) + "")
           elementClose("option")
@@ -582,7 +650,7 @@ module.exports = function description (model, root) {
       defsView(model.oftype, model.def, root)
 }
 
-},{"../defs.html":7,"incremental-dom":170}],10:[function(require,module,exports){
+},{"../defs.html":9,"incremental-dom":173}],12:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -602,10 +670,10 @@ var hoisted8 = ["value", "false"]
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "0f3a60a7-9c8b-4d06-ac9b-71c425541b7d", hoisted1)
+elementOpen("div", "80fb3794-0775-4fc3-8da1-0ac1db718785", hoisted1)
   elementOpen("div")
-    elementOpen("label", "6ac4c6d8-1328-482d-8f9b-107906d5e6be", hoisted2)
-      elementOpen("input", "21c340d9-e2d7-4b42-a1ca-6d797f1c7d7c", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "2a80ed9c-4947-46cd-a542-7d2637d2457e", hoisted2)
+      elementOpen("input", "3a52ad34-cbaa-4e87-b64b-dccfc13edbaa", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
@@ -614,26 +682,26 @@ elementOpen("div", "0f3a60a7-9c8b-4d06-ac9b-71c425541b7d", hoisted1)
     elementClose("label")
   elementClose("div")
 elementClose("div")
-elementOpen("div", "e7a841e3-aa62-432b-bfcc-5449d14e3a81", hoisted4)
-  elementOpen("label", "44324bec-2671-441d-bb57-e5e8e133930e", hoisted5)
+elementOpen("div", "fc00d538-ddf4-4f44-8684-b37741ecfae7", hoisted4)
+  elementOpen("label", "233f8437-f82f-44ac-bb5e-345a977df5db", hoisted5)
     text("Default value")
   elementClose("label")
-  elementOpen("select", "c776cfca-52c9-45be-9ae4-3f2570084cc9", hoisted6, "value", model.defaultValue, "onchange", function ($event) {
+  elementOpen("select", "5f04b79c-5041-483d-ad3f-5e6708df5449", hoisted6, "value", model.defaultValue, "onchange", function ($event) {
     var $element = this;
   model.defaultValue = this.value ? this.value : null})
     elementOpen("option")
     elementClose("option")
-    elementOpen("option", "40c7cea6-1839-4f7e-bcd7-fc56dad50678", hoisted7, "selected", model.defaultValue === true ? 'selected' : null)
+    elementOpen("option", "a930f383-0724-42f3-8e3c-4fc74967de6a", hoisted7, "selected", model.defaultValue === true ? 'selected' : null)
       text("true")
     elementClose("option")
-    elementOpen("option", "e6d2dea5-11a7-4c2d-b1aa-4ce4cedfdcd0", hoisted8, "selected", model.defaultValue === false ? 'selected' : null)
+    elementOpen("option", "9f1991f0-953a-4673-8bb2-09e1c1adacda", hoisted8, "selected", model.defaultValue === false ? 'selected' : null)
       text("false")
     elementClose("option")
   elementClose("select")
 elementClose("div")
 }
 
-},{"incremental-dom":170}],11:[function(require,module,exports){
+},{"incremental-dom":173}],13:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -648,10 +716,10 @@ var hoisted3 = ["type", "checkbox"]
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "f6928045-5e33-45e3-af9e-87d1195e3047", hoisted1)
+elementOpen("div", "7db954cc-5ff8-4729-8cf9-73dcefa71580", hoisted1)
   elementOpen("div")
-    elementOpen("label", "869aaa65-b73a-45a7-9f60-a8b95b8a2031", hoisted2)
-      elementOpen("input", "bd953c54-8abf-43bc-a51e-e67c1b4f7c26", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "a2c97252-763c-4450-86eb-b4ff51800256", hoisted2)
+      elementOpen("input", "41f2ad7f-debc-47bc-b777-c0848b385e24", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
@@ -662,7 +730,7 @@ elementOpen("div", "f6928045-5e33-45e3-af9e-87d1195e3047", hoisted1)
 elementClose("div")
 }
 
-},{"incremental-dom":170}],12:[function(require,module,exports){
+},{"incremental-dom":173}],14:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -680,10 +748,10 @@ var hoisted6 = ["id", "ref", "class", "form-control input-sm"]
 var __target
 
 module.exports = function description (model, root) {
-  elementOpen("div", "36ebca61-bfdb-452c-a67a-9e3c50f3b05c", hoisted1)
+  elementOpen("div", "143a49d8-ae70-402c-92d5-af48eaf3f1fa", hoisted1)
     elementOpen("div")
-      elementOpen("label", "32581d36-d723-41d4-9695-ffa186ed42df", hoisted2)
-        elementOpen("input", "f88e2cf1-0528-40e2-8480-1c2d3c468a4e", hoisted3, "checked", model.required, "onchange", function ($event) {
+      elementOpen("label", "97d2ab30-4571-418f-832b-2a87aea6436d", hoisted2)
+        elementOpen("input", "e4a9a052-53fb-4177-a8da-6bb9ea55acdb", hoisted3, "checked", model.required, "onchange", function ($event) {
           var $element = this;
         model.required = this.checked})
         elementClose("input")
@@ -692,11 +760,11 @@ module.exports = function description (model, root) {
       elementClose("label")
     elementClose("div")
   elementClose("div")
-  elementOpen("div", "55d04712-dcc0-4baf-9b0c-a5bc0be2cb9e", hoisted4)
-    elementOpen("label", "02c87bc6-2201-4489-b2df-dd497c532c62", hoisted5)
+  elementOpen("div", "ad15083a-b584-412b-a8ee-9ed98d1db0f6", hoisted4)
+    elementOpen("label", "c26da198-5c42-4772-a782-dd52f4b90c09", hoisted5)
       text("Ref")
     elementClose("label")
-    elementOpen("select", "1138d581-e732-41ed-8f1f-26a5f24a3885", hoisted6, "value", model.ref, "onchange", function ($event) {
+    elementOpen("select", "d33a8621-56c0-4a99-868a-11e75406d8b5", hoisted6, "value", model.ref, "onchange", function ($event) {
       var $element = this;
     model.ref = this.value})
       elementOpen("option")
@@ -705,7 +773,7 @@ module.exports = function description (model, root) {
       if (__target) {
         ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
           var schema = $value
-          var $key = "4f8220f0-c443-47d6-98ad-4d64fa221b1f_" + $item
+          var $key = "8e7e8d2a-2bdb-470e-97b2-4e583ee014a7_" + $item
           elementOpen("option", $key, null, "value", schema.id, "selected", model.ref === schema.id ? 'selected' : null)
             text("" + (schema.name) + "")
           elementClose("option")
@@ -715,7 +783,7 @@ module.exports = function description (model, root) {
   elementClose("div")
 }
 
-},{"incremental-dom":170}],13:[function(require,module,exports){
+},{"incremental-dom":173}],15:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -737,26 +805,26 @@ var hoisted10 = ["type", "text", "id", "defaultValue", "class", "form-control in
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "886e9be7-8594-478a-97bc-1b2e69f10bd0", hoisted1)
+elementOpen("div", "725e2bc1-997e-47f8-ae55-4d6903a29888", hoisted1)
   elementOpen("div")
-    elementOpen("label", "f12bc6b3-d2a5-4c48-8df1-2d8a0f23a8ff", hoisted2)
-      elementOpen("input", "ba812c9a-8567-48e6-9240-9c89a05c587f", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "0ae57177-fd0b-4b6f-ba22-671052ed6948", hoisted2)
+      elementOpen("input", "9e1af412-8a04-4d50-b8eb-520d5c1e6b98", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
       text(" Required \
           ")
     elementClose("label")
-    elementOpen("label", "d422502a-0d9f-4e5c-804b-cd7f557e76d1", hoisted4)
-      elementOpen("input", "4298961b-31fa-49d6-8d4a-6f460b4de9d2", hoisted5, "checked", model.unique, "onchange", function ($event) {
+    elementOpen("label", "c5de4209-ceb6-4ea5-817d-447bfce91e51", hoisted4)
+      elementOpen("input", "76d602dd-2b79-4a61-a2fc-d6d67c06ab7e", hoisted5, "checked", model.unique, "onchange", function ($event) {
         var $element = this;
       model.unique = this.checked})
       elementClose("input")
       text(" Unique \
           ")
     elementClose("label")
-    elementOpen("label", "6ee12bb2-133e-4f71-8fe0-c66551e9e5da", hoisted6)
-      elementOpen("input", "9f898ecf-a069-49d2-b22e-2777744ab343", hoisted7, "checked", model.index, "onchange", function ($event) {
+    elementOpen("label", "64445a10-bef7-4163-be6c-454e32e60db3", hoisted6)
+      elementOpen("input", "460db4a5-19d1-4aef-ad5f-d122ab0b7b42", hoisted7, "checked", model.index, "onchange", function ($event) {
         var $element = this;
       model.index = this.checked})
       elementClose("input")
@@ -765,18 +833,18 @@ elementOpen("div", "886e9be7-8594-478a-97bc-1b2e69f10bd0", hoisted1)
     elementClose("label")
   elementClose("div")
 elementClose("div")
-elementOpen("div", "706d9508-0252-46e1-b472-0382ad5f449f", hoisted8)
-  elementOpen("label", "d3b50917-0ea7-436d-8fff-63e579fff77c", hoisted9)
+elementOpen("div", "f55d2e1f-d3ad-4efa-9a6e-3894b4eddfb0", hoisted8)
+  elementOpen("label", "c58e4ac9-4e1a-4ebb-be72-3fc49874e7be", hoisted9)
     text("Default value")
   elementClose("label")
-  elementOpen("input", "1766a67f-764d-47d3-a9d3-53d2c1bc244f", hoisted10, "value", model.defaultValue, "onchange", function ($event) {
+  elementOpen("input", "24d64741-9004-4024-a205-fe1763787b6b", hoisted10, "value", model.defaultValue, "onchange", function ($event) {
     var $element = this;
   model.defaultValue = this.value})
   elementClose("input")
 elementClose("div")
 }
 
-},{"incremental-dom":170}],14:[function(require,module,exports){
+},{"incremental-dom":173}],16:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -794,10 +862,10 @@ var hoisted6 = ["id", "ref", "class", "form-control input-sm"]
 var __target
 
 module.exports = function description (model, root) {
-  elementOpen("div", "3e3beb8f-31b8-4ca9-9af9-a56b9aa356b0", hoisted1)
+  elementOpen("div", "6b35f76d-5434-45c2-ad54-43e07272226f", hoisted1)
     elementOpen("div")
-      elementOpen("label", "025e42e4-5d4e-4d6e-8b21-a2f6d2f000e6", hoisted2)
-        elementOpen("input", "02e30e40-a28b-4335-97d0-0e0573c8798c", hoisted3, "checked", model.required, "onchange", function ($event) {
+      elementOpen("label", "12ac5f70-51e6-4406-879b-35c8ad5303a9", hoisted2)
+        elementOpen("input", "33a04119-84b6-4014-b991-780f4b276d42", hoisted3, "checked", model.required, "onchange", function ($event) {
           var $element = this;
         model.required = this.checked})
         elementClose("input")
@@ -806,11 +874,11 @@ module.exports = function description (model, root) {
       elementClose("label")
     elementClose("div")
   elementClose("div")
-  elementOpen("div", "b5c010ea-38aa-475c-ac04-c5b509aaeb29", hoisted4)
-    elementOpen("label", "6b74cedf-8ef2-4c3d-9d18-db1176d31890", hoisted5)
+  elementOpen("div", "cec2d14a-dc9d-4ea7-a643-746b9af12aa0", hoisted4)
+    elementOpen("label", "67cee87d-ccec-4920-bf89-fd35dd8bdceb", hoisted5)
       text("Ref")
     elementClose("label")
-    elementOpen("select", "e5d7e702-d079-4289-aa52-80b27db7d1e9", hoisted6, "value", model.ref, "onchange", function ($event) {
+    elementOpen("select", "2cd9db4b-fc2b-454c-9e0e-9d1907e8b540", hoisted6, "value", model.ref, "onchange", function ($event) {
       var $element = this;
     model.ref = this.value})
       elementOpen("option")
@@ -819,7 +887,7 @@ module.exports = function description (model, root) {
       if (__target) {
         ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
           var schema = $value
-          var $key = "1c6cc445-6cfc-419d-92b9-930775a7a459_" + $item
+          var $key = "b5524857-8402-4ca1-ac0c-4fd52223358e_" + $item
           elementOpen("option", $key, null, "value", schema.id, "selected", model.ref === schema.id ? 'selected' : null)
             text("" + (schema.name) + "")
           elementClose("option")
@@ -829,7 +897,7 @@ module.exports = function description (model, root) {
   elementClose("div")
 }
 
-},{"incremental-dom":170}],15:[function(require,module,exports){
+},{"incremental-dom":173}],17:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -844,10 +912,10 @@ var hoisted3 = ["type", "checkbox"]
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "c257ffaf-9ca1-4df0-934b-349a2f62eb73", hoisted1)
+elementOpen("div", "0cb28c90-6b10-48d7-9d3b-4aefebaebf62", hoisted1)
   elementOpen("div")
-    elementOpen("label", "6e80bb81-47d1-4a0c-bdad-79fea35fc99e", hoisted2)
-      elementOpen("input", "fe949fc1-e8ac-4295-b977-b87d998da91a", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "e1392da8-6e62-46a8-b13f-f9b58436df82", hoisted2)
+      elementOpen("input", "21186c4f-6b25-4398-8a33-efe3a0b5bfd1", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
@@ -858,7 +926,7 @@ elementOpen("div", "c257ffaf-9ca1-4df0-934b-349a2f62eb73", hoisted1)
 elementClose("div")
 }
 
-},{"incremental-dom":170}],16:[function(require,module,exports){
+},{"incremental-dom":173}],18:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -871,14 +939,14 @@ var hoisted1 = ["type", "button", "class", "btn btn-primary btn-xs"]
 var __target
 
 module.exports = function description (model, root) {
-  elementOpen("button", "65b27818-e743-474c-ab9d-40d1430c8152", hoisted1, "onclick", function ($event) {
+  elementOpen("button", "b55ff92f-2597-41d3-bd65-cdaff827c208", hoisted1, "onclick", function ($event) {
     var $element = this;
   root.currentItem = model.keys.addKey()})
     text("Add key")
   elementClose("button")
 }
 
-},{"incremental-dom":170}],17:[function(require,module,exports){
+},{"incremental-dom":173}],19:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -906,26 +974,26 @@ var hoisted16 = ["type", "number", "id", "defaultValue", "class", "form-control 
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "131b0a68-b006-4241-be2a-cb0783e3eefa", hoisted1)
+elementOpen("div", "05d68090-e037-4242-99d3-a115927b1232", hoisted1)
   elementOpen("div")
-    elementOpen("label", "398fb2e1-b20d-4d3b-b606-16693c009d79", hoisted2)
-      elementOpen("input", "6c5fb01a-1436-4edf-9e44-9bf6773eb225", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "80c53953-930e-42f6-a317-0591f2ea4c4d", hoisted2)
+      elementOpen("input", "1c134392-d89d-4113-8554-3a1b04e73c00", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
       text(" Required \
           ")
     elementClose("label")
-    elementOpen("label", "523e93bd-1ea7-4e33-ba4d-fb27c9716c57", hoisted4)
-      elementOpen("input", "a8c829f3-a483-4709-973b-85a57d40fb60", hoisted5, "checked", model.unique, "onchange", function ($event) {
+    elementOpen("label", "ff958dbd-6c84-4b0b-b1cb-fdf2fdd069e7", hoisted4)
+      elementOpen("input", "898f5e39-b71d-44cb-934d-cc41f53850a2", hoisted5, "checked", model.unique, "onchange", function ($event) {
         var $element = this;
       model.unique = this.checked})
       elementClose("input")
       text(" Unique \
           ")
     elementClose("label")
-    elementOpen("label", "12ae4c80-3425-49cf-9bd8-c07a54ec2ff1", hoisted6)
-      elementOpen("input", "130a1034-766c-4896-8275-b097a63453fb", hoisted7, "checked", model.index, "onchange", function ($event) {
+    elementOpen("label", "8fffee1a-a56a-4e93-b99b-90b55e87de42", hoisted6)
+      elementOpen("input", "0553349d-3734-4dba-a70b-29b310459505", hoisted7, "checked", model.index, "onchange", function ($event) {
         var $element = this;
       model.index = this.checked})
       elementClose("input")
@@ -934,36 +1002,36 @@ elementOpen("div", "131b0a68-b006-4241-be2a-cb0783e3eefa", hoisted1)
     elementClose("label")
   elementClose("div")
 elementClose("div")
-elementOpen("div", "d184b1d0-3c45-4772-b587-71c09ef0d802", hoisted8)
-  elementOpen("label", "bff8a908-89c2-4fc9-b5c8-5a1c84ece914", hoisted9)
+elementOpen("div", "07774c94-fb17-4886-bf4d-94751897ece6", hoisted8)
+  elementOpen("label", "33678be8-b983-4768-ae67-9f6e247e6c22", hoisted9)
     text("Default value")
   elementClose("label")
-  elementOpen("input", "73099bc0-6e14-46c3-9931-74c1f0dc625d", hoisted10, "value", model.defaultValue, "onchange", function ($event) {
+  elementOpen("input", "34817887-c45d-48c9-b203-3d06b2887033", hoisted10, "value", model.defaultValue, "onchange", function ($event) {
     var $element = this;
   model.defaultValue = this.value})
   elementClose("input")
 elementClose("div")
-elementOpen("div", "4032a530-977c-4e6c-8f8b-f6f9e8fe9799", hoisted11)
-  elementOpen("label", "9792f7fe-48a2-4e48-8e08-11fd9c7c3da5", hoisted12)
+elementOpen("div", "49ad4a77-14f6-423d-a31a-cba14691c078", hoisted11)
+  elementOpen("label", "3fcf0773-8f8a-419e-a56b-50d25dbc8e2d", hoisted12)
     text("Minimum value")
   elementClose("label")
-  elementOpen("input", "c28215b7-0689-4db3-beb5-4e11a9ab8c08", hoisted13, "value", model.min, "onchange", function ($event) {
+  elementOpen("input", "b49afb16-314f-426f-8e27-24039c386df9", hoisted13, "value", model.min, "onchange", function ($event) {
     var $element = this;
   model.min = this.value})
   elementClose("input")
 elementClose("div")
-elementOpen("div", "68ba851c-3b3d-481e-a81d-2ba36a0ab753", hoisted14)
-  elementOpen("label", "c2e0aac7-ff55-4d61-a046-6bbc5d7e04bd", hoisted15)
+elementOpen("div", "f6f66d45-1d56-44df-b180-a82da5b1791d", hoisted14)
+  elementOpen("label", "89d54ecf-9b7c-40ee-8e51-39bc67764256", hoisted15)
     text("Maximum value")
   elementClose("label")
-  elementOpen("input", "746b9198-9ce1-4dc9-8ba2-7a7033fd1d8c", hoisted16, "value", model.max, "onchange", function ($event) {
+  elementOpen("input", "fee667c4-158b-4769-8c3c-4524b00da7a7", hoisted16, "value", model.max, "onchange", function ($event) {
     var $element = this;
   model.max = this.value})
   elementClose("input")
 elementClose("div")
 }
 
-},{"incremental-dom":170}],18:[function(require,module,exports){
+},{"incremental-dom":173}],20:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -984,34 +1052,34 @@ var hoisted9 = ["type", "checkbox"]
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "106022fd-c1b8-4637-8c1d-62aea8e99aff", hoisted1)
+elementOpen("div", "1806c292-9cd5-4381-ad68-7e17d58025d1", hoisted1)
   elementOpen("div")
-    elementOpen("label", "697e7fee-6016-4bf6-bf75-7ae2eab1273c", hoisted2)
-      elementOpen("input", "c06fb6cc-ff62-496d-8ae8-ab9471d28001", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "ec29a2c3-194e-4b7a-8e8f-c3cca0afc389", hoisted2)
+      elementOpen("input", "b5814f6b-c816-4727-afba-67f8476183a2", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
       text(" Required \
           ")
     elementClose("label")
-    elementOpen("label", "f86dabc7-58be-48f0-ae34-1d7f57b161c9", hoisted4)
-      elementOpen("input", "b6fb335e-ae6b-4e81-a44b-21c883dbfdfd", hoisted5, "checked", model.unique, "onchange", function ($event) {
+    elementOpen("label", "4272c045-3131-418c-b1f7-d0db56fe9887", hoisted4)
+      elementOpen("input", "d12e73cb-33ad-4143-86fa-ddb756a1983b", hoisted5, "checked", model.unique, "onchange", function ($event) {
         var $element = this;
       model.unique = this.checked})
       elementClose("input")
       text(" Unique \
           ")
     elementClose("label")
-    elementOpen("label", "397b2dd4-278f-4598-b492-d435f642f2e6", hoisted6)
-      elementOpen("input", "b2f4ddb2-bc9d-4826-925d-feb4a0a02a42", hoisted7, "checked", model.auto, "onchange", function ($event) {
+    elementOpen("label", "d4ec2b6d-4c64-433a-bda5-e00112316eb7", hoisted6)
+      elementOpen("input", "0dfd8bf5-15cc-4414-9d4b-e645544c113f", hoisted7, "checked", model.auto, "onchange", function ($event) {
         var $element = this;
       model.auto = this.checked})
       elementClose("input")
       text(" Auto \
           ")
     elementClose("label")
-    elementOpen("label", "4902acfb-2ac1-416b-a32e-c2e7c31a2967", hoisted8)
-      elementOpen("input", "438fc3d3-4364-4b2b-b78a-e7117ddb4201", hoisted9, "checked", model.index, "onchange", function ($event) {
+    elementOpen("label", "fa4b69ba-6d51-4ae9-8631-544f61e7a802", hoisted8)
+      elementOpen("input", "a9979c16-cd4c-4b4f-bfcc-e1594f7623c3", hoisted9, "checked", model.index, "onchange", function ($event) {
         var $element = this;
       model.index = this.checked})
       elementClose("input")
@@ -1022,7 +1090,7 @@ elementOpen("div", "106022fd-c1b8-4637-8c1d-62aea8e99aff", hoisted1)
 elementClose("div")
 }
 
-},{"incremental-dom":170}],19:[function(require,module,exports){
+},{"incremental-dom":173}],21:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -1058,34 +1126,34 @@ var hoisted24 = ["type", "text", "id", "match", "class", "form-control input-sm"
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "3ea0f7e6-e41c-4e9d-98d2-eaab34832c34", hoisted1)
+elementOpen("div", "c050264c-82d1-44ae-901c-930521029909", hoisted1)
   elementOpen("div")
-    elementOpen("label", "a87e575a-0973-4a5d-a7cd-3b9938647941", hoisted2)
-      elementOpen("input", "8e141044-f04b-4f3c-944f-cb3120285858", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "3df76714-afba-43f4-8ba8-5005fbf0edcb", hoisted2)
+      elementOpen("input", "96357e0b-90f9-49b2-bb6e-b68fc25f34da", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
       text(" Required \
           ")
     elementClose("label")
-    elementOpen("label", "866792ea-8b89-4ac6-a294-e96d887a7c3b", hoisted4)
-      elementOpen("input", "173d9c61-052c-41e2-b4f5-3a535fe447a8", hoisted5, "checked", model.trim, "onchange", function ($event) {
+    elementOpen("label", "b69d6aca-8787-4772-b0b1-b9b32505c7f6", hoisted4)
+      elementOpen("input", "56276537-a287-4620-a579-41b91c117557", hoisted5, "checked", model.trim, "onchange", function ($event) {
         var $element = this;
       model.trim = this.checked})
       elementClose("input")
       text(" Trim \
           ")
     elementClose("label")
-    elementOpen("label", "dc084ad0-9b9c-4b31-b2ad-96db7e030c9c", hoisted6)
-      elementOpen("input", "ee3d534b-70bc-4242-858d-40dd0e12c27c", hoisted7, "checked", model.unique, "onchange", function ($event) {
+    elementOpen("label", "dae5fc42-fcfa-422b-a3d4-25275f26e37d", hoisted6)
+      elementOpen("input", "6eb64ed4-49d2-4895-887e-3a4c9fff50e1", hoisted7, "checked", model.unique, "onchange", function ($event) {
         var $element = this;
       model.unique = this.checked})
       elementClose("input")
       text(" Unique \
           ")
     elementClose("label")
-    elementOpen("label", "072f1c2a-8d2c-4c5e-8281-50a9249a8f87", hoisted8)
-      elementOpen("input", "347de2e0-7cef-4b8e-8ca2-647db22e9304", hoisted9, "checked", model.index, "onchange", function ($event) {
+    elementOpen("label", "5991a4e0-6707-49ef-8581-d830f9ba38dc", hoisted8)
+      elementOpen("input", "4c22d48c-391b-44ec-a36c-4a5ff12eddf6", hoisted9, "checked", model.index, "onchange", function ($event) {
         var $element = this;
       model.index = this.checked})
       elementClose("input")
@@ -1094,53 +1162,53 @@ elementOpen("div", "3ea0f7e6-e41c-4e9d-98d2-eaab34832c34", hoisted1)
     elementClose("label")
   elementClose("div")
 elementClose("div")
-elementOpen("div", "27ee8821-fbf1-4bca-98fd-582f9fa62adf", hoisted10)
-  elementOpen("label", "19507e13-99eb-4fbf-a9e5-d5c471761e37", hoisted11)
+elementOpen("div", "709e34a9-200a-468b-9ccf-56d2ac884396", hoisted10)
+  elementOpen("label", "eea2ba41-8a01-4d32-9abf-7569dfb278ff", hoisted11)
     text("Default value")
   elementClose("label")
-  elementOpen("input", "3727e578-7944-4593-b3f5-45c6bf4ccf08", hoisted12, "value", model.defaultValue, "onchange", function ($event) {
+  elementOpen("input", "82c7c8cd-a8ac-4f11-8051-5a4f6019a346", hoisted12, "value", model.defaultValue, "onchange", function ($event) {
     var $element = this;
   model.defaultValue = this.value})
   elementClose("input")
 elementClose("div")
-elementOpen("div", "43fa3521-04db-464c-98f6-4602dff3ea3f", hoisted13)
-  elementOpen("label", "aca3ee6c-32e5-4bd5-9b3f-9480d0f49a0d", hoisted14)
+elementOpen("div", "b676558d-530f-47e1-a9e5-e07aaa9d1eba", hoisted13)
+  elementOpen("label", "eb34574e-3c19-4ecb-ad21-54d72d2f9e0d", hoisted14)
     text("Enumeration")
   elementClose("label")
-  elementOpen("input", "18aadfb6-02c0-4d5b-8b56-f1cd67eac3a7", hoisted15, "value", model.enumeration, "onchange", function ($event) {
+  elementOpen("input", "54243086-4f1a-49b1-bd2d-66f3cc04b256", hoisted15, "value", model.enumeration, "onchange", function ($event) {
     var $element = this;
   model.enumeration = this.value})
   elementClose("input")
 elementClose("div")
-elementOpen("div", "7281873d-2f29-4940-8b17-ec03db367e6b", hoisted16)
-  elementOpen("label", "2e757843-1cd3-4913-a56d-f2035dfb886e", hoisted17)
+elementOpen("div", "3a914dfc-8bd6-49a0-ba13-26854a005faf", hoisted16)
+  elementOpen("label", "e9198aa8-3ce0-40e6-a313-8ee1f4fc4c84", hoisted17)
     text("Casing")
   elementClose("label")
-  elementOpen("select", "b46381f0-385e-4243-ab33-23ffe8e6be93", hoisted18, "value", model.casing, "onchange", function ($event) {
+  elementOpen("select", "b5a91358-0370-40ef-8a11-b5ca48b03437", hoisted18, "value", model.casing, "onchange", function ($event) {
     var $element = this;
   model.casing = this.value})
-    elementOpen("option", "1d068f6b-4ae7-4f5e-a3f5-8503b26582f2", hoisted19)
+    elementOpen("option", "bb3bbe00-729a-4c68-bada-769a4eb625ea", hoisted19)
     elementClose("option")
-    elementOpen("option", "b0c515e0-4c42-49ad-82d2-158165721e17", hoisted20, "selected", model.casing === 'upper' ? 'selected' : null)
+    elementOpen("option", "542059a3-acba-4871-84ad-6799b370be76", hoisted20, "selected", model.casing === 'upper' ? 'selected' : null)
       text("Uppercase")
     elementClose("option")
-    elementOpen("option", "6521ea5f-191b-4209-a912-2c815f4da62a", hoisted21, "selected", model.casing === 'lower' ? 'selected' : null)
+    elementOpen("option", "c1e2bccb-4595-4d3c-b331-7558af47c786", hoisted21, "selected", model.casing === 'lower' ? 'selected' : null)
       text("Lowercase")
     elementClose("option")
   elementClose("select")
 elementClose("div")
-elementOpen("div", "4ee86007-f551-4917-a2ef-39ff575b52b6", hoisted22)
-  elementOpen("label", "7799e74a-dd32-4a18-a079-fb9512de9eb7", hoisted23)
+elementOpen("div", "ffb2b1b2-37de-41ca-886c-75301e475534", hoisted22)
+  elementOpen("label", "1d3ac02a-a3a5-4179-9c1b-1c233da31275", hoisted23)
     text("Match (RegEx)")
   elementClose("label")
-  elementOpen("input", "cc860633-83be-4177-89d7-23ada05bc44a", hoisted24, "value", model.match, "onchange", function ($event) {
+  elementOpen("input", "eb87cd59-66e6-4cf2-9ddd-ec9cd7bec813", hoisted24, "value", model.match, "onchange", function ($event) {
     var $element = this;
   model.match = this.value})
   elementClose("input")
 elementClose("div")
 }
 
-},{"incremental-dom":170}],20:[function(require,module,exports){
+},{"incremental-dom":173}],22:[function(require,module,exports){
 /* global d3 */
 var dagreD3 = require('dagre-d3')
 
@@ -1210,7 +1278,7 @@ module.exports = function (el, model) {
     .event(svg)
 }
 
-},{"dagre-d3":68}],21:[function(require,module,exports){
+},{"dagre-d3":71}],23:[function(require,module,exports){
 /* global $ */
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
@@ -1273,7 +1341,7 @@ var Db = document.registerElement('vsd-db', {
 
 module.exports = Db
 
-},{"./controller":6,"./graph":20,"./key.html":22,"./keys.html":24,"./model.html":26,"./schema.html":28,"./view.html":30,"incremental-dom":170}],22:[function(require,module,exports){
+},{"./controller":8,"./graph":22,"./key.html":24,"./keys.html":26,"./model.html":28,"./schema.html":30,"./view.html":32,"incremental-dom":173}],24:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -1310,14 +1378,14 @@ var __target
 
 module.exports = function description (model, root) {
   var keys = model.keys
-  elementOpen("form", "5b990d31-ac16-4884-8451-0e661240c141", hoisted1)
+  elementOpen("form", "11b59d35-ee69-4df2-b8ab-4d92ad0ca418", hoisted1)
     if (model.errors.length) {
-      elementOpen("ul", "84a88b90-3702-455b-a259-ea9ba85fb063", hoisted2)
+      elementOpen("ul", "03355065-6253-4594-8507-5fa846f39655", hoisted2)
         __target = model.errors
         if (__target) {
           ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
             var item = $value
-            var $key = "33155205-3df6-4919-bccd-1c3ced0f44fe_" + $item
+            var $key = "0772647c-2fe2-49f1-bc81-64e4becf26d1_" + $item
             elementOpen("li", $key)
               text(" \
                       " + (item.error) + " \
@@ -1327,39 +1395,39 @@ module.exports = function description (model, root) {
         }
       elementClose("ul")
     }
-    elementOpen("div", "d8cb2b2f-68c7-4929-a763-300a16e54d75", hoisted3)
-      elementOpen("label", "28661309-b48a-40f7-b1f4-8736cac4ca78", hoisted4)
+    elementOpen("div", "9f39b7d6-fb9b-4f4d-a5c8-2faa83ee91cc", hoisted3)
+      elementOpen("label", "2446a9da-ee5d-4453-9407-2b9698fa6c98", hoisted4)
         text("Key Name")
       elementClose("label")
-      elementOpen("div", "59b1addf-bdcd-449a-9f50-5e6d0456685b", hoisted5)
-        elementOpen("input", "670e4f97-192f-45ce-954c-b9d63a0f5a90", hoisted6, "value", model.name, "onchange", function ($event) {
+      elementOpen("div", "89a41940-9e66-4c1f-8d41-ccd691d8954c", hoisted5)
+        elementOpen("input", "56f90d9e-68fd-4a30-88f0-2384d9dc0310", hoisted6, "value", model.name, "onchange", function ($event) {
           var $element = this;
         model.name = this.value})
         elementClose("input")
-        elementOpen("div", "66075add-6410-4585-8ad0-0f08e4060dbd", hoisted7)
-          elementOpen("button", "96cee032-d1e9-41a0-8880-2c510d48d0ed", hoisted8, "onclick", function ($event) {
+        elementOpen("div", "e0b8a342-1017-42e4-89dc-cabb27bf5464", hoisted7)
+          elementOpen("button", "1c946e49-45a0-454e-9b31-4b8863a39ae5", hoisted8, "onclick", function ($event) {
             var $element = this;
           keys.moveKeyUp(model)}, "title", "Move key [" + (model.name) + "] up")
-            elementOpen("i", "8045f55e-d86c-4a3a-a732-092ca96c4d22", hoisted9)
+            elementOpen("i", "b211228f-cc1a-41cd-b311-e46e12fb4c0f", hoisted9)
             elementClose("i")
           elementClose("button")
-          elementOpen("button", "bd40f977-c592-4390-bbef-0af0726d2073", hoisted10, "onclick", function ($event) {
+          elementOpen("button", "748c1031-ee28-42f6-930d-e27fd1b15d49", hoisted10, "onclick", function ($event) {
             var $element = this;
           keys.moveKeyDown(model)}, "title", "Move key [" + (model.name) + "] down")
-            elementOpen("i", "60a9582f-54ac-48ec-baed-ed252d157069", hoisted11)
+            elementOpen("i", "96734ea6-e9b5-42e1-8591-f15cd2d888a6", hoisted11)
             elementClose("i")
           elementClose("button")
-          elementOpen("button", "64d7f601-2693-4c6e-83b0-81bf1c04e7fa", hoisted12, "onclick", function ($event) {
+          elementOpen("button", "bc003502-50c5-4803-b703-f224560da4ca", hoisted12, "onclick", function ($event) {
             var $element = this;
           root.currentItem = keys.insertKey(model.index + 1)}, "title", "Add key below [" + (model.name) + "]")
-            elementOpen("i", "734e16c7-780d-42c1-a148-d73604a4a6d4", hoisted13)
+            elementOpen("i", "1fc012d9-3be5-4fb3-848f-5763eb347e51", hoisted13)
             elementClose("i")
           elementClose("button")
-          elementOpen("button", "0767bda6-3a9e-41f4-a936-8cd91d0e67d8", hoisted14)
-            elementOpen("span", "d3412464-7243-4a1a-819f-9c8429b5e5bd", hoisted15)
+          elementOpen("button", "1435dcd0-6696-49ca-8eac-82b117a1614b", hoisted14)
+            elementOpen("span", "6f81060a-57a9-4c01-8a7b-5d411608749e", hoisted15)
             elementClose("span")
           elementClose("button")
-          elementOpen("ul", "c24e7f92-aae5-42c4-95e7-6c8f1d369a9f", hoisted16)
+          elementOpen("ul", "6e8fe2c4-7f3a-479f-afe7-98fb18cd53f5", hoisted16)
             elementOpen("li")
               elementOpen("a", null, null, "onclick", function ($event) {
                 var $element = this;
@@ -1374,9 +1442,9 @@ module.exports = function description (model, root) {
                 text("Add key above [" + (model.name) + "]")
               elementClose("a")
             elementClose("li")
-            elementOpen("li", "e2ba50dc-db70-4e7f-b558-63e2add8473b", hoisted17)
+            elementOpen("li", "9c6fd4df-2a09-4fd0-8458-130f1d3a9497", hoisted17)
             elementClose("li")
-            elementOpen("li", "e24735d6-71c0-423a-87c5-8de47ca2893e", hoisted18)
+            elementOpen("li", "8a4cd7d8-3d25-4f76-9660-8d71aa715d32", hoisted18)
               elementOpen("a", null, null, "onclick", function ($event) {
                 var $element = this;
               keys.deleteKey(model); root.currentItem = model.owner})
@@ -1387,29 +1455,29 @@ module.exports = function description (model, root) {
         elementClose("div")
       elementClose("div")
     elementClose("div")
-    elementOpen("div", "28ef5fd0-7837-4d80-b9c7-3a219570d850", hoisted19)
-      elementOpen("label", "d84481b1-38f4-45e8-86c3-0b71677deee7", hoisted20)
+    elementOpen("div", "bec5236f-fd23-49f7-a0ea-0adab13cb31d", hoisted19)
+      elementOpen("label", "36f89876-65f5-43af-b15d-f88c86bb592a", hoisted20)
         text("Key Description")
       elementClose("label")
-      elementOpen("textarea", "6b467f45-611b-42b9-bbdd-83607ad8d246", hoisted21, "value", model.description, "onchange", function ($event) {
+      elementOpen("textarea", "33fc4c8d-f51b-4f60-ae9b-0805b757ce18", hoisted21, "value", model.description, "onchange", function ($event) {
         var $element = this;
       model.description = this.value})
       elementClose("textarea")
     elementClose("div")
     elementOpen("hr")
     elementClose("hr")
-    elementOpen("div", "b34817a6-011d-4647-bcfa-b53055b574a5", hoisted22)
-      elementOpen("label", "a18b1849-2acd-4ec9-8494-12417f4128d7", hoisted23)
+    elementOpen("div", "d5f27e49-a6f7-4b20-9f10-37677d21ebd1", hoisted22)
+      elementOpen("label", "2e2f250c-9d53-4937-8fec-8c15085e3834", hoisted23)
         text("Type")
       elementClose("label")
-      elementOpen("select", "1e27e720-5472-4169-a542-837b6e9136e9", hoisted24, "value", model.type, "onchange", function ($event) {
+      elementOpen("select", "de238d75-2db7-46f9-b158-d1b2b542f45c", hoisted24, "value", model.type, "onchange", function ($event) {
         var $element = this;
       model.type = this.value})
         __target = root.staticTypes
         if (__target) {
           ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
             var type = $value
-            var $key = "d1d80edd-8f75-4f8e-a5e0-f8798684c180_" + $item
+            var $key = "53048f24-238a-42a2-b84e-82fb86011ba2_" + $item
             elementOpen("option", $key, null, "value", type, "selected", model.type === type ? 'selected' : null)
               text("" + (type) + "")
             elementClose("option")
@@ -1422,7 +1490,7 @@ module.exports = function description (model, root) {
   elementClose("form")
 }
 
-},{"./defs.html":7,"incremental-dom":170}],23:[function(require,module,exports){
+},{"./defs.html":9,"incremental-dom":173}],25:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var prop = require('../prop')
 
@@ -1528,7 +1596,7 @@ var key = {
 
 module.exports = supermodels(key)
 
-},{"../prop":48,"./defs":8,"supermodels.js":174}],24:[function(require,module,exports){
+},{"../prop":50,"./defs":10,"supermodels.js":177}],26:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -1549,12 +1617,12 @@ module.exports = function description (model, root) {
     if (__target) {
       ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
         var key = $value
-        var $key = "eed96d9b-4b99-4f71-91b9-699bb85dc121_" + $item
+        var $key = "aa7df877-be77-48a1-84e4-f26a963c44b2_" + $item
         elementOpen("li", $key)
           var isExpanded = root.isExpanded(key)
-          elementOpen("div", "23da99f7-2d62-459b-ba9f-15f6d8086eaa_" + $key, hoisted1)
+          elementOpen("div", "077965e4-4df3-4df4-99c2-6d4ed54bb9c7_" + $key, hoisted1)
             if (!key.isNested) {
-              elementOpen("i", "f27a8eb0-1eba-4570-b344-28f4d7691b90_" + $key, hoisted2)
+              elementOpen("i", "456b7955-1601-4c10-8b75-1d5f2e7fe260_" + $key, hoisted2)
               elementClose("i")
             }
             if (key.isNested) {
@@ -1568,12 +1636,12 @@ module.exports = function description (model, root) {
             root.onClickTreeNode(key)})
               text("" + (key.name) + "")
               if (key.def.required) {
-                elementOpen("span", "3ee050c8-9268-4bd3-ae2e-f9772ca25beb_" + $key, hoisted3)
+                elementOpen("span", "68655aa9-17fb-47a9-a40a-a97f5de7f958_" + $key, hoisted3)
                   text(" *")
                 elementClose("span")
               }
             elementClose("a")
-            elementOpen("span", "6d7fc27c-dcf5-437e-9dd6-c7a51a9f30ff_" + $key, hoisted4)
+            elementOpen("span", "b3a87cf6-facf-4f69-ac96-f4935831aeb6_" + $key, hoisted4)
               text("" + (root.keyAsString(key)) + "")
             elementClose("span")
           elementClose("div")
@@ -1592,7 +1660,7 @@ module.exports = function description (model, root) {
   elementClose("ul")
 }
 
-},{"incremental-dom":170}],25:[function(require,module,exports){
+},{"incremental-dom":173}],27:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var Key = require('./key')
 var prop = require('../prop')
@@ -1666,7 +1734,7 @@ var keys = {
 
 module.exports = supermodels(keys)
 
-},{"../prop":48,"./key":23,"supermodels.js":174}],26:[function(require,module,exports){
+},{"../prop":50,"./key":25,"supermodels.js":177}],28:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -1687,29 +1755,29 @@ var hoisted9 = ["class", "fa fa-plus"]
 var __target
 
 module.exports = function description (model, root) {
-  elementOpen("form", "99e06b78-66c9-45e7-ba42-4588e61f743a", hoisted1)
-    elementOpen("div", "6c39b632-f985-445c-b897-0db7260faed4", hoisted2)
-      elementOpen("label", "507a631c-cd66-4e8a-bc69-e4777c56919d", hoisted3)
+  elementOpen("form", "12b54a14-cab1-46cf-a81b-765a956456c5", hoisted1)
+    elementOpen("div", "41fa7f78-02e8-4171-ac37-33427058c58d", hoisted2)
+      elementOpen("label", "820c8bf5-726c-4681-a799-7dd66473dff2", hoisted3)
         text("Model Name")
       elementClose("label")
-      elementOpen("input", "b735c1bb-df04-46b9-9759-5c8a95a4d11f", hoisted4, "value", model.name, "onchange", function ($event) {
+      elementOpen("input", "a352e29d-b96b-4e21-844a-0623811b2fee", hoisted4, "value", model.name, "onchange", function ($event) {
         var $element = this;
       model.name = this.value})
       elementClose("input")
     elementClose("div")
-    elementOpen("div", "d24bd70c-32b9-4be0-a689-8a7db9fffefe", hoisted5)
-      elementOpen("label", "5ca49f93-8e0e-4f08-b4b5-199a528a1ec9", hoisted6)
+    elementOpen("div", "3c5826ed-5564-4d84-ba8a-9885065ae83f", hoisted5)
+      elementOpen("label", "e9cec00c-4720-499a-a249-63fe4191724c", hoisted6)
         text("Model Description")
       elementClose("label")
-      elementOpen("textarea", "de2e858e-d677-4bec-ac8f-67b61e51164d", hoisted7, "value", model.description, "onchange", function ($event) {
+      elementOpen("textarea", "3ba9d2bf-593d-4281-b29c-cd215aa9acb1", hoisted7, "value", model.description, "onchange", function ($event) {
         var $element = this;
       model.description = this.value})
       elementClose("textarea")
     elementClose("div")
-    elementOpen("button", "23287a71-7ac6-4272-9ade-622ef869283a", hoisted8, "onclick", function ($event) {
+    elementOpen("button", "fc5371b0-2113-4245-ac58-238583d8d6cc", hoisted8, "onclick", function ($event) {
       var $element = this;
     root.currentItem = model.addSchema()})
-      elementOpen("i", "ff07621b-fc3a-4c4c-8d0e-d36063ff17ad", hoisted9)
+      elementOpen("i", "0e0ccbed-49fb-4aac-97ac-1f93118cf47c", hoisted9)
       elementClose("i")
       text(" \
             Add schema to [" + ( model.name ) + "] \
@@ -1718,7 +1786,7 @@ module.exports = function description (model, root) {
   elementClose("form")
 }
 
-},{"incremental-dom":170}],27:[function(require,module,exports){
+},{"incremental-dom":173}],29:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var Schema = require('./schema')
 var prop = require('../prop')
@@ -1760,7 +1828,7 @@ var Model = supermodels(model)
 
 module.exports = Model
 
-},{"../prop":48,"./schema":29,"supermodels.js":174}],28:[function(require,module,exports){
+},{"../prop":50,"./schema":31,"supermodels.js":177}],30:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -1783,28 +1851,28 @@ var hoisted11 = ["type", "button", "class", "btn btn-primary btn-xs"]
 var __target
 
 module.exports = function description (model, root) {
-  elementOpen("form", "712ce29b-0166-40d8-817a-c92d479bae4a", hoisted1)
-    elementOpen("div", "e1dc48a6-7821-4aaf-a823-ea0a32262563", hoisted2)
-      elementOpen("label", "5573a593-3cf8-4f88-84ea-a90ec9e395e9", hoisted3)
+  elementOpen("form", "13993156-a42f-4eae-aeea-53323e1a4328", hoisted1)
+    elementOpen("div", "43b5a029-44c4-4ea8-b03c-41cd8a2f5db7", hoisted2)
+      elementOpen("label", "3a096e41-fe13-41b4-995d-d50cd39bb17b", hoisted3)
         text("Schema Name")
       elementClose("label")
-      elementOpen("input", "6a48de3a-933f-4751-8d3b-4c1b76d0624b", hoisted4, "value", model.name, "onchange", function ($event) {
+      elementOpen("input", "b03ff5ee-fbbb-4588-ac7a-7ed0be081fc5", hoisted4, "value", model.name, "onchange", function ($event) {
         var $element = this;
       model.name = this.value})
       elementClose("input")
     elementClose("div")
-    elementOpen("div", "891ee17d-4024-4352-aaf1-c7c5f3146888", hoisted5)
-      elementOpen("label", "8fe8bbc8-4dd3-493b-903a-44d5721696fb", hoisted6)
+    elementOpen("div", "e47b503d-9f0e-4290-9557-76fcd4635dfc", hoisted5)
+      elementOpen("label", "1f2bd196-2119-41bd-ae57-bcb834b86bb9", hoisted6)
         text("Schema Description")
       elementClose("label")
-      elementOpen("textarea", "5baf7049-3eb2-45d6-ba61-25232ccbf4e2", hoisted7, "value", model.description, "onchange", function ($event) {
+      elementOpen("textarea", "a2d1f445-0195-4cd6-8d08-20e16fa3bf40", hoisted7, "value", model.description, "onchange", function ($event) {
         var $element = this;
       model.description = this.value})
       elementClose("textarea")
     elementClose("div")
-    elementOpen("div", "68b65200-aa08-4bc8-8a50-ea674d8e0bc8", hoisted8)
+    elementOpen("div", "10c27559-0cdf-4b48-993e-91ca0f212107", hoisted8)
       elementOpen("label")
-        elementOpen("input", "bd8a84d5-555a-4f17-9401-0e34d8922e32", hoisted9, "checked", model.isVirtual, "onchange", function ($event) {
+        elementOpen("input", "6c051a31-e178-43df-8aae-7afa02a30d37", hoisted9, "checked", model.isVirtual, "onchange", function ($event) {
           var $element = this;
         model.isVirtual = this.value}, "disabled", model.isReferenced() ? 'disabled' : null)
         elementClose("input")
@@ -1812,12 +1880,12 @@ module.exports = function description (model, root) {
               ")
       elementClose("label")
     elementClose("div")
-    elementOpen("button", "80e52298-79f5-48df-8649-4394f695efed", hoisted10, "onclick", function ($event) {
+    elementOpen("button", "92e42aea-cca5-430d-9bc0-d16a81d1593b", hoisted10, "onclick", function ($event) {
       var $element = this;
     model.model.removeSchema(model); root.currentItem = model.model}, "disabled", model.isReferenced() ? 'disabled' : null)
       text("Remove schema")
     elementClose("button")
-    elementOpen("button", "6034d682-6e38-4474-bb91-ce35979ab33d", hoisted11, "onclick", function ($event) {
+    elementOpen("button", "9fcb1c19-03a0-444f-90bb-b7938bf350a7", hoisted11, "onclick", function ($event) {
       var $element = this;
     root.currentItem = model.keys.addKey()})
       text("Add key")
@@ -1825,7 +1893,7 @@ module.exports = function description (model, root) {
   elementClose("form")
 }
 
-},{"incremental-dom":170}],29:[function(require,module,exports){
+},{"incremental-dom":173}],31:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var Keys = require('./keys')
 var prop = require('../prop')
@@ -1868,7 +1936,7 @@ var schema = {
 
 module.exports = supermodels(schema)
 
-},{"../prop":48,"./keys":25,"supermodels.js":174}],30:[function(require,module,exports){
+},{"../prop":50,"./keys":27,"supermodels.js":177}],32:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -1908,27 +1976,27 @@ var __target
 module.exports = function description (ctrl, modelView, schemaView, keysView, keyView) {
   var model = ctrl.model
       var breadcrumbs = ctrl.breadcrumbs
-  elementOpen("div", "6c9a851b-2c9f-4aea-b176-918ca257c765", hoisted1)
-    elementOpen("ul", "b8108571-5c7f-4be2-a27f-e528361eff26", hoisted2)
-      elementOpen("li", "af8d150e-1c75-46bf-b8fa-4f955c55974a", hoisted3)
-        elementOpen("a", "0de6dad1-2655-4b08-8fdd-4100f337e647", hoisted4, "href", "#_" + (ctrl.id) + "_1")
+  elementOpen("div", "3617558e-883a-49db-b5ef-6ca2b513d88b", hoisted1)
+    elementOpen("ul", "9be04eb1-3f5d-43b6-b1f8-61db6ca417b2", hoisted2)
+      elementOpen("li", "22c1b834-9d2d-484e-b3ec-ce29d3a8678e", hoisted3)
+        elementOpen("a", "01584bb2-db5c-4400-b06c-19d86e5da698", hoisted4, "href", "#_" + (ctrl.id) + "_1")
           text("Editor")
         elementClose("a")
       elementClose("li")
       elementOpen("li")
-        elementOpen("a", "15415847-27f1-4fc1-afef-9786a6f1d64a", hoisted5, "href", "#_" + (ctrl.id) + "_2")
+        elementOpen("a", "b49f6291-4660-41c7-9bd1-105fc1dea182", hoisted5, "href", "#_" + (ctrl.id) + "_2")
           text("Diagram")
         elementClose("a")
       elementClose("li")
       elementOpen("li")
-        elementOpen("a", "a146d0ef-eaf9-4eed-8aa6-02d4332fceb8", hoisted6, "href", "#_" + (ctrl.id) + "_3")
+        elementOpen("a", "bedd12c5-b241-4b7e-bc9f-b583728907bb", hoisted6, "href", "#_" + (ctrl.id) + "_3")
           text("JSON")
         elementClose("a")
       elementClose("li")
     elementClose("ul")
-    elementOpen("div", "086b6577-0fda-46c1-a349-6bcbb5275e7c", hoisted7)
-      elementOpen("div", "b6aa2758-45a4-49c5-a905-68e9bc09bba9", hoisted8, "id", "_" + (ctrl.id) + "_1")
-        elementOpen("vsd-breadcrumbs", "424c4f90-4d9e-4ac8-9dea-76540ea23f95", hoisted9, "model", breadcrumbs, "onclickcrumb", function ($event) {
+    elementOpen("div", "5fdee154-b44f-4264-bdbb-8a2c6398488a", hoisted7)
+      elementOpen("div", "14f94f91-d2cb-4465-87be-bd56fa14daec", hoisted8, "id", "_" + (ctrl.id) + "_1")
+        elementOpen("vsd-breadcrumbs", "42eccb57-18cd-438c-837a-9815e76e3b8e", hoisted9, "model", breadcrumbs, "onclickcrumb", function ($event) {
           var $element = this;
         ctrl.onClickTreeNode($event.item)})
           if (true) {
@@ -1937,8 +2005,8 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
           }
         elementClose("vsd-breadcrumbs")
         if (model.errors.length) {
-          elementOpen("div", "76d84e39-4e94-4fa5-ac73-3c3390fcbad1", hoisted10)
-            elementOpen("h4", "34ec545b-55fd-494e-847c-d84ce87bda66", hoisted11)
+          elementOpen("div", "f291d214-d701-4bbf-a832-a536d1c6b507", hoisted10)
+            elementOpen("h4", "ce5abe2f-8d93-4d1f-9fee-20aeeff297fe", hoisted11)
               text("Errors")
             elementClose("h4")
             elementOpen("ul")
@@ -1946,9 +2014,9 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
               if (__target) {
                 ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
                   var item = $value
-                  var $key = "af69f19d-120d-4b06-8f19-19d7485a83de_" + $item
+                  var $key = "c672d1b1-539f-4b10-8101-3712da5c7a22_" + $item
                   elementOpen("li", $key)
-                    elementOpen("a", "c52aca0e-9e13-4b24-b66b-122992ae0163_" + $key, hoisted12, "onclick", function ($event) {
+                    elementOpen("a", "454e3ccd-589e-40af-9736-60e270cb1b3c_" + $key, hoisted12, "onclick", function ($event) {
                       var $element = this;
                     ctrl.onClickErrorNode(item)})
                       text("" + (item.error) + "")
@@ -1959,11 +2027,11 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
             elementClose("ul")
           elementClose("div")
         }
-        elementOpen("div", "531f040c-3e26-4e7b-bc2d-14aa21633a57", hoisted13)
-          elementOpen("div", "b27b7e68-6edd-44c1-aeda-a35511f5c841", hoisted14)
-            elementOpen("ul", "25734802-14c3-4bfb-85bb-ce0257d8e972", hoisted15)
+        elementOpen("div", "c6608dc4-f153-490d-aa00-ca14a8f37796", hoisted13)
+          elementOpen("div", "126a2fc6-bce5-4850-a517-57842a89476d", hoisted14)
+            elementOpen("ul", "e83037bf-e7b6-44b1-8938-e95269e7f2cf", hoisted15)
               elementOpen("li")
-                elementOpen("i", "110c6317-a817-4993-af30-ca201e2a1faf", hoisted16)
+                elementOpen("i", "5a4fdd4d-ea78-4467-83cb-5927bb202eb5", hoisted16)
                 elementClose("i")
                 elementOpen("a", null, null, "onclick", function ($event) {
                   var $element = this;
@@ -1976,10 +2044,10 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
                   if (__target) {
                     ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
                       var schema = $value
-                      var $key = "9d55e980-36ec-4f13-a59d-507874d97e31_" + $item
+                      var $key = "f2e9550b-ce7d-47ce-8c8d-d0e9ca88164d_" + $item
                       elementOpen("li", $key)
                         var isExpanded = ctrl.isExpanded(schema)
-                        elementOpen("i", "00f1ce02-9b77-4189-bfb7-6496b60cb275_" + $key, hoisted17, "style", {color: schema.isVirtual ? '#aaa' : '#000'}, "onclick", function ($event) {
+                        elementOpen("i", "81172f9d-5d81-48ce-907f-f37ed347653d_" + $key, hoisted17, "style", {color: schema.isVirtual ? '#aaa' : '#000'}, "onclick", function ($event) {
                           var $element = this;
                         ctrl.onClickToggleNode(schema)})
                         elementClose("i")
@@ -1999,7 +2067,7 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
             elementClose("ul")
           elementClose("div")
           if (ctrl.currentItem) {
-            elementOpen("div", "8898c38f-c098-41f5-b34d-11a10f044a31", hoisted18)
+            elementOpen("div", "c339707f-19c4-40b0-b362-75ea72f46d4a", hoisted18)
               if (ctrl.currentItem === model) {
                 modelView(model, ctrl)
               } else if (ctrl.currentItem.isSchema) {
@@ -2011,21 +2079,21 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
           }
         elementClose("div")
       elementClose("div")
-      elementOpen("div", "928e41f9-34da-4bb6-88ba-865b535f4b56", hoisted19, "id", "_" + (ctrl.id) + "_2")
+      elementOpen("div", "9515f995-7a4f-4135-b3ea-1e38a3f5b9a0", hoisted19, "id", "_" + (ctrl.id) + "_2")
         elementOpen("div", null, null, "class", ctrl.isGraphExpanded ? 'expanded' : '')
-          elementOpen("button", "ea7db454-fbed-4356-a82c-2a66bd60718a", hoisted20, "onclick", function ($event) {
+          elementOpen("button", "4f2bc678-1b7f-4377-b64c-8976d610ad38", hoisted20, "onclick", function ($event) {
             var $element = this;
           ctrl.isGraphExpanded = true})
-            elementOpen("i", "8e3d4975-74bd-4ea7-bb31-2bf08cd5451b", hoisted21)
+            elementOpen("i", "999ccaa2-1124-4331-a71c-7ec40973f1e9", hoisted21)
             elementClose("i")
           elementClose("button")
-          elementOpen("button", "f14ff1ef-4c37-45c2-a8c0-2ec9e049833e", hoisted22, "onclick", function ($event) {
+          elementOpen("button", "cbe82243-7f17-4d36-b05a-6982f067ebc3", hoisted22, "onclick", function ($event) {
             var $element = this;
           ctrl.isGraphExpanded = false})
-            elementOpen("i", "c5719b99-c097-4ebf-95ea-1ea8eb3f995a", hoisted23)
+            elementOpen("i", "c3abf18a-46f7-4a55-860e-80e20995f625", hoisted23)
             elementClose("i")
           elementClose("button")
-          elementOpen("svg", "8bea665d-26ed-46da-a2df-af4c2f47a6d2", hoisted24)
+          elementOpen("svg", "00abfa79-5dbd-4f6b-a488-e66bcae90fe7", hoisted24)
             elementOpen("g")
               if (true) {
                 skip()
@@ -2035,8 +2103,8 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
           elementClose("svg")
         elementClose("div")
       elementClose("div")
-      elementOpen("div", "737815b9-01df-4caa-8b23-c9d18dadcd5c", hoisted25, "id", "_" + (ctrl.id) + "_3")
-        elementOpen("pre", "158dd9e0-dec0-433d-9914-785ea5527ee1", hoisted26)
+      elementOpen("div", "45f8e3a9-48e7-4122-9d49-8d9dda34dd64", hoisted25, "id", "_" + (ctrl.id) + "_3")
+        elementOpen("pre", "ac1656d0-2311-42c2-916e-1e83c300611f", hoisted26)
           text("" + (JSON.stringify(model, null, 2)) + "")
         elementClose("pre")
       elementClose("div")
@@ -2044,7 +2112,7 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
   elementClose("div")
 }
 
-},{"incremental-dom":170}],31:[function(require,module,exports){
+},{"incremental-dom":173}],33:[function(require,module,exports){
 module.exports = function debounce (fn, delay) {
   var timer = null
   return function () {
@@ -2057,7 +2125,7 @@ module.exports = function debounce (fn, delay) {
   }
 }
 
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 var path = require('path')
 var util = require('../util')
 var patch = require('../patch')
@@ -2106,7 +2174,7 @@ function FileEditor (el) {
           files.push(file)
         }
 
-        window.location.hash = file.getRelativePath()
+        // window.location.hash = file.getRelativePath()
       })
     },
     mkdir: function ($event) {
@@ -2155,7 +2223,7 @@ var fileEditor = new FileEditor(fileEditorEl)
 
 module.exports = fileEditor
 
-},{"../file-service":36,"../patch":47,"../util":62,"./view.html":33,"path":66}],33:[function(require,module,exports){
+},{"../file-service":38,"../patch":49,"../util":65,"./view.html":35,"path":69}],35:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -2191,23 +2259,23 @@ var __target
 module.exports = function fileEditor (model, hide) {
   var file = model.file
   if (file) {
-    elementOpen("div", "b3d67837-303f-4152-86ac-b5fe25295032", hoisted1)
+    elementOpen("div", "02096479-738f-4ad6-8c3e-1a03311d501c", hoisted1)
       if (model.mode === 'mkfile') {
         elementOpen("form", "mkfile", null, "onsubmit", function ($event) {
           var $element = this;
         model.mkfile($event)})
-          elementOpen("div", "8ce9c419-089a-412f-84b5-2c9578cfb151", hoisted2)
-            elementOpen("label", "a8e251d8-f721-4614-911e-880a1e68bde2", hoisted3)
+          elementOpen("div", "acbcb32a-e8ca-46da-90a9-830903f69dd0", hoisted2)
+            elementOpen("label", "b383b968-206f-49fe-bfc2-2faa598a13c1", hoisted3)
               text("Add new file")
             elementClose("label")
-            elementOpen("div", "1e6d5074-1139-4f71-ac17-fcda50f69ca3", hoisted4)
-              elementOpen("input", "79bd0baa-d4f7-43fd-940e-bd6d52a9b445", hoisted5)
+            elementOpen("div", "55c525f1-c8e2-4050-b3c8-ddb450710c63", hoisted4)
+              elementOpen("input", "eab69beb-0370-4ccb-ba22-0cd471d9b687", hoisted5)
               elementClose("input")
-              elementOpen("span", "e392a875-146a-4bb5-9966-4a46f378d91c", hoisted6)
-                elementOpen("button", "11a004ee-8696-4fbb-bef9-423edbbc687a", hoisted7)
+              elementOpen("span", "f93097f1-9c58-4995-8233-19cb6397db20", hoisted6)
+                elementOpen("button", "c1978a28-c25c-4705-bf08-84f8212bc762", hoisted7)
                   text("OK")
                 elementClose("button")
-                elementOpen("button", "b419a661-a4ad-4193-8a2a-bb9f6bebb9e6", hoisted8, "onclick", function ($event) {
+                elementOpen("button", "c3e24a36-975e-413a-8913-a5d428ffeeae", hoisted8, "onclick", function ($event) {
                   var $element = this;
                 hide()})
                   text("Cancel")
@@ -2221,18 +2289,18 @@ module.exports = function fileEditor (model, hide) {
         elementOpen("form", "mkdir", null, "onsubmit", function ($event) {
           var $element = this;
         model.mkdir($event)})
-          elementOpen("div", "380b692b-6728-49c3-8703-921f0a844091", hoisted9)
-            elementOpen("label", "b86b6e52-66d7-43d3-865e-32567288b14c", hoisted10)
+          elementOpen("div", "dc8f0bf5-4d66-41fb-98e0-cc942fc627d9", hoisted9)
+            elementOpen("label", "83a072e6-66b3-4e4e-9126-3e6f7895de41", hoisted10)
               text("Add new folder")
             elementClose("label")
-            elementOpen("div", "e9de9b76-e943-458e-a8ee-a74462666d9a", hoisted11)
-              elementOpen("input", "c5270034-f354-4225-9ca2-edd11b76e7d9", hoisted12, "value", file.getRelativePath() ? file.getRelativePath() + '/' : '')
+            elementOpen("div", "6c8c1501-4528-45d9-b528-1f9416da38c0", hoisted11)
+              elementOpen("input", "bb34f336-95fe-4cfa-b190-88b301ffd567", hoisted12, "value", file.getRelativePath() ? file.getRelativePath() + '/' : '')
               elementClose("input")
-              elementOpen("span", "d7f673ae-8da4-4b51-aaf5-3225f1d13e8a", hoisted13)
-                elementOpen("button", "b4ba8838-2d5f-4f34-9a2e-44c643f17c6b", hoisted14)
+              elementOpen("span", "df83c7dc-903f-466c-bc0c-67e41637edcb", hoisted13)
+                elementOpen("button", "2f9817a9-cf1e-4795-b861-d65b7c05b5e1", hoisted14)
                   text("OK")
                 elementClose("button")
-                elementOpen("button", "61bd9c4c-9f3b-4d04-a3fe-646b4095ea7e", hoisted15, "onclick", function ($event) {
+                elementOpen("button", "217edf30-8658-40f7-a177-cafad122662d", hoisted15, "onclick", function ($event) {
                   var $element = this;
                 hide()})
                   text("Cancel")
@@ -2246,18 +2314,18 @@ module.exports = function fileEditor (model, hide) {
         elementOpen("form", "rename", null, "onsubmit", function ($event) {
           var $element = this;
         model.rename($event, file)})
-          elementOpen("div", "e778f7a6-fb84-4fb7-a113-36e44094457b", hoisted16)
-            elementOpen("label", "f9da8032-2f5b-4591-99a9-76cc29461a0d", hoisted17)
+          elementOpen("div", "97c10de6-aea8-4b18-a1ea-37362bb38cde", hoisted16)
+            elementOpen("label", "2abd1873-f158-49a9-9f9e-ee8df0f0124f", hoisted17)
               text("Rename")
             elementClose("label")
-            elementOpen("div", "d049f22d-ef6d-4e67-ada5-8896d09e5be4", hoisted18)
-              elementOpen("input", "c06acd0f-0229-480e-9882-bcc7e930c30c", hoisted19, "value", file.name)
+            elementOpen("div", "0fd3db7a-446b-4ec8-ac47-a3eb978f975f", hoisted18)
+              elementOpen("input", "68fb6912-ce00-4960-9ec2-3d432f6e052f", hoisted19, "value", file.name)
               elementClose("input")
-              elementOpen("span", "3035adc3-3aa9-48f9-ad76-cfa8e1f10e14", hoisted20)
-                elementOpen("button", "e056c158-0dc5-4be6-b712-9b23145dd4ad", hoisted21)
+              elementOpen("span", "8cd3c302-1f78-46ed-8b35-03a057af81a9", hoisted20)
+                elementOpen("button", "15466463-871d-4870-b13e-c7de28f9efe9", hoisted21)
                   text("OK")
                 elementClose("button")
-                elementOpen("button", "6ccede6e-9b56-450c-bc51-7d8029f4b9f9", hoisted22, "onclick", function ($event) {
+                elementOpen("button", "64932797-677c-4d0d-b9f4-6efb6d4b8bb0", hoisted22, "onclick", function ($event) {
                   var $element = this;
                 hide()})
                   text("Cancel")
@@ -2271,7 +2339,7 @@ module.exports = function fileEditor (model, hide) {
   }
 }
 
-},{"incremental-dom":170}],34:[function(require,module,exports){
+},{"incremental-dom":173}],36:[function(require,module,exports){
 var path = require('path')
 var patch = require('../patch')
 var service = require('../file-service')
@@ -2407,7 +2475,7 @@ var fileMenu = new FileMenu(fileMenuEl)
 
 module.exports = fileMenu
 
-},{"../file-editor":32,"../file-service":36,"../patch":47,"../util":62,"./view.html":35,"path":66}],35:[function(require,module,exports){
+},{"../file-editor":34,"../file-service":38,"../patch":49,"../util":65,"./view.html":37,"path":69}],37:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -2434,7 +2502,7 @@ module.exports = function fileMenu (model) {
   var node = model.node
       var file = model.file
   if (file) {
-    elementOpen("ul", "72fccde7-aac3-4035-a6d0-0427fc837548", hoisted1, "style", { top: model.y, left: model.x })
+    elementOpen("ul", "4691ff94-e55c-4111-85a3-7c1bcf6d34d4", hoisted1, "style", { top: model.y, left: model.x })
       elementOpen("li", "header", hoisted2)
         text("" + (file.name) + "")
       elementClose("li")
@@ -2442,7 +2510,7 @@ module.exports = function fileMenu (model) {
         elementOpen("a", null, null, "onclick", function ($event) {
           var $element = this;
         model.rename(file)})
-          elementOpen("i", "1cdae3cd-9ba1-470c-9d01-addfce035873", hoisted3)
+          elementOpen("i", "72864778-a340-4d71-be6e-dc0527d3473f", hoisted3)
           elementClose("i")
           text(" Rename")
         elementClose("a")
@@ -2453,7 +2521,7 @@ module.exports = function fileMenu (model) {
         elementOpen("a", null, null, "onclick", function ($event) {
           var $element = this;
         model.setPasteBuffer(file, 'cut')})
-          elementOpen("i", "0f487f58-3b17-4400-9fa4-eda98c34dc5d", hoisted5)
+          elementOpen("i", "e2bf0d8e-5bc4-401a-994b-048b295ed650", hoisted5)
           elementClose("i")
           text(" Cut")
         elementClose("a")
@@ -2462,7 +2530,7 @@ module.exports = function fileMenu (model) {
         elementOpen("a", null, null, "onclick", function ($event) {
           var $element = this;
         model.setPasteBuffer(file, 'copy')})
-          elementOpen("i", "e9ecf966-8cd6-41a0-9e0e-99833a393999", hoisted6)
+          elementOpen("i", "48d9f561-3781-46c3-a82c-aee9724e330f", hoisted6)
           elementClose("i")
           text(" Copy")
         elementClose("a")
@@ -2472,7 +2540,7 @@ module.exports = function fileMenu (model) {
           elementOpen("a", null, null, "onclick", function ($event) {
             var $element = this;
           model.paste(file)})
-            elementOpen("i", "d53afef2-b824-4057-8b1a-8474d8347e0f", hoisted7)
+            elementOpen("i", "bd0905be-0ad5-4c36-823b-ad7a406725b3", hoisted7)
             elementClose("i")
             text(" Paste")
           elementClose("a")
@@ -2484,7 +2552,7 @@ module.exports = function fileMenu (model) {
         elementOpen("a", null, null, "onclick", function ($event) {
           var $element = this;
         model.mkfile(node)})
-          elementOpen("i", "b252aaca-c1e2-4e94-a773-29d338819141", hoisted9)
+          elementOpen("i", "cdb84b0f-d71e-41ac-9db8-d06e69bd44a5", hoisted9)
           elementClose("i")
           text(" Add new file")
         elementClose("a")
@@ -2493,7 +2561,7 @@ module.exports = function fileMenu (model) {
         elementOpen("a", null, null, "onclick", function ($event) {
           var $element = this;
         model.mkdir(node)})
-          elementOpen("i", "c2904419-bf4f-4b95-a318-eba252611bf4", hoisted10)
+          elementOpen("i", "9eb2e56d-ed0a-4a0b-bec7-935598d2db4d", hoisted10)
           elementClose("i")
           text(" Add new folder")
         elementClose("a")
@@ -2504,7 +2572,7 @@ module.exports = function fileMenu (model) {
         elementOpen("a", null, null, "onclick", function ($event) {
           var $element = this;
         model.remove(file)})
-          elementOpen("i", "371e5227-740f-4e49-a229-cf1ae37601f9", hoisted12)
+          elementOpen("i", "6ec57174-01d6-44ef-8064-8c46f23f4fa7", hoisted12)
           elementClose("i")
           text(" Delete")
         elementClose("a")
@@ -2513,14 +2581,14 @@ module.exports = function fileMenu (model) {
   }
 }
 
-},{"incremental-dom":170}],36:[function(require,module,exports){
+},{"incremental-dom":173}],38:[function(require,module,exports){
 var Service = require('vsd-plugin-fs/client')
 var client = require('./client')
 var service = new Service(client, { mount: '/fs' })
 
 module.exports = service
 
-},{"./client":5,"vsd-plugin-fs/client":189}],37:[function(require,module,exports){
+},{"./client":7,"vsd-plugin-fs/client":192}],39:[function(require,module,exports){
 var Model = require('./model')
 var view = require('./view.html')
 var patch = require('../patch')
@@ -2620,7 +2688,7 @@ var Fs = document.registerElement(
 
 module.exports = Fs
 
-},{"../file-service":36,"../patch":47,"../util":62,"./model":38,"./view.html":39}],38:[function(require,module,exports){
+},{"../file-service":38,"../patch":49,"../util":65,"./model":40,"./view.html":41}],40:[function(require,module,exports){
 var path = require('path')
 var screenfull = require('screenfull')
 var filesize = require('filesize')
@@ -2713,7 +2781,7 @@ var Model = supermodels(model)
 
 module.exports = Model
 
-},{"../debounce":31,"../file-service":36,"../fso":41,"../modes":43,"../recent":49,"../util":62,"filesize":169,"path":66,"screenfull":173,"supermodels.js":174}],39:[function(require,module,exports){
+},{"../debounce":33,"../file-service":38,"../fso":43,"../modes":45,"../recent":51,"../util":65,"filesize":172,"path":69,"screenfull":176,"supermodels.js":177}],41:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -2726,7 +2794,7 @@ var hoisted1 = ["class", "box"]
 var hoisted2 = ["class", "box-header with-border"]
 var hoisted3 = ["class", "box-title"]
 var hoisted4 = ["class", "box-tools pull-right"]
-var hoisted5 = ["type", "button", "class", "btn btn-box-tool", "data-widget", "collapse"]
+var hoisted5 = ["type", "button", "class", "btn btn-box-tool hide", "data-widget", "collapse"]
 var hoisted6 = ["class", "fa fa-minus"]
 var hoisted7 = ["type", "button", "class", "btn btn-box-tool"]
 var hoisted8 = ["class", "fa fa-square-o"]
@@ -2744,7 +2812,7 @@ var hoisted19 = ["class", "fa fa-times"]
 var hoisted20 = ["class", "box-body no-padding"]
 var hoisted21 = ["child", ""]
 var hoisted22 = ["child", ""]
-var hoisted23 = ["child", "", "style", "height: 400px; display: block; -webkit-font-smoothing: auto;"]
+var hoisted23 = ["child", "", "style", "-webkit-font-smoothing: auto;"]
 var hoisted24 = ["class", "box-footer"]
 var hoisted25 = ["class", "text-muted pull-right"]
 var hoisted26 = ["class", "text-muted"]
@@ -2752,65 +2820,65 @@ var __target
 
 module.exports = function description (model) {
   if (model.file) {
-    elementOpen("div", "61d6c722-b10f-46d2-8568-1f95202f0164", hoisted1)
+    elementOpen("div", "cec815b9-5bda-4b26-bdd9-f673c907137e", hoisted1)
       var box = currentElement()
-      elementOpen("div", "4e44ae94-ffbc-49fc-9739-42ca867b35f1", hoisted2)
-        elementOpen("h3", "c0db16eb-3cf4-4e9a-94ae-1b71d4078dec", hoisted3)
+      elementOpen("div", "ec7663d0-66a6-492e-af22-d0e4127a7997", hoisted2)
+        elementOpen("h3", "16be8e79-071a-4269-ad59-85dda801024e", hoisted3)
           text("" + (model.file.name) + "")
         elementClose("h3")
-        elementOpen("div", "42398d53-af70-4a2c-930d-2df32f15751f", hoisted4)
-          elementOpen("button", "4a6eb5c7-a2d4-45fd-b1ce-778771092037", hoisted5)
-            elementOpen("i", "f539bfb4-8131-41c2-9cdb-ba273c6bf585", hoisted6)
+        elementOpen("div", "c9dea988-444c-44b9-a0e0-ae4fa472c199", hoisted4)
+          elementOpen("button", "5aed7214-69b4-48d3-9887-413f716fcd14", hoisted5)
+            elementOpen("i", "5615667b-bdda-4d7f-a027-48ac966a7dc9", hoisted6)
             elementClose("i")
           elementClose("button")
-          elementOpen("button", "de8671df-83f7-4f2b-ba78-63729d214562", hoisted7, "onclick", function ($event) {
+          elementOpen("button", "3653b138-5778-441c-8907-9a66cf35ab88", hoisted7, "onclick", function ($event) {
             var $element = this;
           model.requestFullscreen(box)})
-            elementOpen("i", "a2715784-f644-4641-8502-472309f051a3", hoisted8)
+            elementOpen("i", "dfe27322-b15d-40a9-97fd-07f34705d6be", hoisted8)
             elementClose("i")
           elementClose("button")
-          elementOpen("div", "5ab92498-f747-4029-8d14-a969178b04c4", hoisted9)
-            elementOpen("button", "0e04272f-0c21-4402-8c48-1d763617e816", hoisted10)
-              elementOpen("i", "4ac325ba-e008-43b4-a0b6-3ef1843ffa4b", hoisted11)
+          elementOpen("div", "949f295e-8555-49ea-80af-6d7b84113052", hoisted9)
+            elementOpen("button", "bb8ed950-f734-471f-a8d2-379b3bb9cd47", hoisted10)
+              elementOpen("i", "29222ef4-1277-4d89-b0f5-9568e9199144", hoisted11)
               elementClose("i")
             elementClose("button")
-            elementOpen("ul", "96d8312d-fb8f-49a6-adad-65ca2f607138", hoisted12)
+            elementOpen("ul", "a214210c-a54d-4acc-8f01-cca08eae19d0", hoisted12)
               elementOpen("li")
-                elementOpen("a", "5bee1e00-13e9-47fd-b38e-b4cb61e5a681", hoisted13)
+                elementOpen("a", "6862610b-4a15-4613-b595-491c9074ec51", hoisted13)
                   text("Rename")
                 elementClose("a")
               elementClose("li")
               elementOpen("li")
-                elementOpen("a", "e04d168c-b600-41cd-8f5f-248e19ddad87", hoisted14)
+                elementOpen("a", "34e0e1a4-8442-4b6f-b753-4427fa2cbb62", hoisted14)
                   text("Delete")
                 elementClose("a")
               elementClose("li")
               elementOpen("li")
-                elementOpen("a", "0a005534-3ec0-44b5-b687-e511e339653c", hoisted15)
+                elementOpen("a", "5e13ead9-6f70-42ce-8b63-30da11b45e73", hoisted15)
                   text("Copy")
                 elementClose("a")
               elementClose("li")
-              elementOpen("li", "3216102d-6e50-4e78-9624-43411d6419d9", hoisted16)
+              elementOpen("li", "a36a6805-4aaa-4d3f-9c38-226d8be31bf4", hoisted16)
               elementClose("li")
               elementOpen("li")
-                elementOpen("a", "bd94f570-81f3-4707-8f8f-d648049e9f71", hoisted17)
+                elementOpen("a", "22d1c471-3690-4692-b4f0-244ac10c9056", hoisted17)
                   text("Delete")
                 elementClose("a")
               elementClose("li")
             elementClose("ul")
           elementClose("div")
-          elementOpen("button", "f0e93349-b43c-4c74-b2cd-e5a2455bffd2", hoisted18, "onclick", function ($event) {
+          elementOpen("button", "5a3b2827-728a-4aca-944f-6be867396d5f", hoisted18, "onclick", function ($event) {
             var $element = this;
           model.onCloseClick($event, box)})
-            elementOpen("i", "a1237ce4-a6c7-4407-9066-3f81601c0af7", hoisted19)
+            elementOpen("i", "0e1d7d25-460b-4743-97e7-68555caea427", hoisted19)
             elementClose("i")
           elementClose("button")
         elementClose("div")
       elementClose("div")
       var type = model.getType()
-      elementOpen("div", "78ca0eac-c7e7-45f5-a447-55c0b8ba70b8", hoisted20)
+      elementOpen("div", "6717dde3-ad99-4ebd-97f8-f07711cb7482", hoisted20)
         if (type === 'routes') {
-          elementOpen("vsd-routes", "75c7a2ee-4ee3-4167-9aa2-ef4e810bced0", hoisted21, "contents", model.contents, "path", model.file.path, "oncontentchange", function ($event) {
+          elementOpen("vsd-routes", "91b0c33f-aa05-40b9-a598-85fae84f1551", hoisted21, "contents", model.contents, "path", model.file.path, "oncontentchange", function ($event) {
             var $element = this;
           model.onContentChange($event)})
             if (true) {
@@ -2819,7 +2887,7 @@ module.exports = function description (model) {
             }
           elementClose("vsd-routes")
         } else if (type === 'db') {
-          elementOpen("vsd-db", "797a676c-22f9-4b5a-9216-0abf501d78ef", hoisted22, "contents", model.contents, "oncontentchange", function ($event) {
+          elementOpen("vsd-db", "e95f8c8c-96e2-4fac-b5e8-0d2d6b291972", hoisted22, "contents", model.contents, "oncontentchange", function ($event) {
             var $element = this;
           model.onContentChange($event)})
             if (true) {
@@ -2828,7 +2896,7 @@ module.exports = function description (model) {
             }
           elementClose("vsd-db")
         } else {
-          elementOpen("vsd-ace", "95eaa2e5-d179-4165-b1c3-5d4ae13e611d", hoisted23, "mode", model.getMode(model.file), "contents", model.contents, "oncontentchange", function ($event) {
+          elementOpen("vsd-ace", "9f887883-d76a-403c-ba63-ec06b817f7a9", hoisted23, "mode", model.getMode(model.file), "contents", model.contents, "oncontentchange", function ($event) {
             var $element = this;
           model.onContentChange($event)})
             if (true) {
@@ -2838,11 +2906,11 @@ module.exports = function description (model) {
           elementClose("vsd-ace")
         }
       elementClose("div")
-      elementOpen("div", "06364df3-eb90-4ec0-9c84-6905fa1fb03e", hoisted24)
-        elementOpen("strong", "0a1a2a02-0861-49d5-967a-58bfcf41b005", hoisted25)
+      elementOpen("div", "3289dd00-23df-4bf8-a6c5-148293663a87", hoisted24)
+        elementOpen("strong", "9527d3d5-368a-4f70-8ffc-b0307f31c647", hoisted25)
           text("" + (model.getFilesize()) + "")
         elementClose("strong")
-        elementOpen("span", "139ae728-b8f7-41b2-ba2c-923da51e8344", hoisted26)
+        elementOpen("span", "ba4f61bd-9692-4d38-9fa4-8898e456b04b", hoisted26)
           text("" + (model.getRelativePath(model.file.path)) + "")
         elementClose("span")
       elementClose("div")
@@ -2850,7 +2918,7 @@ module.exports = function description (model) {
   }
 }
 
-},{"incremental-dom":170}],40:[function(require,module,exports){
+},{"incremental-dom":173}],42:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var File = require('./fso')
 
@@ -2858,7 +2926,7 @@ var Files = supermodels([File])
 
 module.exports = Files
 
-},{"./fso":41,"supermodels.js":174}],41:[function(require,module,exports){
+},{"./fso":43,"supermodels.js":177}],43:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var prop = require('./prop')
 var path = require('path')
@@ -2886,7 +2954,7 @@ var File = supermodels(fso)
 
 module.exports = File
 
-},{"./prop":48,"path":66,"supermodels.js":174}],42:[function(require,module,exports){
+},{"./prop":50,"path":69,"supermodels.js":177}],44:[function(require,module,exports){
 require('document-register-element')
 
 var client = require('./client')
@@ -2911,6 +2979,7 @@ client.connect(function (err) {
     }
 
     var files = new Files(payload.watched)
+    window.files = payload.watched
     window.UCO.files = files
 
     watcher.watch(payload.id, files)
@@ -2920,11 +2989,12 @@ client.connect(function (err) {
     require('./file')
     require('./sidebar')
     require('./workspace')
+
     console.log('connect')
   })
 })
 
-},{"./ace":1,"./breadcrumbs":2,"./client":5,"./db":21,"./file":37,"./files":40,"./notify":45,"./routes":51,"./sidebar":56,"./tree":58,"./util":62,"./watcher":63,"./workspace":64,"document-register-element":168}],43:[function(require,module,exports){
+},{"./ace":2,"./breadcrumbs":4,"./client":7,"./db":23,"./file":39,"./files":42,"./notify":47,"./routes":53,"./sidebar":59,"./tree":61,"./util":65,"./watcher":66,"./workspace":67,"document-register-element":171}],45:[function(require,module,exports){
 module.exports = function (file) {
   var modes = {
     '.js': 'ace/mode/javascript',
@@ -2947,10 +3017,10 @@ module.exports = function (file) {
     '.xml': 'ace/mode/xml'
   }
 
-  return modes[file.ext]
+  return modes[file.ext] || 'ace/mode/text'
 }
 
-},{}],44:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 
 var schema = {
@@ -2966,7 +3036,7 @@ var Controller = supermodels(schema)
 
 module.exports = Controller
 
-},{"supermodels.js":174}],45:[function(require,module,exports){
+},{"supermodels.js":177}],47:[function(require,module,exports){
 var Controller = require('./controller')
 var view = require('./view.html')
 var patch = require('../patch')
@@ -3019,7 +3089,7 @@ var Notify = document.registerElement(
 
 module.exports = Notify
 
-},{"../patch":47,"./controller":44,"./view.html":46}],46:[function(require,module,exports){
+},{"../patch":49,"./controller":46,"./view.html":48}],48:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -3036,9 +3106,9 @@ module.exports = function description (ctrl) {
   if (__target) {
     ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
       var item = $value
-      var $key = "7901f806-bbd8-4fbe-a83d-39a795841b9a_" + $item
+      var $key = "a041692e-1f18-4923-9838-baf56df91482_" + $item
       elementOpen("div", $key, null, "class", "alert alert-" + (item.type) + " alert-dismissible")
-        elementOpen("button", "d6ed86de-8dab-4591-a9b3-2e097552375c_" + $key, hoisted1, "onclick", function ($event) {
+        elementOpen("button", "15e27fd7-0746-4b20-b172-66c8f747c80a_" + $key, hoisted1, "onclick", function ($event) {
           var $element = this;
         ctrl.items.splice($item, 1)})
           text("×")
@@ -3056,7 +3126,7 @@ module.exports = function description (ctrl) {
   }
 }
 
-},{"incremental-dom":170}],47:[function(require,module,exports){
+},{"incremental-dom":173}],49:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 
@@ -3079,7 +3149,7 @@ module.exports = function (el, view, data) {
   }
 }
 
-},{"incremental-dom":170}],48:[function(require,module,exports){
+},{"incremental-dom":173}],50:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var prop = supermodels.prop()
 
@@ -3129,9 +3199,10 @@ prop.register('max', function (max) {
 
 module.exports = prop
 
-},{"supermodels.js":174}],49:[function(require,module,exports){
+},{"supermodels.js":177}],51:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var prop = require('./prop')
+var sessions = require('./sessions')
 var projectPath = window.UCO.path
 var files = window.UCO.files
 var storageKey = 'vsd-' + projectPath
@@ -3145,8 +3216,27 @@ function findFile (relativePath) {
 var schema = {
   items: [{
     ref: prop(String).required(),
+    getSession: function () {
+      var file = this.getFile()
+      return sessions.find(file)
+    },
+    hasSession: function () {
+      return !!this.getSession()
+    },
+    isDirty: function () {
+      var session = this.getSession()
+      return session && session.isDirty
+    },
+    isCurrent: function () {
+      return sessions.current
+        ? sessions.current === this.getSession()
+        : false
+    },
     getDisplayName: function () {
       return this.ref.replace(window.UCO.path, '')
+    },
+    getFile: function () {
+      return findFile(this.ref)
     }
   }],
   exists: function (ref) {
@@ -3166,6 +3256,14 @@ var schema = {
     if (item) {
       this.items.splice(this.items.indexOf(item), 1)
     }
+  },
+  dirty: function () {
+    return this.items.filter(function (item) {
+      return item.isDirty()
+    })
+  },
+  clear: function () {
+    this.items.splice(0, this.items.length)
   }
 }
 
@@ -3195,7 +3293,7 @@ files.on('splice', function (e) {
 
 module.exports = model
 
-},{"./prop":48,"supermodels.js":174}],50:[function(require,module,exports){
+},{"./prop":50,"./sessions":57,"supermodels.js":177}],52:[function(require,module,exports){
 var path = require('path')
 var supermodels = require('supermodels.js')
 var prop = require('../prop')
@@ -3274,7 +3372,7 @@ var Controller = supermodels(controller)
 
 module.exports = Controller
 
-},{"../prop":48,"./model":52,"./route":53,"path":66,"supermodels.js":174}],51:[function(require,module,exports){
+},{"../prop":50,"./model":54,"./route":55,"path":69,"supermodels.js":177}],53:[function(require,module,exports){
 var patch = require('../patch')
 var Controller = require('./controller')
 var Model = require('./model')
@@ -3347,7 +3445,7 @@ var Routes = document.registerElement(
 
 module.exports = Routes
 
-},{"../patch":47,"./controller":50,"./model":52,"./view.html":54}],52:[function(require,module,exports){
+},{"../patch":49,"./controller":52,"./model":54,"./view.html":56}],54:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var prop = require('../prop')
 var Route = require('./route')
@@ -3362,7 +3460,7 @@ var Model = supermodels(model)
 
 module.exports = Model
 
-},{"../prop":48,"./route":53,"supermodels.js":174}],53:[function(require,module,exports){
+},{"../prop":50,"./route":55,"supermodels.js":177}],55:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var prop = require('../prop')
 
@@ -3418,7 +3516,7 @@ var Route = supermodels(route)
 
 module.exports = Route
 
-},{"../prop":48,"supermodels.js":174}],54:[function(require,module,exports){
+},{"../prop":50,"supermodels.js":177}],56:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -3488,17 +3586,17 @@ var __target
 
 module.exports = function description (ctrl) {
   if (ctrl && ctrl.model) {
-    elementOpen("div", "3e4c272f-7fe4-4e5e-8401-9a09d355548b", hoisted1)
+    elementOpen("div", "3ea16aea-6321-4916-925f-736acea96d16", hoisted1)
       var model = ctrl.model
             var routes = ctrl.filtered
-      elementOpen("div", "2aff5d01-9f3a-4b3b-944e-d8fae2f70e38", hoisted2)
+      elementOpen("div", "c95978d1-a021-4102-bbfd-a3f146f39d9d", hoisted2)
         elementOpen("h4")
           text("" + (model.name) + "")
         elementClose("h4")
         text(" " + (model.description) + " \
               ")
         if (!routes.length) {
-          elementOpen("div", "4f670717-da88-4f6c-8961-21d00db1bcc2", hoisted3)
+          elementOpen("div", "1b0eb11c-765f-4ce9-b666-19659bde37f4", hoisted3)
             elementOpen("h4")
               text("No routes found")
             elementClose("h4")
@@ -3515,8 +3613,8 @@ module.exports = function description (ctrl) {
           elementClose("div")
         }
         if (model.errors.length) {
-          elementOpen("div", "88ce4cf4-3b72-4f11-8312-72c1caeb0f5a", hoisted4)
-            elementOpen("h4", "9bb842e5-1414-4159-b27a-330d6bbe33ae", hoisted5)
+          elementOpen("div", "5d3d58bc-94d8-4654-9f8c-cc75b4a9bf25", hoisted4)
+            elementOpen("h4", "43542336-a9c9-493b-9ed9-67c047988f11", hoisted5)
               text("Errors")
             elementClose("h4")
             elementOpen("ul")
@@ -3524,9 +3622,9 @@ module.exports = function description (ctrl) {
               if (__target) {
                 ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
                   var item = $value
-                  var $key = "b3de5022-9104-4c21-952a-fd31bad1df6f_" + $item
+                  var $key = "1f3963fc-a5fb-44af-aa9f-6d66142e8757_" + $item
                   elementOpen("li", $key)
-                    elementOpen("a", "f934bc86-3e61-492e-8613-7ffaf2d0ccd5_" + $key, hoisted6, "onclick", function ($event) {
+                    elementOpen("a", "5a73f14e-564f-42a9-8cad-cc7ae1cd19f7_" + $key, hoisted6, "onclick", function ($event) {
                       var $element = this;
                     ctrl.onClickErrorNode(item)})
                       text("" + (item.error) + "")
@@ -3537,30 +3635,30 @@ module.exports = function description (ctrl) {
             elementClose("ul")
           elementClose("div")
         }
-        elementOpen("div", "a3667585-dd15-4e15-9e92-1495d117ffc2", hoisted7)
-          elementOpen("div", "35cc564e-bc8a-45c5-afbb-d50bac8fe8ec", hoisted8)
-            elementOpen("div", "ecfa4d98-44de-4d39-807c-4682ff8be646", hoisted9)
-              elementOpen("div", "344f033a-ac05-468c-a814-6ddd0a663915", hoisted10)
-                elementOpen("input", "307b8f1b-f079-47be-b091-a4e3e37bee68", hoisted11, "value", ctrl.query, "onkeyup", function ($event) {
+        elementOpen("div", "401fb353-0a8d-43f8-95ff-433c2fa5e3b1", hoisted7)
+          elementOpen("div", "0da1630f-bc90-463e-a9b9-270efd6fb59d", hoisted8)
+            elementOpen("div", "0f1c1a99-42b5-4e3f-81ec-d75436f62fa9", hoisted9)
+              elementOpen("div", "2778e095-37e2-425f-9fe6-4eaf100ae210", hoisted10)
+                elementOpen("input", "14781236-defe-4c0e-aa18-4784a1ba3c93", hoisted11, "value", ctrl.query, "onkeyup", function ($event) {
                   var $element = this;
                 ctrl.query = this.value})
                 elementClose("input")
-                elementOpen("div", "9a427361-c944-405a-9126-e83d6e619353", hoisted12)
-                  elementOpen("button", "f260fe94-c5e4-4215-ad15-8edc324bd550", hoisted13)
-                    elementOpen("i", "b284153d-92b8-4fbc-a695-a8266f534f09", hoisted14)
+                elementOpen("div", "768a1fb4-b477-4ecb-b15d-ec221ace7228", hoisted12)
+                  elementOpen("button", "c6a6da4b-f419-46c6-a944-6ae97adc7a39", hoisted13)
+                    elementOpen("i", "19c05190-ed60-4243-a4f4-55fdcb29898e", hoisted14)
                     elementClose("i")
                   elementClose("button")
                 elementClose("div")
               elementClose("div")
             elementClose("div")
             if (routes.length) {
-              elementOpen("table", "77b5e2fb-febb-4db3-a5a0-6eb46622dc14", hoisted15)
+              elementOpen("table", "f66a25be-eefb-4d6a-93b2-37c0e0326344", hoisted15)
                 elementOpen("tbody")
                   __target = routes
                   if (__target) {
                     ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
                       var route = $value
-                      var $key = "c3fe1156-1843-4ceb-8e40-1df8116cfc32_" + $item
+                      var $key = "3766aa9b-2fa7-4f0f-b3e1-15ba55db3274_" + $item
                       elementOpen("tr", $key, null, "onclick", function ($event) {
                         var $element = this;
                       ctrl.currentRoute = route}, "class", route.getRowClassName(ctrl.currentRoute))
@@ -3577,7 +3675,7 @@ module.exports = function description (ctrl) {
                         elementClose("td")
                         elementOpen("td")
                           if (route.resourceDisplay) {
-                            elementOpen("a", "ec20cf76-134c-49cf-ba1b-712870f2f8df_" + $key, hoisted16, "href", "#" + (ctrl.getRelativePath(route)) + "")
+                            elementOpen("a", "99babda6-bcc4-4d4d-8266-2d3799088a1d_" + $key, hoisted16, "href", "#" + (ctrl.getRelativePath(route)) + "")
                               text("" + (route.resourceDisplay) + "")
                             elementClose("a")
                           }
@@ -3588,123 +3686,123 @@ module.exports = function description (ctrl) {
                 elementClose("tbody")
               elementClose("table")
             }
-            elementOpen("div", "cebee2c9-e7cd-4b97-94e3-3796f11f2c9a", hoisted17)
-              elementOpen("button", "bd2ea561-a928-4208-bbc1-ea8089554da4", hoisted18, "onclick", function ($event) {
+            elementOpen("div", "e5dd7ed1-97ed-4d4c-8873-3fa3852d17fc", hoisted17)
+              elementOpen("button", "1f88b18a-1fe5-400c-823e-90487876dbf3", hoisted18, "onclick", function ($event) {
                 var $element = this;
               ctrl.addRoute()})
                 text("Add")
               elementClose("button")
             elementClose("div")
-            elementOpen("ul", "e0c47287-47b4-4f36-878e-d6d763ef71c5", hoisted19)
+            elementOpen("ul", "354c77d4-b21d-4ea2-b02c-29b2eece4eaf", hoisted19)
               elementOpen("li")
-                elementOpen("a", "34529de7-7e19-48e2-9d64-1846c528b01c", hoisted20)
+                elementOpen("a", "904e5712-67e2-4f2c-9945-5ed114cae7d4", hoisted20)
                   text("«")
                 elementClose("a")
               elementClose("li")
               elementOpen("li")
-                elementOpen("a", "86dd68ce-e050-46e0-9477-cb36f2bb1ac3", hoisted21)
+                elementOpen("a", "c7c88aa7-6f72-405e-abac-0a5abc4ad39e", hoisted21)
                   text("1")
                 elementClose("a")
               elementClose("li")
               elementOpen("li")
-                elementOpen("a", "ba262428-e61c-4598-b109-d582b846035e", hoisted22)
+                elementOpen("a", "94dcbd3d-a722-4b74-8058-db137ba19105", hoisted22)
                   text("2")
                 elementClose("a")
               elementClose("li")
               elementOpen("li")
-                elementOpen("a", "cdaf79d7-9eea-47d6-91b3-fa4fa107d669", hoisted23)
+                elementOpen("a", "f24efc8a-edfc-44ea-8ed0-d36ad9be1892", hoisted23)
                   text("3")
                 elementClose("a")
               elementClose("li")
               elementOpen("li")
-                elementOpen("a", "c9dbd24c-5045-4eac-9609-aa8f0caadd28", hoisted24)
+                elementOpen("a", "636d7d8f-ad32-4b15-9151-ed514e02ef07", hoisted24)
                   text("»")
                 elementClose("a")
               elementClose("li")
             elementClose("ul")
           elementClose("div")
           if (ctrl.currentRoute) {
-            elementOpen("div", "fccef0bb-4f32-4fdb-949d-51b004c95844", hoisted25)
-              elementOpen("form", "09750224-c921-4a6c-97af-7bd8c2e83085", hoisted26)
-                elementOpen("div", "b9747153-4486-4f18-a751-1499dddf190e", hoisted27)
-                  elementOpen("label", "6726d191-0940-4e20-b719-b71e8718a06f", hoisted28)
+            elementOpen("div", "01e93739-277b-4ca0-a99f-2496bdea4745", hoisted25)
+              elementOpen("form", "ceb0b6fa-5eaa-4422-aee1-8b5024aa29c7", hoisted26)
+                elementOpen("div", "b090ea14-df2e-4cb0-83e3-4dadef2b870e", hoisted27)
+                  elementOpen("label", "6e65af7d-9113-477e-b96f-d0dff418069b", hoisted28)
                     text("Method")
                   elementClose("label")
-                  elementOpen("div", "65ebccd7-aafe-420c-b164-63d5271b672e", hoisted29)
-                    elementOpen("select", "3116e47f-bcf0-479e-9f1a-4646562cd99c", hoisted30, "onchange", function ($event) {
+                  elementOpen("div", "bb306f68-467e-4bd1-abf5-5a3a397b2594", hoisted29)
+                    elementOpen("select", "e8ba25dd-5c5a-42a4-b3a1-3bda50f5a0f8", hoisted30, "onchange", function ($event) {
                       var $element = this;
                     ctrl.currentRoute.method = this.value})
-                      elementOpen("option", "74db153a-6f09-4844-9374-4ae885af9ace", hoisted31, "selected", ctrl.currentRoute.method === 'GET' ? 'selected' : null)
+                      elementOpen("option", "491ff91b-a063-4792-8667-6684566825b3", hoisted31, "selected", ctrl.currentRoute.method === 'GET' ? 'selected' : null)
                         text("GET")
                       elementClose("option")
-                      elementOpen("option", "819fa4e6-95f8-4f34-92ad-238457065af9", hoisted32, "selected", ctrl.currentRoute.method === 'POST' ? 'selected' : null)
+                      elementOpen("option", "e0db6609-6780-4bda-a9d3-d7b435e442d9", hoisted32, "selected", ctrl.currentRoute.method === 'POST' ? 'selected' : null)
                         text("POST")
                       elementClose("option")
-                      elementOpen("option", "c57baf5d-0fb4-4ee6-acf7-cfbd047e3221", hoisted33, "selected", ctrl.currentRoute.method === 'PUT' ? 'selected' : null)
+                      elementOpen("option", "49cd7c3a-11a3-4fae-8f24-d44fb3519c9c", hoisted33, "selected", ctrl.currentRoute.method === 'PUT' ? 'selected' : null)
                         text("PUT")
                       elementClose("option")
-                      elementOpen("option", "f37cb361-80f1-4136-adc3-069262465a37", hoisted34, "selected", ctrl.currentRoute.method === 'DELETE' ? 'selected' : null)
+                      elementOpen("option", "121711fd-b59c-4923-b226-2639d455292f", hoisted34, "selected", ctrl.currentRoute.method === 'DELETE' ? 'selected' : null)
                         text("DELETE")
                       elementClose("option")
-                      elementOpen("option", "127605f6-f0e5-49c9-aed2-d2398c365b89", hoisted35, "selected", ctrl.currentRoute.method === 'HEAD' ? 'selected' : null)
+                      elementOpen("option", "67295e07-1f61-43fb-a8d9-0d24edfa3d13", hoisted35, "selected", ctrl.currentRoute.method === 'HEAD' ? 'selected' : null)
                         text("HEAD")
                       elementClose("option")
-                      elementOpen("option", "eac22389-4b1c-4af5-8733-ce974587c95f", hoisted36, "selected", ctrl.currentRoute.method === 'OPTIONS' ? 'selected' : null)
+                      elementOpen("option", "3af40fc1-e7cd-442f-88e4-748cac30b722", hoisted36, "selected", ctrl.currentRoute.method === 'OPTIONS' ? 'selected' : null)
                         text("OPTIONS")
                       elementClose("option")
-                      elementOpen("option", "ff4e9b48-c443-46dd-8677-7a9c551a2194", hoisted37, "selected", ctrl.currentRoute.method === 'CONNECT' ? 'selected' : null)
+                      elementOpen("option", "d463af9f-e012-40f3-ac04-41049e437a45", hoisted37, "selected", ctrl.currentRoute.method === 'CONNECT' ? 'selected' : null)
                         text("CONNECT")
                       elementClose("option")
                     elementClose("select")
                   elementClose("div")
                 elementClose("div")
-                elementOpen("div", "058ceeb8-c69c-4f62-9185-de8cc22ba8f0", hoisted38)
-                  elementOpen("label", "034a31d1-57b0-4222-84b2-872fbf33fbb4", hoisted39)
+                elementOpen("div", "dd20aa64-6b40-4d22-a8df-1dcd95ac0793", hoisted38)
+                  elementOpen("label", "d04a7637-6d5e-4f0c-b3ca-dd6d1a27eb98", hoisted39)
                     text("Path")
                   elementClose("label")
-                  elementOpen("div", "bf16b2a1-7898-434e-9917-dc222232a807", hoisted40)
-                    elementOpen("input", "c4e0fd2d-8d75-478c-8e17-ef0e72d645ca", hoisted41, "value", ctrl.currentRoute.path, "onchange", function ($event) {
+                  elementOpen("div", "981f44e5-999a-4378-96da-b6d7192537ce", hoisted40)
+                    elementOpen("input", "5b4d5116-c658-45cd-a226-b24e379bd757", hoisted41, "value", ctrl.currentRoute.path, "onchange", function ($event) {
                       var $element = this;
                     ctrl.currentRoute.path = this.value})
                     elementClose("input")
                   elementClose("div")
                 elementClose("div")
-                elementOpen("div", "6ff27bd6-c3af-414a-a5c5-60828cda22e6", hoisted42)
-                  elementOpen("label", "ec6cfcf7-ab17-4664-a699-b63c71bbd3d7", hoisted43)
+                elementOpen("div", "3372872c-c95d-4eef-a00c-8d0f3124281a", hoisted42)
+                  elementOpen("label", "bcb3b8c5-e8a6-4ca8-92f3-15a4f41bd876", hoisted43)
                     text("Resource path")
                   elementClose("label")
-                  elementOpen("div", "8678c0fe-5714-4168-a6c9-b1f900dccdd0", hoisted44)
-                    elementOpen("input", "9459dc1f-59d3-4339-8b1e-080da7ef58e9", hoisted45, "value", ctrl.currentRoute.resource.path, "onchange", function ($event) {
+                  elementOpen("div", "acac2807-fda0-4c23-9fd6-540f342820ec", hoisted44)
+                    elementOpen("input", "2239e5bf-30f7-42e9-b6dd-88ff692b6496", hoisted45, "value", ctrl.currentRoute.resource.path, "onchange", function ($event) {
                       var $element = this;
                     ctrl.currentRoute.resource.path = this.value})
                     elementClose("input")
                   elementClose("div")
                 elementClose("div")
-                elementOpen("div", "2db91115-8c70-4030-870d-1c7e1b10ec76", hoisted46)
-                  elementOpen("label", "b957a578-2aa3-4653-9397-d50c63f8c544", hoisted47)
+                elementOpen("div", "ce2883ed-55bf-42b4-931b-ced23ab3cafe", hoisted46)
+                  elementOpen("label", "d2df0587-98b0-42ff-88c7-68402eb6bbf1", hoisted47)
                     text("Resource name")
                   elementClose("label")
-                  elementOpen("div", "a938efdc-37a8-43e1-b6d1-9776c945e82f", hoisted48)
-                    elementOpen("input", "17c8267a-9e75-4f5c-ad6a-e14840fa4afd", hoisted49, "value", ctrl.currentRoute.resource.name, "onchange", function ($event) {
+                  elementOpen("div", "fcf5d608-96af-4813-9cc5-0dc6b1b058e6", hoisted48)
+                    elementOpen("input", "337f999f-6a72-49d9-875e-5ad37f649228", hoisted49, "value", ctrl.currentRoute.resource.name, "onchange", function ($event) {
                       var $element = this;
                     ctrl.currentRoute.resource.name = this.value})
                     elementClose("input")
                   elementClose("div")
                 elementClose("div")
-                elementOpen("div", "f6474643-544e-4cf2-b406-53697327b196", hoisted50)
-                  elementOpen("label", "cc01cf19-2f53-4974-8723-c195a9c030ac", hoisted51)
+                elementOpen("div", "32f32d93-cc6e-48a2-a922-68291780c31b", hoisted50)
+                  elementOpen("label", "8762fd79-e674-4442-915f-efe4dc1c5e43", hoisted51)
                     text("Description")
                   elementClose("label")
-                  elementOpen("div", "b78152a5-c27f-48f1-b3d1-70b46ff2af88", hoisted52)
-                    elementOpen("textarea", "f42ff21e-5f3e-42cc-9b83-3b11aaeb07b6", hoisted53, "value", ctrl.currentRoute.description, "onchange", function ($event) {
+                  elementOpen("div", "8f9db528-1bf9-4a77-a732-1408593e044c", hoisted52)
+                    elementOpen("textarea", "752f73bd-f5e7-4cfb-b97c-2c3f2e3c8e92", hoisted53, "value", ctrl.currentRoute.description, "onchange", function ($event) {
                       var $element = this;
                     ctrl.currentRoute.description = this.value})
                     elementClose("textarea")
                   elementClose("div")
                 elementClose("div")
-                elementOpen("div", "ce135d73-89ee-4078-be87-3349da87c75c", hoisted54)
-                  elementOpen("div", "abc95624-b054-425e-bafe-f0b16286cf19", hoisted55)
-                    elementOpen("input", "efcbd04a-25af-4dfe-89fc-ed963724f1f8", hoisted56, "checked", ctrl.currentRoute.ignore, "onchange", function ($event) {
+                elementOpen("div", "6d39724e-3bae-4821-8f59-96c95597d78f", hoisted54)
+                  elementOpen("div", "aeef76dd-8204-49f7-8601-4a8c5075630f", hoisted55)
+                    elementOpen("input", "c0434710-17ac-46c3-8abc-80eaa0eb8ddb", hoisted56, "checked", ctrl.currentRoute.ignore, "onchange", function ($event) {
                       var $element = this;
                     ctrl.currentRoute.ignore = this.checked})
                     elementClose("input")
@@ -3713,7 +3811,7 @@ module.exports = function description (ctrl) {
                   elementClose("div")
                 elementClose("div")
               elementClose("form")
-              elementOpen("button", "440229e1-46b5-43b4-8972-04a0862ecf3a", hoisted57, "onclick", function ($event) {
+              elementOpen("button", "19fb286d-a61b-4e7a-ab3e-bbb772ffc67d", hoisted57, "onclick", function ($event) {
                 var $element = this;
               ctrl.removeRoute(ctrl.currentRoute)})
                 text("Delete route")
@@ -3726,10 +3824,135 @@ module.exports = function description (ctrl) {
   }
 }
 
-},{"incremental-dom":170}],55:[function(require,module,exports){
+},{"incremental-dom":173}],57:[function(require,module,exports){
+var supermodels = require('supermodels.js')
+var util = require('./util')
+var prop = require('./prop')
+var Fso = require('./fso')
+var service = require('./file-service')
+var AceSession = require('./ace/session')
+var files = window.UCO.files
+
+var sessionSchema = {
+  file: Fso,
+  manager: prop(Object).enumerable(false),
+  isDirty: prop(Boolean).value(false),
+  setDirty: function (value) {
+    if (this.isDirty !== value) {
+      this.isDirty = value
+    }
+  },
+  save: function (callback) {
+    service.writeFile(this.file.path, this.manager.getValue(), function (err, result) {
+      if (err) {
+        util.handleError(err)
+        if (callback) callback(err)
+      }
+
+      // Mark clean
+      this.setDirty(false)
+      if (callback) callback(null, result)
+    }.bind(this))
+  }
+}
+
+var Session = supermodels(sessionSchema)
+
+var sessionsSchema = {
+  items: [Session],
+  current: Session,
+  find: function (file) {
+    return this.items.find(function (item) {
+      return item.file === file
+    })
+  },
+  add: function (file) {
+    if (!file || file.isDirectory) {
+      return
+    }
+
+    var self = this
+    var src = file.path
+
+    service.readFile(src, function (err, result) {
+      if (err) {
+        return util.handleError(err)
+      }
+
+      var session = new Session({
+        file: file,
+        manager: new AceSession(file, result.contents)
+      })
+
+      session.manager.editSession.on('change', function () {
+        setTimeout(function () {
+          session.setDirty(session.manager.isDirty)
+        }, 0)
+      })
+
+      self.items.push(session)
+      self.current = session
+    })
+  },
+  remove: function (session) {
+    var idx = this.items.indexOf(session)
+    if (~idx) {
+      this.items.splice(idx, 1)
+      if (session === this.current) {
+        this.current = this.items[0]
+      }
+    }
+  },
+  dirty: function () {
+    return this.items.filter(function (item) {
+      return item.isDirty
+    })
+  },
+  clear: function () {
+    this.items.splice(0, this.items.length)
+    this.current = null
+  },
+  saveAll: function () {
+    this.dirty().forEach(function (item) {
+      item.save()
+    })
+  }
+}
+
+var Sessions = supermodels(sessionsSchema)
+
+var sessions = new Sessions()
+
+// Listen for files being removed.
+// Remove the session if there is one associated.
+// If the current file was removed, move back to the first session.
+files.on('splice', function (e) {
+  var removedCurrent = false
+  var current = sessions.current
+
+  e.detail.removed.forEach(function (file) {
+    var session = sessions.find(file)
+    if (session) {
+      sessions.remove(session)
+      if (session === current) {
+        removedCurrent = true
+      }
+    }
+  })
+
+  if (removedCurrent) {
+    sessions.current = sessions.items[0]
+  }
+})
+
+module.exports = sessions
+
+},{"./ace/session":3,"./file-service":38,"./fso":43,"./prop":50,"./util":65,"supermodels.js":177}],58:[function(require,module,exports){
 var path = require('path')
 var supermodels = require('supermodels.js')
 var recent = require('../recent')
+var sessions = require('../sessions')
+var editor = require('../ace/editor')
 var files = window.UCO.files
 
 function findFile (relativePath) {
@@ -3842,12 +4065,66 @@ function getLinks () {
   return links
 }
 
+function close (e, item) {
+  e.stopPropagation()
+  var session = item.getSession()
+  if (!session) {
+    recent.remove(item.ref)
+  } else {
+    var file = session.file
+    var dirty = item.isDirty()
+
+    if (dirty) {
+      if (window.confirm('There are unsaved changes to ' +
+        file.name + '. Save changes?')) {
+        session.save(function (err, data) {
+          if (!err) {
+            recent.remove(file.getRelativePath())
+            sessions.remove(session)
+          }
+        })
+      }
+    } else {
+      recent.remove(file.getRelativePath())
+      sessions.remove(session)
+    }
+  }
+}
+
+function save (e, item) {
+  e.stopPropagation()
+  item.getSession().save()
+  editor.focus()
+}
+
+function closeAll (e) {
+  e.stopPropagation()
+
+  var dirty = recent.dirty()
+  if (dirty.length && window.confirm('There are unsaved changes to ' +
+    dirty.length + ' file' + (dirty.length > 1 ? 's' : '') + '. Save changes?')) {
+    sessions.saveAll()
+  }
+  recent.clear()
+  sessions.clear()
+}
+
+function saveAll (e) {
+  e.stopPropagation()
+  sessions.saveAll()
+  editor.focus()
+}
+
 var schema = {
   name: String,
   recent: Object,
   query: String,
   getLinks: getLinks,
-  searchFiles: searchFiles
+  searchFiles: searchFiles,
+  close: close,
+  save: save,
+  closeAll: closeAll,
+  saveAll: saveAll
 }
 
 var Controller = supermodels(schema)
@@ -3859,13 +4136,14 @@ var ctrl = new Controller({
 
 module.exports = ctrl
 
-},{"../recent":49,"path":66,"supermodels.js":174}],56:[function(require,module,exports){
+},{"../ace/editor":1,"../recent":51,"../sessions":57,"path":69,"supermodels.js":177}],59:[function(require,module,exports){
 var ctrl = require('./controller')
 var view = require('./view.html')
 var patch = require('../patch')
+var sessions = require('../sessions')
 var files = window.UCO.files
 
-var Fs = document.registerElement(
+var Sidebar = document.registerElement(
   'vsd-sidebar',
   {
     prototype: Object.create(
@@ -3882,6 +4160,7 @@ var Fs = document.registerElement(
             }.bind(this)
 
             files.on('change', update)
+            sessions.on('change', update)
             ctrl.on('change', update)
             ctrl.recent.on('change', update)
 
@@ -3892,9 +4171,9 @@ var Fs = document.registerElement(
   }
 )
 
-module.exports = Fs
+module.exports = Sidebar
 
-},{"../patch":47,"./controller":55,"./view.html":57}],57:[function(require,module,exports){
+},{"../patch":49,"../sessions":57,"./controller":58,"./view.html":60}],60:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -3914,51 +4193,58 @@ var hoisted8 = ["class", "fa fa-search"]
 var hoisted9 = ["class", "sidebar-menu"]
 var hoisted10 = ["class", "file"]
 var hoisted11 = ["class", "header", "style", "text-transform: uppercase;"]
-var hoisted12 = ["class", "treeview active"]
+var hoisted12 = ["class", "treeview active open-editors"]
 var hoisted13 = ["href", "#"]
 var hoisted14 = ["class", "fa fa-dashboard"]
-var hoisted15 = ["class", "pull-right-container"]
-var hoisted16 = ["class", "fa fa-angle-left pull-right"]
-var hoisted17 = ["class", "treeview-menu menu-open"]
-var hoisted18 = ["class", "fa fa-file-o hide"]
-var hoisted19 = ["class", "pull-right-container"]
-var hoisted20 = ["class", "fa fa-angle-left pull-right"]
-var hoisted21 = ["class", "treeview-menu"]
-var hoisted22 = ["class", "file"]
-var hoisted23 = ["class", "fa fa-circle-o"]
-var hoisted24 = ["class", "file"]
+var hoisted15 = ["class", "clear-all"]
+var hoisted16 = ["class", "save-all"]
+var hoisted17 = ["class", "fa fa-save"]
+var hoisted18 = ["class", "pull-right-container"]
+var hoisted19 = ["class", "fa fa-angle-left pull-right"]
+var hoisted20 = ["class", "treeview-menu menu-open"]
+var hoisted21 = ["class", "file"]
+var hoisted22 = ["class", "fa fa-file-o hide"]
+var hoisted23 = ["class", "text-danger"]
+var hoisted24 = ["class", "pull-right-container"]
+var hoisted25 = ["class", "clear"]
+var hoisted26 = ["class", "pull-right-container"]
+var hoisted27 = ["class", "fa fa-angle-left pull-right"]
+var hoisted28 = ["class", "treeview-menu"]
+var hoisted29 = ["class", "file"]
+var hoisted30 = ["class", "fa fa-circle-o"]
+var hoisted31 = ["class", "file"]
 var __target
 
 module.exports = function description (ctrl) {
-  elementOpen("aside", "d269eb66-88d3-4905-a04e-018aa0c0310f", hoisted1)
-    elementOpen("section", "a5c2adf1-2e4e-44a5-be5c-4526463b79d0", hoisted2)
-      elementOpen("form", "f382bc2f-4a4e-4c4b-8dc3-e78391ea63ab", hoisted3, "onsubmit", function ($event) {
+  elementOpen("aside", "fed1516b-afe8-4486-bb4d-e40d14edad8f", hoisted1)
+    elementOpen("section", "90c00f21-119b-4285-a906-8ad27a0cd9e5", hoisted2)
+      elementOpen("form", "80faee91-6c9f-4370-aa62-43a368ef1251", hoisted3, "onsubmit", function ($event) {
         var $element = this;
       ctrl.query = this.q.value})
-        elementOpen("div", "dee7af2f-72f6-4bf2-b045-455e22e13ee4", hoisted4)
-          elementOpen("input", "c9ae6a0b-ef57-441b-bb5c-d3aef62ab04e", hoisted5, "onkeyup", function ($event) {
+        elementOpen("div", "28057416-7ced-4fc4-981a-ec6175e7070d", hoisted4)
+          elementOpen("input", "980008f7-79fa-4c3b-8e5d-ea900b3994d8", hoisted5, "onkeyup", function ($event) {
             var $element = this;
           ctrl.query = this.value})
           elementClose("input")
-          elementOpen("span", "008401bd-581d-4dd4-96e6-380128c5ea70", hoisted6)
-            elementOpen("button", "931f9cba-2ee6-4d6c-9a9c-306e974445c0", hoisted7)
-              elementOpen("i", "2320b859-a0d7-4802-b943-5592e7a998dd", hoisted8)
+          elementOpen("span", "1e92dc93-19ff-4360-b0a6-078e1130f136", hoisted6)
+            elementOpen("button", "8b4f8d32-8120-488c-a1e6-6d086b8f739d", hoisted7)
+              elementOpen("i", "7c0bae8f-4550-488f-8548-1c87e1edb081", hoisted8)
               elementClose("i")
             elementClose("button")
           elementClose("span")
         elementClose("div")
       elementClose("form")
-      elementOpen("ul", "694c6659-e4cb-4c5d-9479-5c05efd34ff5", hoisted9)
+      elementOpen("ul", "8401a6e0-236d-4918-9001-6e47f90b2ee2", hoisted9)
         if (ctrl.query) {
           var results = ctrl.searchFiles()
           __target = results
           if (__target) {
             ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
               var result = $value
-              var $key = "ab40436e-b91d-4d4a-a1fc-c0957d064e63_" + $item
+              var $key = "f5278db5-0259-4e62-83de-3dc178909812_" + $item
               elementOpen("li", $key)
                 var relativePath = result.getRelativePath()
-                elementOpen("a", "a51b0e9c-680b-476c-818b-242782db9116_" + $key, hoisted10, "href", "#" + (relativePath) + "")
+                elementOpen("a", "819d209b-8028-48a0-9512-96939159b88b_" + $key, hoisted10, "href", "#" + (relativePath) + "")
                   elementOpen("span")
                     text("" + (relativePath) + "")
                   elementClose("span")
@@ -3967,32 +4253,70 @@ module.exports = function description (ctrl) {
             }, this)
           }
         }
-        elementOpen("li", "32c17fed-642e-4ed2-b666-985d397eca4e", hoisted11)
+        elementOpen("li", "b37b7ab7-5353-4ff5-9112-f17b4295f5da", hoisted11)
           text("" + (ctrl.name) + "")
         elementClose("li")
-        elementOpen("li", "f431aa22-d38a-4a62-9f52-64265191af52", hoisted12)
-          elementOpen("a", "4f5a6c1a-52db-4f05-816a-4b9fc67abe21", hoisted13)
-            elementOpen("i", "a2bb2b68-10f8-4767-aa98-2edba66e560a", hoisted14)
+        elementOpen("li", "8e4bfa19-ffad-49c7-86f1-201c80137ca7", hoisted12)
+          var recent = ctrl.recent
+                      var items = recent.items
+                      var dirty = recent.dirty()
+          elementOpen("a", "6b706f94-b6ca-4db2-9220-6b1b5fa7d6fb", hoisted13)
+            elementOpen("i", "98bb855e-6bd4-458f-826f-9c8fcda28a86", hoisted14)
             elementClose("i")
             elementOpen("span")
-              text("Open editors")
+              text(" \
+                            Open editors \
+                            ")
+              if (items.length) {
+                elementOpen("a", "d849b098-633c-402a-a2df-1c52278ad34b", hoisted15, "onclick", function ($event) {
+                  var $element = this;
+                ctrl.closeAll($event)})
+                  elementOpen("small")
+                    text("×")
+                  elementClose("small")
+                elementClose("a")
+              }
+              if (dirty.length) {
+                elementOpen("a", "4e3c08dc-76c0-42b1-bb1f-e7b9172080a3", hoisted16, "onclick", function ($event) {
+                  var $element = this;
+                ctrl.saveAll($event)})
+                  elementOpen("small", "575d80a2-32a6-4cd7-a2d1-67264bf2c6b7", hoisted17)
+                  elementClose("small")
+                elementClose("a")
+              }
             elementClose("span")
-            elementOpen("span", "bb9c6cec-7b85-4018-9240-b2bc59cc3c88", hoisted15)
-              elementOpen("i", "e5330f78-cc58-43b7-a0c5-d0a67b227a0c", hoisted16)
+            elementOpen("span", "8b983e3b-7c79-474b-809a-e7c58b86a9a0", hoisted18)
+              elementOpen("i", "3a3a465d-795c-4406-81e8-5406ef5f7938", hoisted19)
               elementClose("i")
             elementClose("span")
           elementClose("a")
-          elementOpen("ul", "dc260189-3ff4-4172-ac9a-4ac53b2ac145", hoisted17)
+          elementOpen("ul", "1572a615-2383-473d-8d5b-35f9b4c8a600", hoisted20)
             __target = ctrl.recent.items
             if (__target) {
               ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
                 var item = $value
-                var $key = "16200fd1-fe5f-40e4-986d-5ab6ade1d473_" + item.ref
-                elementOpen("li", $key)
-                  elementOpen("a", null, null, "href", "#" + (item.ref) + "")
-                    elementOpen("i", "64253d3e-ddd2-4086-ac6f-1f00d3a02631_" + $key, hoisted18)
+                var $key = "0be4bdb2-3852-43c5-8a8d-32705764275f_" + item.ref
+                elementOpen("li", $key, null, "class", item.isCurrent() ? 'active' : '')
+                  elementOpen("a", "84b8ab14-49aa-4c30-861b-844597e237fa_" + $key, hoisted21, "href", "#" + (item.ref) + "")
+                    elementOpen("i", "d26f32a1-afa6-437a-af7b-7d4b5d81c6a3_" + $key, hoisted22)
                     elementClose("i")
-                    text(" " + (item.getDisplayName()) + "")
+                    text(" \
+                                    " + (item.getDisplayName()) + " \
+                                    ")
+                    if (item.isDirty()) {
+                      elementOpen("span", "1609cd4d-e433-4442-9a6c-51363b7a71fd_" + $key, hoisted23)
+                        text("*")
+                      elementClose("span")
+                    }
+                    elementOpen("span", "447113b3-8af9-4a48-b9bb-fb38ad0758e0_" + $key, hoisted24)
+                      elementOpen("a", "c1be3190-5ab7-4b0b-8f8b-02a45a2b1491_" + $key, hoisted25, "onclick", function ($event) {
+                        var $element = this;
+                      ctrl.close($event, item)})
+                        elementOpen("small")
+                          text("×")
+                        elementClose("small")
+                      elementClose("a")
+                    elementClose("span")
                   elementClose("a")
                 elementClose("li")
               }, this)
@@ -4003,7 +4327,7 @@ module.exports = function description (ctrl) {
         if (__target) {
           ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
             var link = $value
-            var $key = "2a09fdbd-cb5d-4ef6-84a3-5aa9aa8ec554_" + $item
+            var $key = "31c4b197-b760-4619-9933-1e1da14c21df_" + $item
             elementOpen("li", $key, null, "class", link.children ? 'treeview' : '')
               if (link.children) {
                 elementOpen("a")
@@ -4012,20 +4336,20 @@ module.exports = function description (ctrl) {
                   elementOpen("span")
                     text("" + (link.text) + "")
                   elementClose("span")
-                  elementOpen("span", "49c1b3e0-e314-4d69-bba5-6a649468c801_" + $key, hoisted19)
-                    elementOpen("i", "704991ae-cc2e-460e-97a4-883709c92956_" + $key, hoisted20)
+                  elementOpen("span", "4344d462-6568-4895-84ab-07e2f0081368_" + $key, hoisted26)
+                    elementOpen("i", "36ed6306-efad-4e5d-934c-e2e5e3d9a060_" + $key, hoisted27)
                     elementClose("i")
                   elementClose("span")
                 elementClose("a")
-                elementOpen("ul", "1d1e103d-bfff-4b03-95ac-bf76a400f920_" + $key, hoisted21)
+                elementOpen("ul", "cb8cfd62-c511-4124-bed4-a3366e67d36f_" + $key, hoisted28)
                   __target = link.children
                   if (__target) {
                     ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
                       var child = $value
-                      var $key = "eb6cb6b4-9906-443b-a595-d7c7a957ca90_" + child.href
+                      var $key = "00e34ded-ecbd-4086-b940-ed2ed1bbf348_" + child.href
                       elementOpen("li", $key)
-                        elementOpen("a", "454b2c13-27d7-47a9-90c7-e1aad89c695b_" + $key, hoisted22, "href", child.href)
-                          elementOpen("i", "c07529a2-2539-4834-a638-30de5fbec439_" + $key, hoisted23)
+                        elementOpen("a", "61edbf1a-2f87-4214-93b2-a59c2d764b18_" + $key, hoisted29, "href", child.href)
+                          elementOpen("i", "7cca74ab-825c-4351-a9c9-c449611e2a64_" + $key, hoisted30)
                           elementClose("i")
                           text(" " + (child.text) + "")
                         elementClose("a")
@@ -4034,7 +4358,7 @@ module.exports = function description (ctrl) {
                   }
                 elementClose("ul")
               } else {
-                elementOpen("a", "b3b1939e-f851-482e-9c20-3ec95d35ccb0_" + $key, hoisted24, "href", link.href)
+                elementOpen("a", "fc63a2ff-5abd-4d96-8824-a4861f1f6338_" + $key, hoisted31, "href", link.href)
                   elementOpen("i", null, null, "class", "fa fa-" + (link.icon) + "")
                   elementClose("i")
                   elementOpen("span")
@@ -4050,7 +4374,7 @@ module.exports = function description (ctrl) {
   elementClose("aside")
 }
 
-},{"incremental-dom":170}],58:[function(require,module,exports){
+},{"incremental-dom":173}],61:[function(require,module,exports){
 var Model = require('./model')
 var view = require('./view.html')
 var patch = require('../patch')
@@ -4090,7 +4414,7 @@ var Tree = document.registerElement(
 
 module.exports = Tree
 
-},{"../patch":47,"./model":59,"./view.html":61}],59:[function(require,module,exports){
+},{"../patch":49,"./model":62,"./view.html":64}],62:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var File = require('../fso')
 var Files = require('../files')
@@ -4141,7 +4465,7 @@ var Model = supermodels(model)
 
 module.exports = Model
 
-},{"../file-menu":34,"../files":40,"../fso":41,"./treeify":60,"supermodels.js":174}],60:[function(require,module,exports){
+},{"../file-menu":36,"../files":42,"../fso":43,"./treeify":63,"supermodels.js":177}],63:[function(require,module,exports){
 function makeTree (files) {
   function treeify (list, idAttr, parentAttr, childrenAttr) {
     var treeList = []
@@ -4180,7 +4504,7 @@ function makeTree (files) {
 
 module.exports = makeTree
 
-},{}],61:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -4227,17 +4551,17 @@ module.exports = function tree (model, data, root) {
     if (__target) {
       ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
         var node = $value
-        var $key = "7353fbde-5fc4-4ece-a408-0b31df1636fa_" + node.path
+        var $key = "982e9619-cd12-46d9-a56f-e521993f5dae_" + node.path
         elementOpen("li", $key, null, "oncontextmenu", function ($event) {
           var $element = this;
         model.onRightClick($event, node)}, "title", node.fso.getRelativePath(), "class", node.fso.isDirectory ? 'dir' : 'file' + (node.fso === current ? ' selected' : ''))
           var fso = node.fso
                   var isExpanded = model.isExpanded(fso)
           if (!fso.isDirectory) {
-            elementOpen("a", "b4af8f45-2765-4aea-8547-1458b313709d_" + $key, hoisted1, "href", "#" + (fso.getRelativePath()) + "")
-              elementOpen("span", "9cd74493-08d7-4ffd-b2f4-50d51b5cb920_" + $key, hoisted2, "data-name", fso.name)
+            elementOpen("a", "af4b8511-d619-4e13-a713-7a64c4529073_" + $key, hoisted1, "href", "#" + (fso.getRelativePath()) + "")
+              elementOpen("span", "ef4799ab-a8a7-4cbc-9878-14800d02d0e5_" + $key, hoisted2, "data-name", fso.name)
               elementClose("span")
-              elementOpen("span", "131af980-c1dd-4bdb-aeb9-998fa15214e4_" + $key, hoisted3)
+              elementOpen("span", "bebd709c-233a-458e-8247-d37b3cae7006_" + $key, hoisted3)
                 text("" + (fso.name) + "")
               elementClose("span")
             elementClose("a")
@@ -4247,26 +4571,26 @@ module.exports = function tree (model, data, root) {
               var $element = this;
             model.onClick(fso)})
               if (isExpanded) {
-                elementOpen("small", "5a5589b7-7753-46e3-851e-25692beff4d6_" + $key, hoisted4)
-                  elementOpen("i", "09a825c3-5004-4820-8b0a-d39604210f7f_" + $key, hoisted5)
+                elementOpen("small", "16cd3dd7-6a27-4186-be29-d66a77fd9047_" + $key, hoisted4)
+                  elementOpen("i", "8da51e62-7ee4-4783-98fd-522ea1dec64b_" + $key, hoisted5)
                   elementClose("i")
                 elementClose("small")
               }
               if (!isExpanded) {
-                elementOpen("small", "14586afd-dac6-4aca-ab1d-d0eaab47d156_" + $key, hoisted6)
-                  elementOpen("i", "a572a0f8-a398-4b22-a853-8e66e2037d6e_" + $key, hoisted7)
+                elementOpen("small", "cdd65391-2279-4b6d-b192-3b2488b2d361_" + $key, hoisted6)
+                  elementOpen("i", "87d96be5-8a66-421d-b7dc-2ba087a6bf33_" + $key, hoisted7)
                   elementClose("i")
                 elementClose("small")
               }
-              elementOpen("span", "96450cf5-5a68-4fdf-bef5-aa6b068e8c9b_" + $key, hoisted8, "data-name", fso.name)
+              elementOpen("span", "f28404a7-3395-4ca4-98d0-d5b292122448_" + $key, hoisted8, "data-name", fso.name)
               elementClose("span")
-              elementOpen("span", "df952642-6a74-4901-98bc-dbc129e5f975_" + $key, hoisted9)
+              elementOpen("span", "956e09bb-6277-455a-bd1a-d030352cedfb_" + $key, hoisted9)
                 text("" + (fso.name) + "")
               elementClose("span")
             elementClose("a")
           }
           if (!fso.isDirectory && fso === current) {
-            elementOpen("span", "b2b5416b-8a6d-493e-9fcf-8a609b737dc3_" + $key, hoisted10)
+            elementOpen("span", "f37ab219-f382-4a35-902a-9ddd96efbf80_" + $key, hoisted10)
             elementClose("span")
           }
           if (fso.isDirectory && isExpanded) {
@@ -4278,7 +4602,7 @@ module.exports = function tree (model, data, root) {
   elementClose("ul")
 }
 
-},{"incremental-dom":170}],62:[function(require,module,exports){
+},{"incremental-dom":173}],65:[function(require,module,exports){
 var notify = document.querySelector('vsd-notify')
 
 function handleError (err) {
@@ -4297,7 +4621,7 @@ module.exports = {
   handleError: handleError
 }
 
-},{}],63:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 var util = require('./util')
 
 // Nes websocket file watcher service
@@ -4380,81 +4704,118 @@ var service = new Service(client, {
 
 module.exports = service
 
-},{"./client":5,"./util":62}],64:[function(require,module,exports){
+},{"./client":7,"./util":65}],67:[function(require,module,exports){
 /* global $ */
 var path = require('path')
 var recent = require('./recent')
+var sessions = require('./sessions')
+var editor = require('./ace/editor')
 var util = require('./util')
 var files = window.UCO.files
 
 $(function () {
   var $workspace = $('section.content')
 
-  function loadFile () {
-    var target = window.location.hash.slice(1)
-
+  $(document.body).on('click', 'a.file', function (e) {
+    e.preventDefault()
+    var target = this.hash.slice(1)
     if (!target) {
       return
     }
 
     var absolutePath = path.resolve(window.UCO.path, target)
-    var relativePath = path.relative(window.UCO.path, absolutePath)
 
     var file = files.find(function (item) {
       return item.isFile && item.path === absolutePath
     })
 
     if (!file) {
-      return util.info('File [' + relativePath + '] not found',
-        'File not found')
+      return
     }
 
-    var el = document.getElementById(relativePath)
-
-    if (!el) {
-      el = $('<vsd-file id="' + relativePath + '">').attr('src', absolutePath).get(0)
-      $workspace.prepend(el)
-      recent.insert(relativePath)
+    var session = sessions.find(file)
+    if (session) {
+      sessions.current = session
+    } else {
+      sessions.add(file)
     }
 
-    el.scrollIntoView()
-    window.scrollBy(0, -60)
-    setTimeout(function () {
-      el.focus()
-    }, 200)
-  }
-
-  $(window).on('hashchange', function (e) {
-    e.preventDefault()
-    loadFile()
+    recent.insert(file.getRelativePath())
+    // loadFile()
   })
 
-  if (window.location.hash) {
-    loadFile()
-  }
-
-  files.on('splice', function (e) {
-    var removedCurrent = false
-    var current = window.location.hash.slice(1)
-    e.detail.removed.forEach(function (item) {
-      var relativePath = item.getRelativePath()
-      var el = document.getElementById(relativePath)
-      if (el) {
-        $(el).remove()
+  editor.commands.addCommands([{
+    name: 'save',
+    bindKey: {
+      win: 'Ctrl-S',
+      mac: 'Command-S'
+    },
+    exec: function (editor) {
+      var current = sessions.current
+      if (current && current.isDirty) {
+        current.save(function (err, result) {
+          if (!err) {
+            current.manager.markClean()
+          }
+        })
       }
+    },
+    readOnly: false
+  }, {
+    name: 'saveall',
+    bindKey: {
+      win: 'Ctrl-Shift-S',
+      mac: 'Command-Option-S'
+    },
+    exec: function (editor) {
+      sessions.saveAll()
+    },
+    readOnly: false
+  }])
 
-      if (relativePath === current) {
-        removedCurrent = true
+  // When the current session changes, update the editor
+  sessions.on('change', function (e) {
+    if (e.path === 'current') {
+      var current = e.detail.newValue
+      if (current) {
+        editor.setSession(current.manager.editSession)
+        editor.focus()
       }
-    })
+    }
 
-    if (removedCurrent) {
-      window.history.back()
+    if (sessions.current) {
+      editor.container.classList.remove('hide')
+    } else {
+      editor.container.classList.add('hide')
     }
   })
+
+  // if (window.location.hash) {
+  //   loadFile()
+  // }
+
+  // files.on('splice', function (e) {
+  //   var removedCurrent = false
+  //   var current = window.location.hash.slice(1)
+  //   e.detail.removed.forEach(function (item) {
+  //     var relativePath = item.getRelativePath()
+  //     var el = document.getElementById(relativePath)
+  //     if (el) {
+  //       $(el).remove()
+  //     }
+
+  //     if (relativePath === current) {
+  //       removedCurrent = true
+  //     }
+  //   })
+
+  //   if (removedCurrent) {
+  //     window.history.back()
+  //   }
+  // })
 })
 
-},{"./recent":49,"./util":62,"path":66}],65:[function(require,module,exports){
+},{"./ace/editor":1,"./recent":51,"./sessions":57,"./util":65,"path":69}],68:[function(require,module,exports){
 // var path = require('path')
 // var argv = require('./argv')
 
@@ -4464,7 +4825,7 @@ var config = {
     fontSize: 12,
     // theme: 'monokai',
     useSoftTabs: true,
-    maxLines: 100
+    maxLines: 300
   }
 }
 
@@ -4474,7 +4835,7 @@ var config = {
 
 module.exports = config
 
-},{}],66:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4703,7 +5064,7 @@ var substr = 'ab'.substr(-1) === 'b'
 
 }).call(this,require('_process'))
 
-},{"_process":67}],67:[function(require,module,exports){
+},{"_process":70}],70:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -4885,7 +5246,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],68:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 /**
  * @license
  * Copyright (c) 2012-2013 Chris Pettitt
@@ -4917,7 +5278,7 @@ module.exports =  {
   version: require("./lib/version")
 };
 
-},{"./lib/dagre":75,"./lib/graphlib":76,"./lib/intersect":77,"./lib/render":92,"./lib/util":94,"./lib/version":95}],69:[function(require,module,exports){
+},{"./lib/dagre":78,"./lib/graphlib":79,"./lib/intersect":80,"./lib/render":95,"./lib/util":97,"./lib/version":98}],72:[function(require,module,exports){
 var util = require("./util");
 
 module.exports = {
@@ -4990,7 +5351,7 @@ function undirected(parent, id, edge, type) {
   }
 }
 
-},{"./util":94}],70:[function(require,module,exports){
+},{"./util":97}],73:[function(require,module,exports){
 var util = require("./util"),
     addLabel = require("./label/add-label");
 
@@ -5035,7 +5396,7 @@ function createClusters(selection, g) {
   return svgClusters;
 }
 
-},{"./label/add-label":85,"./util":94}],71:[function(require,module,exports){
+},{"./label/add-label":88,"./util":97}],74:[function(require,module,exports){
 "use strict";
 
 var _ = require("./lodash"),
@@ -5072,7 +5433,7 @@ function createEdgeLabels(selection, g) {
   return svgEdgeLabels;
 }
 
-},{"./d3":74,"./label/add-label":85,"./lodash":88,"./util":94}],72:[function(require,module,exports){
+},{"./d3":77,"./label/add-label":88,"./lodash":91,"./util":97}],75:[function(require,module,exports){
 "use strict";
 
 var _ = require("./lodash"),
@@ -5210,7 +5571,7 @@ function exit(svgPaths, g) {
     });
 }
 
-},{"./d3":74,"./intersect/intersect-node":81,"./lodash":88,"./util":94}],73:[function(require,module,exports){
+},{"./d3":77,"./intersect/intersect-node":84,"./lodash":91,"./util":97}],76:[function(require,module,exports){
 "use strict";
 
 var _ = require("./lodash"),
@@ -5270,11 +5631,11 @@ function createNodes(selection, g, shapes) {
   return svgNodes;
 }
 
-},{"./d3":74,"./label/add-label":85,"./lodash":88,"./util":94}],74:[function(require,module,exports){
+},{"./d3":77,"./label/add-label":88,"./lodash":91,"./util":97}],77:[function(require,module,exports){
 // Stub to get D3 either via NPM or from the global object
 module.exports = window.d3;
 
-},{}],75:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 /* global window */
 
 var dagre;
@@ -5291,7 +5652,7 @@ if (!dagre) {
 
 module.exports = dagre;
 
-},{"dagre":117}],76:[function(require,module,exports){
+},{"dagre":120}],79:[function(require,module,exports){
 /* global window */
 
 var graphlib;
@@ -5308,7 +5669,7 @@ if (!graphlib) {
 
 module.exports = graphlib;
 
-},{"graphlib":96}],77:[function(require,module,exports){
+},{"graphlib":99}],80:[function(require,module,exports){
 module.exports = {
   node: require("./intersect-node"),
   circle: require("./intersect-circle"),
@@ -5317,7 +5678,7 @@ module.exports = {
   rect: require("./intersect-rect")
 };
 
-},{"./intersect-circle":78,"./intersect-ellipse":79,"./intersect-node":81,"./intersect-polygon":82,"./intersect-rect":83}],78:[function(require,module,exports){
+},{"./intersect-circle":81,"./intersect-ellipse":82,"./intersect-node":84,"./intersect-polygon":85,"./intersect-rect":86}],81:[function(require,module,exports){
 var intersectEllipse = require("./intersect-ellipse");
 
 module.exports = intersectCircle;
@@ -5326,7 +5687,7 @@ function intersectCircle(node, rx, point) {
   return intersectEllipse(node, rx, rx, point);
 }
 
-},{"./intersect-ellipse":79}],79:[function(require,module,exports){
+},{"./intersect-ellipse":82}],82:[function(require,module,exports){
 module.exports = intersectEllipse;
 
 function intersectEllipse(node, rx, ry, point) {
@@ -5353,7 +5714,7 @@ function intersectEllipse(node, rx, ry, point) {
 }
 
 
-},{}],80:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 module.exports = intersectLine;
 
 /*
@@ -5425,14 +5786,14 @@ function sameSign(r1, r2) {
   return r1 * r2 > 0;
 }
 
-},{}],81:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 module.exports = intersectNode;
 
 function intersectNode(node, point) {
   return node.intersect(point);
 }
 
-},{}],82:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 var intersectLine = require("./intersect-line");
 
 module.exports = intersectPolygon;
@@ -5489,7 +5850,7 @@ function intersectPolygon(node, polyPoints, point) {
   return intersections[0];
 }
 
-},{"./intersect-line":80}],83:[function(require,module,exports){
+},{"./intersect-line":83}],86:[function(require,module,exports){
 module.exports = intersectRect;
 
 function intersectRect(node, point) {
@@ -5523,7 +5884,7 @@ function intersectRect(node, point) {
   return {x: x + sx, y: y + sy};
 }
 
-},{}],84:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 var util = require("../util");
 
 module.exports = addHtmlLabel;
@@ -5562,7 +5923,7 @@ function addHtmlLabel(root, node) {
   return fo;
 }
 
-},{"../util":94}],85:[function(require,module,exports){
+},{"../util":97}],88:[function(require,module,exports){
 var addTextLabel = require("./add-text-label"),
     addHtmlLabel = require("./add-html-label"),
     addSVGLabel  = require("./add-svg-label");
@@ -5601,7 +5962,7 @@ function addLabel(root, node, location) {
   return labelSvg;
 }
 
-},{"./add-html-label":84,"./add-svg-label":86,"./add-text-label":87}],86:[function(require,module,exports){
+},{"./add-html-label":87,"./add-svg-label":89,"./add-text-label":90}],89:[function(require,module,exports){
 var util = require("../util");
 
 module.exports = addSVGLabel;
@@ -5616,7 +5977,7 @@ function addSVGLabel(root, node) {
   return domNode;
 }
 
-},{"../util":94}],87:[function(require,module,exports){
+},{"../util":97}],90:[function(require,module,exports){
 var util = require("../util");
 
 module.exports = addTextLabel;
@@ -5663,7 +6024,7 @@ function processEscapeSequences(text) {
   return newText;
 }
 
-},{"../util":94}],88:[function(require,module,exports){
+},{"../util":97}],91:[function(require,module,exports){
 /* global window */
 
 var lodash;
@@ -5680,7 +6041,7 @@ if (!lodash) {
 
 module.exports = lodash;
 
-},{"lodash":116}],89:[function(require,module,exports){
+},{"lodash":119}],92:[function(require,module,exports){
 "use strict";
 
 var util = require("./util"),
@@ -5716,7 +6077,7 @@ function positionClusters(selection, g) {
 
 }
 
-},{"./d3":74,"./util":94}],90:[function(require,module,exports){
+},{"./d3":77,"./util":97}],93:[function(require,module,exports){
 "use strict";
 
 var util = require("./util"),
@@ -5740,7 +6101,7 @@ function positionEdgeLabels(selection, g) {
     .attr("transform", translate);
 }
 
-},{"./d3":74,"./lodash":88,"./util":94}],91:[function(require,module,exports){
+},{"./d3":77,"./lodash":91,"./util":97}],94:[function(require,module,exports){
 "use strict";
 
 var util = require("./util"),
@@ -5763,7 +6124,7 @@ function positionNodes(selection, g) {
     .attr("transform", translate);
 }
 
-},{"./d3":74,"./util":94}],92:[function(require,module,exports){
+},{"./d3":77,"./util":97}],95:[function(require,module,exports){
 var _ = require("./lodash"),
     layout = require("./dagre").layout;
 
@@ -5932,7 +6293,7 @@ function createOrSelectGroup(root, name) {
   return selection;
 }
 
-},{"./arrows":69,"./create-clusters":70,"./create-edge-labels":71,"./create-edge-paths":72,"./create-nodes":73,"./dagre":75,"./lodash":88,"./position-clusters":89,"./position-edge-labels":90,"./position-nodes":91,"./shapes":93}],93:[function(require,module,exports){
+},{"./arrows":72,"./create-clusters":73,"./create-edge-labels":74,"./create-edge-paths":75,"./create-nodes":76,"./dagre":78,"./lodash":91,"./position-clusters":92,"./position-edge-labels":93,"./position-nodes":94,"./shapes":96}],96:[function(require,module,exports){
 "use strict";
 
 var intersectRect = require("./intersect/intersect-rect"),
@@ -6015,7 +6376,7 @@ function diamond(parent, bbox, node) {
   return shapeSvg;
 }
 
-},{"./intersect/intersect-circle":78,"./intersect/intersect-ellipse":79,"./intersect/intersect-polygon":82,"./intersect/intersect-rect":83}],94:[function(require,module,exports){
+},{"./intersect/intersect-circle":81,"./intersect/intersect-ellipse":82,"./intersect/intersect-polygon":85,"./intersect/intersect-rect":86}],97:[function(require,module,exports){
 var _ = require("./lodash");
 
 // Public utility functions
@@ -6071,10 +6432,10 @@ function applyTransition(selection, g) {
   return selection;
 }
 
-},{"./lodash":88}],95:[function(require,module,exports){
+},{"./lodash":91}],98:[function(require,module,exports){
 module.exports = "0.4.17";
 
-},{}],96:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 /**
  * Copyright (c) 2014, Chris Pettitt
  * All rights reserved.
@@ -6114,7 +6475,7 @@ module.exports = {
   version: lib.version
 };
 
-},{"./lib":112,"./lib/alg":103,"./lib/json":113}],97:[function(require,module,exports){
+},{"./lib":115,"./lib/alg":106,"./lib/json":116}],100:[function(require,module,exports){
 var _ = require("../lodash");
 
 module.exports = components;
@@ -6143,7 +6504,7 @@ function components(g) {
   return cmpts;
 }
 
-},{"../lodash":114}],98:[function(require,module,exports){
+},{"../lodash":117}],101:[function(require,module,exports){
 var _ = require("../lodash");
 
 module.exports = dfs;
@@ -6184,7 +6545,7 @@ function doDfs(g, v, postorder, visited, acc) {
   }
 }
 
-},{"../lodash":114}],99:[function(require,module,exports){
+},{"../lodash":117}],102:[function(require,module,exports){
 var dijkstra = require("./dijkstra"),
     _ = require("../lodash");
 
@@ -6196,7 +6557,7 @@ function dijkstraAll(g, weightFunc, edgeFunc) {
   }, {});
 }
 
-},{"../lodash":114,"./dijkstra":100}],100:[function(require,module,exports){
+},{"../lodash":117,"./dijkstra":103}],103:[function(require,module,exports){
 var _ = require("../lodash"),
     PriorityQueue = require("../data/priority-queue");
 
@@ -6252,7 +6613,7 @@ function runDijkstra(g, source, weightFn, edgeFn) {
   return results;
 }
 
-},{"../data/priority-queue":110,"../lodash":114}],101:[function(require,module,exports){
+},{"../data/priority-queue":113,"../lodash":117}],104:[function(require,module,exports){
 var _ = require("../lodash"),
     tarjan = require("./tarjan");
 
@@ -6264,7 +6625,7 @@ function findCycles(g) {
   });
 }
 
-},{"../lodash":114,"./tarjan":108}],102:[function(require,module,exports){
+},{"../lodash":117,"./tarjan":111}],105:[function(require,module,exports){
 var _ = require("../lodash");
 
 module.exports = floydWarshall;
@@ -6316,7 +6677,7 @@ function runFloydWarshall(g, weightFn, edgeFn) {
   return results;
 }
 
-},{"../lodash":114}],103:[function(require,module,exports){
+},{"../lodash":117}],106:[function(require,module,exports){
 module.exports = {
   components: require("./components"),
   dijkstra: require("./dijkstra"),
@@ -6331,7 +6692,7 @@ module.exports = {
   topsort: require("./topsort")
 };
 
-},{"./components":97,"./dijkstra":100,"./dijkstra-all":99,"./find-cycles":101,"./floyd-warshall":102,"./is-acyclic":104,"./postorder":105,"./preorder":106,"./prim":107,"./tarjan":108,"./topsort":109}],104:[function(require,module,exports){
+},{"./components":100,"./dijkstra":103,"./dijkstra-all":102,"./find-cycles":104,"./floyd-warshall":105,"./is-acyclic":107,"./postorder":108,"./preorder":109,"./prim":110,"./tarjan":111,"./topsort":112}],107:[function(require,module,exports){
 var topsort = require("./topsort");
 
 module.exports = isAcyclic;
@@ -6348,7 +6709,7 @@ function isAcyclic(g) {
   return true;
 }
 
-},{"./topsort":109}],105:[function(require,module,exports){
+},{"./topsort":112}],108:[function(require,module,exports){
 var dfs = require("./dfs");
 
 module.exports = postorder;
@@ -6357,7 +6718,7 @@ function postorder(g, vs) {
   return dfs(g, vs, "post");
 }
 
-},{"./dfs":98}],106:[function(require,module,exports){
+},{"./dfs":101}],109:[function(require,module,exports){
 var dfs = require("./dfs");
 
 module.exports = preorder;
@@ -6366,7 +6727,7 @@ function preorder(g, vs) {
   return dfs(g, vs, "pre");
 }
 
-},{"./dfs":98}],107:[function(require,module,exports){
+},{"./dfs":101}],110:[function(require,module,exports){
 var _ = require("../lodash"),
     Graph = require("../graph"),
     PriorityQueue = require("../data/priority-queue");
@@ -6420,7 +6781,7 @@ function prim(g, weightFunc) {
   return result;
 }
 
-},{"../data/priority-queue":110,"../graph":111,"../lodash":114}],108:[function(require,module,exports){
+},{"../data/priority-queue":113,"../graph":114,"../lodash":117}],111:[function(require,module,exports){
 var _ = require("../lodash");
 
 module.exports = tarjan;
@@ -6469,7 +6830,7 @@ function tarjan(g) {
   return results;
 }
 
-},{"../lodash":114}],109:[function(require,module,exports){
+},{"../lodash":117}],112:[function(require,module,exports){
 var _ = require("../lodash");
 
 module.exports = topsort;
@@ -6505,7 +6866,7 @@ function topsort(g) {
 
 function CycleException() {}
 
-},{"../lodash":114}],110:[function(require,module,exports){
+},{"../lodash":117}],113:[function(require,module,exports){
 var _ = require("../lodash");
 
 module.exports = PriorityQueue;
@@ -6659,7 +7020,7 @@ PriorityQueue.prototype._swap = function(i, j) {
   keyIndices[origArrI.key] = j;
 };
 
-},{"../lodash":114}],111:[function(require,module,exports){
+},{"../lodash":117}],114:[function(require,module,exports){
 "use strict";
 
 var _ = require("./lodash");
@@ -7180,14 +7541,14 @@ function edgeObjToId(isDirected, edgeObj) {
   return edgeArgsToId(isDirected, edgeObj.v, edgeObj.w, edgeObj.name);
 }
 
-},{"./lodash":114}],112:[function(require,module,exports){
+},{"./lodash":117}],115:[function(require,module,exports){
 // Includes only the "core" of graphlib
 module.exports = {
   Graph: require("./graph"),
   version: require("./version")
 };
 
-},{"./graph":111,"./version":115}],113:[function(require,module,exports){
+},{"./graph":114,"./version":118}],116:[function(require,module,exports){
 var _ = require("./lodash"),
     Graph = require("./graph");
 
@@ -7255,7 +7616,7 @@ function read(json) {
   return g;
 }
 
-},{"./graph":111,"./lodash":114}],114:[function(require,module,exports){
+},{"./graph":114,"./lodash":117}],117:[function(require,module,exports){
 /* global window */
 
 var lodash;
@@ -7272,10 +7633,10 @@ if (!lodash) {
 
 module.exports = lodash;
 
-},{"lodash":116}],115:[function(require,module,exports){
+},{"lodash":119}],118:[function(require,module,exports){
 module.exports = '1.0.7';
 
-},{}],116:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -19631,7 +19992,7 @@ module.exports = '1.0.7';
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],117:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 /*
 Copyright (c) 2012-2014 Chris Pettitt
 
@@ -19666,7 +20027,7 @@ module.exports = {
   version: require("./lib/version")
 };
 
-},{"./lib/debug":122,"./lib/graphlib":123,"./lib/layout":125,"./lib/util":145,"./lib/version":146}],118:[function(require,module,exports){
+},{"./lib/debug":125,"./lib/graphlib":126,"./lib/layout":128,"./lib/util":148,"./lib/version":149}],121:[function(require,module,exports){
 "use strict";
 
 var _ = require("./lodash"),
@@ -19735,7 +20096,7 @@ function undo(g) {
   });
 }
 
-},{"./greedy-fas":124,"./lodash":126}],119:[function(require,module,exports){
+},{"./greedy-fas":127,"./lodash":129}],122:[function(require,module,exports){
 var _ = require("./lodash"),
     util = require("./util");
 
@@ -19775,7 +20136,7 @@ function addBorderNode(g, prop, prefix, sg, sgNode, rank) {
   }
 }
 
-},{"./lodash":126,"./util":145}],120:[function(require,module,exports){
+},{"./lodash":129,"./util":148}],123:[function(require,module,exports){
 "use strict";
 
 var _ = require("./lodash");
@@ -19849,7 +20210,7 @@ function swapXYOne(attrs) {
   attrs.y = x;
 }
 
-},{"./lodash":126}],121:[function(require,module,exports){
+},{"./lodash":129}],124:[function(require,module,exports){
 /*
  * Simple doubly linked list implementation derived from Cormen, et al.,
  * "Introduction to Algorithms".
@@ -19907,7 +20268,7 @@ function filterOutLinks(k, v) {
   }
 }
 
-},{}],122:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 var _ = require("./lodash"),
     util = require("./util"),
     Graph = require("./graphlib").Graph;
@@ -19943,7 +20304,7 @@ function debugOrdering(g) {
   return h;
 }
 
-},{"./graphlib":123,"./lodash":126,"./util":145}],123:[function(require,module,exports){
+},{"./graphlib":126,"./lodash":129,"./util":148}],126:[function(require,module,exports){
 /* global window */
 
 var graphlib;
@@ -19960,7 +20321,7 @@ if (!graphlib) {
 
 module.exports = graphlib;
 
-},{"graphlib":147}],124:[function(require,module,exports){
+},{"graphlib":150}],127:[function(require,module,exports){
 var _ = require("./lodash"),
     Graph = require("./graphlib").Graph,
     List = require("./data/list");
@@ -20080,7 +20441,7 @@ function assignBucket(buckets, zeroIdx, entry) {
   }
 }
 
-},{"./data/list":121,"./graphlib":123,"./lodash":126}],125:[function(require,module,exports){
+},{"./data/list":124,"./graphlib":126,"./lodash":129}],128:[function(require,module,exports){
 "use strict";
 
 var _ = require("./lodash"),
@@ -20474,9 +20835,9 @@ function canonicalize(attrs) {
   return newAttrs;
 }
 
-},{"./acyclic":118,"./add-border-segments":119,"./coordinate-system":120,"./graphlib":123,"./lodash":126,"./nesting-graph":127,"./normalize":128,"./order":133,"./parent-dummy-chains":138,"./position":140,"./rank":142,"./util":145}],126:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"dup":114,"lodash":167}],127:[function(require,module,exports){
+},{"./acyclic":121,"./add-border-segments":122,"./coordinate-system":123,"./graphlib":126,"./lodash":129,"./nesting-graph":130,"./normalize":131,"./order":136,"./parent-dummy-chains":141,"./position":143,"./rank":145,"./util":148}],129:[function(require,module,exports){
+arguments[4][117][0].apply(exports,arguments)
+},{"dup":117,"lodash":170}],130:[function(require,module,exports){
 var _ = require("./lodash"),
     util = require("./util");
 
@@ -20610,7 +20971,7 @@ function cleanup(g) {
   });
 }
 
-},{"./lodash":126,"./util":145}],128:[function(require,module,exports){
+},{"./lodash":129,"./util":148}],131:[function(require,module,exports){
 "use strict";
 
 var _ = require("./lodash"),
@@ -20702,7 +21063,7 @@ function undo(g) {
   });
 }
 
-},{"./lodash":126,"./util":145}],129:[function(require,module,exports){
+},{"./lodash":129,"./util":148}],132:[function(require,module,exports){
 var _ = require("../lodash");
 
 module.exports = addSubgraphConstraints;
@@ -20757,7 +21118,7 @@ function addSubgraphConstraints(g, cg, vs) {
   */
 }
 
-},{"../lodash":126}],130:[function(require,module,exports){
+},{"../lodash":129}],133:[function(require,module,exports){
 var _ = require("../lodash");
 
 module.exports = barycenter;
@@ -20787,7 +21148,7 @@ function barycenter(g, movable) {
 }
 
 
-},{"../lodash":126}],131:[function(require,module,exports){
+},{"../lodash":129}],134:[function(require,module,exports){
 var _ = require("../lodash"),
     Graph = require("../graphlib").Graph;
 
@@ -20862,7 +21223,7 @@ function createRootNode(g) {
   return v;
 }
 
-},{"../graphlib":123,"../lodash":126}],132:[function(require,module,exports){
+},{"../graphlib":126,"../lodash":129}],135:[function(require,module,exports){
 "use strict";
 
 var _ = require("../lodash");
@@ -20934,7 +21295,7 @@ function twoLayerCrossCount(g, northLayer, southLayer) {
   return cc;
 }
 
-},{"../lodash":126}],133:[function(require,module,exports){
+},{"../lodash":129}],136:[function(require,module,exports){
 "use strict";
 
 var _ = require("../lodash"),
@@ -21015,7 +21376,7 @@ function assignOrder(g, layering) {
   });
 }
 
-},{"../graphlib":123,"../lodash":126,"../util":145,"./add-subgraph-constraints":129,"./build-layer-graph":131,"./cross-count":132,"./init-order":134,"./sort-subgraph":136}],134:[function(require,module,exports){
+},{"../graphlib":126,"../lodash":129,"../util":148,"./add-subgraph-constraints":132,"./build-layer-graph":134,"./cross-count":135,"./init-order":137,"./sort-subgraph":139}],137:[function(require,module,exports){
 "use strict";
 
 var _ = require("../lodash");
@@ -21055,7 +21416,7 @@ function initOrder(g) {
   return layers;
 }
 
-},{"../lodash":126}],135:[function(require,module,exports){
+},{"../lodash":129}],138:[function(require,module,exports){
 "use strict";
 
 var _ = require("../lodash");
@@ -21180,7 +21541,7 @@ function mergeEntries(target, source) {
   source.merged = true;
 }
 
-},{"../lodash":126}],136:[function(require,module,exports){
+},{"../lodash":129}],139:[function(require,module,exports){
 var _ = require("../lodash"),
     barycenter = require("./barycenter"),
     resolveConflicts = require("./resolve-conflicts"),
@@ -21258,7 +21619,7 @@ function mergeBarycenters(target, other) {
   }
 }
 
-},{"../lodash":126,"./barycenter":130,"./resolve-conflicts":135,"./sort":137}],137:[function(require,module,exports){
+},{"../lodash":129,"./barycenter":133,"./resolve-conflicts":138,"./sort":140}],140:[function(require,module,exports){
 var _ = require("../lodash"),
     util = require("../util");
 
@@ -21317,7 +21678,7 @@ function compareWithBias(bias) {
   };
 }
 
-},{"../lodash":126,"../util":145}],138:[function(require,module,exports){
+},{"../lodash":129,"../util":148}],141:[function(require,module,exports){
 var _ = require("./lodash");
 
 module.exports = parentDummyChains;
@@ -21405,7 +21766,7 @@ function postorder(g) {
   return result;
 }
 
-},{"./lodash":126}],139:[function(require,module,exports){
+},{"./lodash":129}],142:[function(require,module,exports){
 "use strict";
 
 var _ = require("../lodash"),
@@ -21805,7 +22166,7 @@ function width(g, v) {
   return g.node(v).width;
 }
 
-},{"../graphlib":123,"../lodash":126,"../util":145}],140:[function(require,module,exports){
+},{"../graphlib":126,"../lodash":129,"../util":148}],143:[function(require,module,exports){
 "use strict";
 
 var _ = require("../lodash"),
@@ -21837,7 +22198,7 @@ function positionY(g) {
 }
 
 
-},{"../lodash":126,"../util":145,"./bk":139}],141:[function(require,module,exports){
+},{"../lodash":129,"../util":148,"./bk":142}],144:[function(require,module,exports){
 "use strict";
 
 var _ = require("../lodash"),
@@ -21928,7 +22289,7 @@ function shiftRanks(t, g, delta) {
   });
 }
 
-},{"../graphlib":123,"../lodash":126,"./util":144}],142:[function(require,module,exports){
+},{"../graphlib":126,"../lodash":129,"./util":147}],145:[function(require,module,exports){
 "use strict";
 
 var rankUtil = require("./util"),
@@ -21978,7 +22339,7 @@ function networkSimplexRanker(g) {
   networkSimplex(g);
 }
 
-},{"./feasible-tree":141,"./network-simplex":143,"./util":144}],143:[function(require,module,exports){
+},{"./feasible-tree":144,"./network-simplex":146,"./util":147}],146:[function(require,module,exports){
 "use strict";
 
 var _ = require("../lodash"),
@@ -22214,7 +22575,7 @@ function isDescendant(tree, vLabel, rootLabel) {
   return rootLabel.low <= vLabel.lim && vLabel.lim <= rootLabel.lim;
 }
 
-},{"../graphlib":123,"../lodash":126,"../util":145,"./feasible-tree":141,"./util":144}],144:[function(require,module,exports){
+},{"../graphlib":126,"../lodash":129,"../util":148,"./feasible-tree":144,"./util":147}],147:[function(require,module,exports){
 "use strict";
 
 var _ = require("../lodash");
@@ -22277,7 +22638,7 @@ function slack(g, e) {
   return g.node(e.w).rank - g.node(e.v).rank - g.edge(e).minlen;
 }
 
-},{"../lodash":126}],145:[function(require,module,exports){
+},{"../lodash":129}],148:[function(require,module,exports){
 "use strict";
 
 var _ = require("./lodash"),
@@ -22515,50 +22876,50 @@ function notime(name, fn) {
   return fn();
 }
 
-},{"./graphlib":123,"./lodash":126}],146:[function(require,module,exports){
+},{"./graphlib":126,"./lodash":129}],149:[function(require,module,exports){
 module.exports = "0.7.4";
 
-},{}],147:[function(require,module,exports){
-arguments[4][96][0].apply(exports,arguments)
-},{"./lib":163,"./lib/alg":154,"./lib/json":164,"dup":96}],148:[function(require,module,exports){
-arguments[4][97][0].apply(exports,arguments)
-},{"../lodash":165,"dup":97}],149:[function(require,module,exports){
-arguments[4][98][0].apply(exports,arguments)
-},{"../lodash":165,"dup":98}],150:[function(require,module,exports){
+},{}],150:[function(require,module,exports){
 arguments[4][99][0].apply(exports,arguments)
-},{"../lodash":165,"./dijkstra":151,"dup":99}],151:[function(require,module,exports){
+},{"./lib":166,"./lib/alg":157,"./lib/json":167,"dup":99}],151:[function(require,module,exports){
 arguments[4][100][0].apply(exports,arguments)
-},{"../data/priority-queue":161,"../lodash":165,"dup":100}],152:[function(require,module,exports){
+},{"../lodash":168,"dup":100}],152:[function(require,module,exports){
 arguments[4][101][0].apply(exports,arguments)
-},{"../lodash":165,"./tarjan":159,"dup":101}],153:[function(require,module,exports){
+},{"../lodash":168,"dup":101}],153:[function(require,module,exports){
 arguments[4][102][0].apply(exports,arguments)
-},{"../lodash":165,"dup":102}],154:[function(require,module,exports){
+},{"../lodash":168,"./dijkstra":154,"dup":102}],154:[function(require,module,exports){
 arguments[4][103][0].apply(exports,arguments)
-},{"./components":148,"./dijkstra":151,"./dijkstra-all":150,"./find-cycles":152,"./floyd-warshall":153,"./is-acyclic":155,"./postorder":156,"./preorder":157,"./prim":158,"./tarjan":159,"./topsort":160,"dup":103}],155:[function(require,module,exports){
+},{"../data/priority-queue":164,"../lodash":168,"dup":103}],155:[function(require,module,exports){
 arguments[4][104][0].apply(exports,arguments)
-},{"./topsort":160,"dup":104}],156:[function(require,module,exports){
+},{"../lodash":168,"./tarjan":162,"dup":104}],156:[function(require,module,exports){
 arguments[4][105][0].apply(exports,arguments)
-},{"./dfs":149,"dup":105}],157:[function(require,module,exports){
+},{"../lodash":168,"dup":105}],157:[function(require,module,exports){
 arguments[4][106][0].apply(exports,arguments)
-},{"./dfs":149,"dup":106}],158:[function(require,module,exports){
+},{"./components":151,"./dijkstra":154,"./dijkstra-all":153,"./find-cycles":155,"./floyd-warshall":156,"./is-acyclic":158,"./postorder":159,"./preorder":160,"./prim":161,"./tarjan":162,"./topsort":163,"dup":106}],158:[function(require,module,exports){
 arguments[4][107][0].apply(exports,arguments)
-},{"../data/priority-queue":161,"../graph":162,"../lodash":165,"dup":107}],159:[function(require,module,exports){
+},{"./topsort":163,"dup":107}],159:[function(require,module,exports){
 arguments[4][108][0].apply(exports,arguments)
-},{"../lodash":165,"dup":108}],160:[function(require,module,exports){
+},{"./dfs":152,"dup":108}],160:[function(require,module,exports){
 arguments[4][109][0].apply(exports,arguments)
-},{"../lodash":165,"dup":109}],161:[function(require,module,exports){
+},{"./dfs":152,"dup":109}],161:[function(require,module,exports){
 arguments[4][110][0].apply(exports,arguments)
-},{"../lodash":165,"dup":110}],162:[function(require,module,exports){
+},{"../data/priority-queue":164,"../graph":165,"../lodash":168,"dup":110}],162:[function(require,module,exports){
 arguments[4][111][0].apply(exports,arguments)
-},{"./lodash":165,"dup":111}],163:[function(require,module,exports){
+},{"../lodash":168,"dup":111}],163:[function(require,module,exports){
 arguments[4][112][0].apply(exports,arguments)
-},{"./graph":162,"./version":166,"dup":112}],164:[function(require,module,exports){
+},{"../lodash":168,"dup":112}],164:[function(require,module,exports){
 arguments[4][113][0].apply(exports,arguments)
-},{"./graph":162,"./lodash":165,"dup":113}],165:[function(require,module,exports){
+},{"../lodash":168,"dup":113}],165:[function(require,module,exports){
 arguments[4][114][0].apply(exports,arguments)
-},{"dup":114,"lodash":167}],166:[function(require,module,exports){
+},{"./lodash":168,"dup":114}],166:[function(require,module,exports){
 arguments[4][115][0].apply(exports,arguments)
-},{"dup":115}],167:[function(require,module,exports){
+},{"./graph":165,"./version":169,"dup":115}],167:[function(require,module,exports){
+arguments[4][116][0].apply(exports,arguments)
+},{"./graph":165,"./lodash":168,"dup":116}],168:[function(require,module,exports){
+arguments[4][117][0].apply(exports,arguments)
+},{"dup":117,"lodash":170}],169:[function(require,module,exports){
+arguments[4][118][0].apply(exports,arguments)
+},{"dup":118}],170:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -34914,10 +35275,10 @@ arguments[4][115][0].apply(exports,arguments)
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],168:[function(require,module,exports){
+},{}],171:[function(require,module,exports){
 /*! (C) WebReflection Mit Style License */
 (function(e,t,n,r){"use strict";function rt(e,t){for(var n=0,r=e.length;n<r;n++)vt(e[n],t)}function it(e){for(var t=0,n=e.length,r;t<n;t++)r=e[t],nt(r,b[ot(r)])}function st(e){return function(t){j(t)&&(vt(t,e),rt(t.querySelectorAll(w),e))}}function ot(e){var t=e.getAttribute("is"),n=e.nodeName.toUpperCase(),r=S.call(y,t?v+t.toUpperCase():d+n);return t&&-1<r&&!ut(n,t)?-1:r}function ut(e,t){return-1<w.indexOf(e+'[is="'+t+'"]')}function at(e){var t=e.currentTarget,n=e.attrChange,r=e.attrName,i=e.target;Q&&(!i||i===t)&&t.attributeChangedCallback&&r!=="style"&&e.prevValue!==e.newValue&&t.attributeChangedCallback(r,n===e[a]?null:e.prevValue,n===e[l]?null:e.newValue)}function ft(e){var t=st(e);return function(e){X.push(t,e.target)}}function lt(e){K&&(K=!1,e.currentTarget.removeEventListener(h,lt)),rt((e.target||t).querySelectorAll(w),e.detail===o?o:s),B&&pt()}function ct(e,t){var n=this;q.call(n,e,t),G.call(n,{target:n})}function ht(e,t){D(e,t),et?et.observe(e,z):(J&&(e.setAttribute=ct,e[i]=Z(e),e.addEventListener(p,G)),e.addEventListener(c,at)),e.createdCallback&&Q&&(e.created=!0,e.createdCallback(),e.created=!1)}function pt(){for(var e,t=0,n=F.length;t<n;t++)e=F[t],E.contains(e)||(n--,F.splice(t--,1),vt(e,o))}function dt(e){throw new Error("A "+e+" type is already registered")}function vt(e,t){var n,r=ot(e);-1<r&&(tt(e,b[r]),r=0,t===s&&!e[s]?(e[o]=!1,e[s]=!0,r=1,B&&S.call(F,e)<0&&F.push(e)):t===o&&!e[o]&&(e[s]=!1,e[o]=!0,r=1),r&&(n=e[t+"Callback"])&&n.call(e))}if(r in t)return;var i="__"+r+(Math.random()*1e5>>0),s="attached",o="detached",u="extends",a="ADDITION",f="MODIFICATION",l="REMOVAL",c="DOMAttrModified",h="DOMContentLoaded",p="DOMSubtreeModified",d="<",v="=",m=/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/,g=["ANNOTATION-XML","COLOR-PROFILE","FONT-FACE","FONT-FACE-SRC","FONT-FACE-URI","FONT-FACE-FORMAT","FONT-FACE-NAME","MISSING-GLYPH"],y=[],b=[],w="",E=t.documentElement,S=y.indexOf||function(e){for(var t=this.length;t--&&this[t]!==e;);return t},x=n.prototype,T=x.hasOwnProperty,N=x.isPrototypeOf,C=n.defineProperty,k=n.getOwnPropertyDescriptor,L=n.getOwnPropertyNames,A=n.getPrototypeOf,O=n.setPrototypeOf,M=!!n.__proto__,_=n.create||function mt(e){return e?(mt.prototype=e,new mt):this},D=O||(M?function(e,t){return e.__proto__=t,e}:L&&k?function(){function e(e,t){for(var n,r=L(t),i=0,s=r.length;i<s;i++)n=r[i],T.call(e,n)||C(e,n,k(t,n))}return function(t,n){do e(t,n);while((n=A(n))&&!N.call(n,t));return t}}():function(e,t){for(var n in t)e[n]=t[n];return e}),P=e.MutationObserver||e.WebKitMutationObserver,H=(e.HTMLElement||e.Element||e.Node).prototype,B=!N.call(H,E),j=B?function(e){return e.nodeType===1}:function(e){return N.call(H,e)},F=B&&[],I=H.cloneNode,q=H.setAttribute,R=H.removeAttribute,U=t.createElement,z=P&&{attributes:!0,characterData:!0,attributeOldValue:!0},W=P||function(e){J=!1,E.removeEventListener(c,W)},X,V=e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.msRequestAnimationFrame||function(e){setTimeout(e,10)},$=!1,J=!0,K=!0,Q=!0,G,Y,Z,et,tt,nt;O||M?(tt=function(e,t){N.call(t,e)||ht(e,t)},nt=ht):(tt=function(e,t){e[i]||(e[i]=n(!0),ht(e,t))},nt=tt),B?(J=!1,function(){var e=k(H,"addEventListener"),t=e.value,n=function(e){var t=new CustomEvent(c,{bubbles:!0});t.attrName=e,t.prevValue=this.getAttribute(e),t.newValue=null,t[l]=t.attrChange=2,R.call(this,e),this.dispatchEvent(t)},r=function(e,t){var n=this.hasAttribute(e),r=n&&this.getAttribute(e),i=new CustomEvent(c,{bubbles:!0});q.call(this,e,t),i.attrName=e,i.prevValue=n?r:null,i.newValue=t,n?i[f]=i.attrChange=1:i[a]=i.attrChange=0,this.dispatchEvent(i)},s=function(e){var t=e.currentTarget,n=t[i],r=e.propertyName,s;n.hasOwnProperty(r)&&(n=n[r],s=new CustomEvent(c,{bubbles:!0}),s.attrName=n.name,s.prevValue=n.value||null,s.newValue=n.value=t[r]||null,s.prevValue==null?s[a]=s.attrChange=0:s[f]=s.attrChange=1,t.dispatchEvent(s))};e.value=function(e,o,u){e===c&&this.attributeChangedCallback&&this.setAttribute!==r&&(this[i]={className:{name:"class",value:this.className}},this.setAttribute=r,this.removeAttribute=n,t.call(this,"propertychange",s)),t.call(this,e,o,u)},C(H,"addEventListener",e)}()):P||(E.addEventListener(c,W),E.setAttribute(i,1),E.removeAttribute(i),J&&(G=function(e){var t=this,n,r,s;if(t===e.target){n=t[i],t[i]=r=Z(t);for(s in r){if(!(s in n))return Y(0,t,s,n[s],r[s],a);if(r[s]!==n[s])return Y(1,t,s,n[s],r[s],f)}for(s in n)if(!(s in r))return Y(2,t,s,n[s],r[s],l)}},Y=function(e,t,n,r,i,s){var o={attrChange:e,currentTarget:t,attrName:n,prevValue:r,newValue:i};o[s]=e,at(o)},Z=function(e){for(var t,n,r={},i=e.attributes,s=0,o=i.length;s<o;s++)t=i[s],n=t.name,n!=="setAttribute"&&(r[n]=t.value);return r})),t[r]=function(n,r){c=n.toUpperCase(),$||($=!0,P?(et=function(e,t){function n(e,t){for(var n=0,r=e.length;n<r;t(e[n++]));}return new P(function(r){for(var i,s,o,u=0,a=r.length;u<a;u++)i=r[u],i.type==="childList"?(n(i.addedNodes,e),n(i.removedNodes,t)):(s=i.target,Q&&s.attributeChangedCallback&&i.attributeName!=="style"&&(o=s.getAttribute(i.attributeName),o!==i.oldValue&&s.attributeChangedCallback(i.attributeName,i.oldValue,o)))})}(st(s),st(o)),et.observe(t,{childList:!0,subtree:!0})):(X=[],V(function E(){while(X.length)X.shift().call(null,X.shift());V(E)}),t.addEventListener("DOMNodeInserted",ft(s)),t.addEventListener("DOMNodeRemoved",ft(o))),t.addEventListener(h,lt),t.addEventListener("readystatechange",lt),t.createElement=function(e,n){var r=U.apply(t,arguments),i=""+e,s=S.call(y,(n?v:d)+(n||i).toUpperCase()),o=-1<s;return n&&(r.setAttribute("is",n=n.toLowerCase()),o&&(o=ut(i.toUpperCase(),n))),Q=!t.createElement.innerHTMLHelper,o&&nt(r,b[s]),r},H.cloneNode=function(e){var t=I.call(this,!!e),n=ot(t);return-1<n&&nt(t,b[n]),e&&it(t.querySelectorAll(w)),t}),-2<S.call(y,v+c)+S.call(y,d+c)&&dt(n);if(!m.test(c)||-1<S.call(g,c))throw new Error("The type "+n+" is invalid");var i=function(){return f?t.createElement(l,c):t.createElement(l)},a=r||x,f=T.call(a,u),l=f?r[u].toUpperCase():c,c,p;return f&&-1<S.call(y,d+l)&&dt(l),p=y.push((f?v:d)+c)-1,w=w.concat(w.length?",":"",f?l+'[is="'+n.toLowerCase()+'"]':l),i.prototype=b[p]=T.call(a,"prototype")?a.prototype:_(H),rt(t.querySelectorAll(w),s),i}})(window,document,Object,"registerElement");
-},{}],169:[function(require,module,exports){
+},{}],172:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -35070,7 +35431,7 @@ arguments[4][115][0].apply(exports,arguments)
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],170:[function(require,module,exports){
+},{}],173:[function(require,module,exports){
 
 /**
  * @license
@@ -36139,12 +36500,12 @@ exports.applyProp = applyProp;
 exports.notifications = notifications;
 
 
-},{}],171:[function(require,module,exports){
+},{}],174:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./dist/client');
 
-},{"./dist/client":172}],172:[function(require,module,exports){
+},{"./dist/client":175}],175:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -36872,7 +37233,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],173:[function(require,module,exports){
+},{}],176:[function(require,module,exports){
 /*!
 * screenfull
 * v3.0.0 - 2015-11-24
@@ -37019,10 +37380,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 	}
 })();
 
-},{}],174:[function(require,module,exports){
+},{}],177:[function(require,module,exports){
 module.exports = require('./lib/supermodels');
 
-},{"./lib/supermodels":185}],175:[function(require,module,exports){
+},{"./lib/supermodels":188}],178:[function(require,module,exports){
 'use strict'
 
 var util = require('./util')
@@ -37154,7 +37515,7 @@ function createDef (from) {
 
 module.exports = createDef
 
-},{"./factory":179,"./util":186}],176:[function(require,module,exports){
+},{"./factory":182,"./util":189}],179:[function(require,module,exports){
 'use strict'
 
 module.exports = function (callback) {
@@ -37268,7 +37629,7 @@ module.exports = function (callback) {
   return arr
 }
 
-},{}],177:[function(require,module,exports){
+},{}],180:[function(require,module,exports){
 'use strict'
 
 module.exports = function EmitterEvent (name, path, target, detail) {
@@ -37281,7 +37642,7 @@ module.exports = function EmitterEvent (name, path, target, detail) {
   }
 }
 
-},{}],178:[function(require,module,exports){
+},{}],181:[function(require,module,exports){
 'use strict'
 
 /**
@@ -37443,7 +37804,7 @@ Emitter.prototype.hasListeners = function (event) {
   return !!this.listeners(event).length
 }
 
-},{}],179:[function(require,module,exports){
+},{}],182:[function(require,module,exports){
 'use strict'
 
 var util = require('./util')
@@ -37599,7 +37960,7 @@ function createWrapperFactory (def) {
 
 module.exports = createWrapperFactory
 
-},{"./proto":183,"./util":186,"./wrapper":188}],180:[function(require,module,exports){
+},{"./proto":186,"./util":189,"./wrapper":191}],183:[function(require,module,exports){
 'use strict'
 
 function merge (model, obj) {
@@ -37647,7 +38008,7 @@ function merge (model, obj) {
 
 module.exports = merge
 
-},{}],181:[function(require,module,exports){
+},{}],184:[function(require,module,exports){
 'use strict'
 
 var EmitterEvent = require('./emitter-event')
@@ -37907,7 +38268,7 @@ module.exports = {
   descriptors: descriptors
 }
 
-},{"./emitter-event":177,"./merge":180,"./validation-error":187,"./wrapper":188}],182:[function(require,module,exports){
+},{"./emitter-event":180,"./merge":183,"./validation-error":190,"./wrapper":191}],185:[function(require,module,exports){
 'use strict'
 
 function factory () {
@@ -37978,7 +38339,7 @@ function factory () {
 
 module.exports = factory
 
-},{}],183:[function(require,module,exports){
+},{}],186:[function(require,module,exports){
 'use strict'
 
 var emitter = require('./emitter-object')
@@ -38138,12 +38499,12 @@ function createModelPrototype (def) {
 
 module.exports = createModelPrototype
 
-},{"./emitter-array":176,"./emitter-event":177,"./emitter-object":178,"./model":181,"./util":186}],184:[function(require,module,exports){
+},{"./emitter-array":179,"./emitter-event":180,"./emitter-object":181,"./model":184,"./util":189}],187:[function(require,module,exports){
 'use strict'
 
 module.exports = {}
 
-},{}],185:[function(require,module,exports){
+},{}],188:[function(require,module,exports){
 'use strict'
 
 var prop = require('./prop')
@@ -38177,7 +38538,7 @@ supermodels.merge = merge
 
 module.exports = supermodels
 
-},{"./def":175,"./merge":180,"./prop":182,"./supermodel":184}],186:[function(require,module,exports){
+},{"./def":178,"./merge":183,"./prop":185,"./supermodel":187}],189:[function(require,module,exports){
 'use strict'
 
 var Supermodel = require('./supermodel')
@@ -38291,7 +38652,7 @@ var util = {
 
 module.exports = util
 
-},{"./supermodel":184}],187:[function(require,module,exports){
+},{"./supermodel":187}],190:[function(require,module,exports){
 'use strict'
 
 function ValidationError (target, error, validator, key) {
@@ -38306,7 +38667,7 @@ function ValidationError (target, error, validator, key) {
 
 module.exports = ValidationError
 
-},{}],188:[function(require,module,exports){
+},{}],191:[function(require,module,exports){
 'use strict'
 
 var util = require('./util')
@@ -38407,7 +38768,7 @@ Object.defineProperties(Wrapper.prototype, {
 })
 module.exports = Wrapper
 
-},{"./util":186,"./validation-error":187}],189:[function(require,module,exports){
+},{"./util":189,"./validation-error":190}],192:[function(require,module,exports){
 // Nes websocket service
 function VsdFsService (client, options) {
   options = options || {}
@@ -38509,5 +38870,5 @@ function VsdFsService (client, options) {
 
 module.exports = VsdFsService
 
-},{}]},{},[42])
+},{}]},{},[44])
 //# sourceMappingURL=bundle.js.map

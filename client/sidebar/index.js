@@ -1,9 +1,10 @@
 var ctrl = require('./controller')
 var view = require('./view.html')
 var patch = require('../patch')
+var sessions = require('../sessions')
 var files = window.UCO.files
 
-var Fs = document.registerElement(
+var Sidebar = document.registerElement(
   'vsd-sidebar',
   {
     prototype: Object.create(
@@ -20,6 +21,7 @@ var Fs = document.registerElement(
             }.bind(this)
 
             files.on('change', update)
+            sessions.on('change', update)
             ctrl.on('change', update)
             ctrl.recent.on('change', update)
 
@@ -30,4 +32,4 @@ var Fs = document.registerElement(
   }
 )
 
-module.exports = Fs
+module.exports = Sidebar

@@ -6,7 +6,7 @@
     <div class="box-header with-border">
       <h3 class="box-title">{model.file.name}</h3>
       <div class="box-tools pull-right">
-        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+        <button type="button" class="btn btn-box-tool hide" data-widget="collapse"><i class="fa fa-minus"></i>
         </button>
         <button type="button" class="btn btn-box-tool" onclick="{model.requestFullscreen(box)}"><i class="fa fa-square-o"></i>
         </button>
@@ -39,7 +39,7 @@
         <vsd-ace child mode="{model.getMode(model.file)}" skip 
           contents="{model.contents}"
           oncontentchange="{model.onContentChange($event)}"
-          style="height: 400px; display: block; -webkit-font-smoothing: auto;"></vsd-ace>
+          style="-webkit-font-smoothing: auto;"></vsd-ace>
       </if>
     </div>
     <div class="box-footer">

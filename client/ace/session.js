@@ -1,11 +1,10 @@
-var config = require('../config/client')
-var modes = require('./modes')
+var config = require('../../config/client')
+var modes = require('../modes')
 var EditSession = window.ace.require('ace/edit_session').EditSession
 var UndoManager = window.ace.require('ace/undomanager').UndoManager
 
 function Session (file, contents) {
   var editSession = new EditSession(contents, modes(file))
-  editSession.setMode(modes(file))
   editSession.setUseWorker(false)
   editSession.setTabSize(config.ace.tabSize)
   editSession.setUseSoftTabs(config.ace.useSoftTabs)
@@ -15,7 +14,6 @@ function Session (file, contents) {
   this.editSession = editSession
 }
 Session.prototype.markClean = function () {
-  this.isDirty = false
   this.editSession.getUndoManager().markClean()
 }
 Session.prototype.getValue = function () {
@@ -32,6 +30,11 @@ Object.defineProperties(Session.prototype, {
   isClean: {
     get: function () {
       return this.editSession.getUndoManager().isClean()
+    }
+  },
+  isDirty: {
+    get: function () {
+      return !this.isClean
     }
   }
 })

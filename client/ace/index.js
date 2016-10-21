@@ -36,7 +36,7 @@ var Ace = document.registerElement(
               tabSize: config.ace.tabSize,
               fontSize: config.ace.fontSize,
               autoScrollEditorIntoView: true,
-              maxLines: config.ace.maxLines
+              // maxLines: config.ace.maxLines
             })
 
             // Set theme

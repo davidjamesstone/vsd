@@ -22,6 +22,7 @@ client.connect(function (err) {
     }
 
     var files = new Files(payload.watched)
+    window.files = payload.watched
     window.UCO.files = files
 
     watcher.watch(payload.id, files)
@@ -31,6 +32,7 @@ client.connect(function (err) {
     require('./file')
     require('./sidebar')
     require('./workspace')
+
     console.log('connect')
   })
 })

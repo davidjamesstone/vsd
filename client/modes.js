@@ -20,5 +20,5 @@ module.exports = function (file) {
     '.xml': 'ace/mode/xml'
   }
 
-  return modes[file.ext]
+  return modes[file.ext] || 'ace/mode/text'
 }

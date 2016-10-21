@@ -1,6 +1,8 @@
 var path = require('path')
 var supermodels = require('supermodels.js')
 var recent = require('../recent')
+var sessions = require('../sessions')
+var editor = require('../ace/editor')
 var files = window.UCO.files
 
 function findFile (relativePath) {
@@ -113,12 +115,66 @@ function getLinks () {
   return links
 }
 
+function close (e, item) {
+  e.stopPropagation()
+  var session = item.getSession()
+  if (!session) {
+    recent.remove(item.ref)
+  } else {
+    var file = session.file
+    var dirty = item.isDirty()
+
+    if (dirty) {
+      if (window.confirm('There are unsaved changes to ' +
+        file.name + '. Save changes?')) {
+        session.save(function (err, data) {
+          if (!err) {
+            recent.remove(file.getRelativePath())
+            sessions.remove(session)
+          }
+        })
+      }
+    } else {
+      recent.remove(file.getRelativePath())
+      sessions.remove(session)
+    }
+  }
+}
+
+function save (e, item) {
+  e.stopPropagation()
+  item.getSession().save()
+  editor.focus()
+}
+
+function closeAll (e) {
+  e.stopPropagation()
+
+  var dirty = recent.dirty()
+  if (dirty.length && window.confirm('There are unsaved changes to ' +
+    dirty.length + ' file' + (dirty.length > 1 ? 's' : '') + '. Save changes?')) {
+    sessions.saveAll()
+  }
+  recent.clear()
+  sessions.clear()
+}
+
+function saveAll (e) {
+  e.stopPropagation()
+  sessions.saveAll()
+  editor.focus()
+}
+
 var schema = {
   name: String,
   recent: Object,
   query: String,
   getLinks: getLinks,
-  searchFiles: searchFiles
+  searchFiles: searchFiles,
+  close: close,
+  save: save,
+  closeAll: closeAll,
+  saveAll: saveAll
 }
 
 var Controller = supermodels(schema)

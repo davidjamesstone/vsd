@@ -46,7 +46,7 @@ function FileEditor (el) {
           files.push(file)
         }
 
-        window.location.hash = file.getRelativePath()
+        // window.location.hash = file.getRelativePath()
       })
     },
     mkdir: function ($event) {

@@ -2,6 +2,68 @@
 @import './routes/index.scss'; 
 @import './file-menu/index.scss'; 
 
+html, body, .wrapper, .content-wrapper, section.content, vsd-file {
+  height: 100%!important;
+}
+
+// section.content {
+//   padding: 49px 0 0 0!important;
+// }
+.sidebar {
+  .open-editors {
+    .clear, .save, .clear-all, .save-all {
+      display: none;
+      margin-left: 10px;
+    }
+
+    &:hover {
+      .clear, .save, .clear-all, .save-all {
+        display: inline;
+      }
+    }
+  }
+}
+vsd-file {
+  display: block;
+
+  .box {
+    height: 100%;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    
+    .box-header {
+      // display: none;
+      flex: 0 0 auto;
+    }
+
+    .box-footer {
+      flex: 0 0 auto;
+    }
+    
+    .box-body {
+      flex: 1 1 auto;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+
+      vsd-ace {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      vsd-db, vsd-routes {
+        display: block;
+        flex: 1 1 auto;
+        overflow: auto;
+      }
+    }
+  }
+}
+
 a {
   cursor: pointer;
 }
@@ -125,9 +187,10 @@ header.main-header {
 }
 
 section.content {
-  padding-top: 60px;
+  padding: 0;
+  padding-top: 50px;
   @media (max-width: 768px) {
-    padding-top: 110px;
+    padding-top: 100px;
   }
 }
 

@@ -7,7 +7,7 @@ var config = {
     fontSize: 12,
     // theme: 'monokai',
     useSoftTabs: true,
-    maxLines: 100
+    maxLines: 300
   }
 }
 

@@ -38,17 +38,21 @@ const manifest = {
     },
     {
       plugin: {
-        register: 'vsd-plugin-fs',
-        options: {
-          mount: '/fs'
+        register: 'vsd-plugin-fs'
+      },
+      options: {
+        routes: {
+          prefix: '/fs'
         }
       }
     },
     {
       plugin: {
-        register: 'vsd-plugin-fs-watch',
-        options: {
-          mount: '/fs'
+        register: 'vsd-plugin-fs-watch'
+      },
+      options: {
+        routes: {
+          prefix: '/fs'
         }
       }
     }

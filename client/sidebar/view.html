@@ -27,16 +27,40 @@
           </li>
         </if>
         <li class="header" style="text-transform: uppercase;">{ctrl.name}</li>
-        <li class="treeview active">
+        <li class="treeview active open-editors">
+          <script>
+            var recent = ctrl.recent
+            var items = recent.items
+            var dirty = recent.dirty()
+          </script>
           <a href="#">
-            <i class="fa fa-dashboard"></i> <span>Open editors</span>
+            <i class="fa fa-dashboard"></i> 
+            <span>
+              Open editors
+              <a if="items.length" class="clear-all" onclick="{ctrl.closeAll($event)}">
+                <small>×</small>
+              </a>
+              <a if="dirty.length" class="save-all" onclick="{ctrl.saveAll($event)}">
+                <small class="fa fa-save"></small>
+              </a>
+            </span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
           <ul class="treeview-menu menu-open">
-            <li each="item, item.ref in ctrl.recent.items">
-              <a href="#{item.ref}"><i class="fa fa-file-o hide"></i> {item.getDisplayName()}</a>
+            <li each="item, item.ref in ctrl.recent.items" class="{item.isCurrent() ? 'active' : ''}">
+              <a class="file" href="#{item.ref}"><i class="fa fa-file-o hide"></i>
+                {item.getDisplayName()}
+                <if condition="item.isDirty()">
+                  <span class="text-danger">*</span>  
+                </if>
+                <span class="pull-right-container">
+                  <a class="clear" onclick="{ctrl.close($event, item)}">
+                    <small>×</small>
+                  </a>
+                </span>
+              </a>
             </li>
           </ul>
         </li>

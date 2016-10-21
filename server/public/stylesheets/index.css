@@ -1,3 +1,8 @@
+vsd-db .nav-tabs-custom {
+  margin-bottom: 0;
+  box-shadow: none;
+}
+
 vsd-db svg {
   width: 100%;
   height: 400px;
@@ -59,6 +64,59 @@ vsd-routes table {
 
 #file-menu ul.dropdown-menu li a {
   cursor: pointer;
+}
+
+html, body, .wrapper, .content-wrapper, section.content, vsd-file {
+  height: 100% !important;
+}
+
+.sidebar .open-editors .clear, .sidebar .open-editors .save, .sidebar .open-editors .clear-all, .sidebar .open-editors .save-all {
+  display: none;
+  margin-left: 10px;
+}
+
+.sidebar .open-editors:hover .clear, .sidebar .open-editors:hover .save, .sidebar .open-editors:hover .clear-all, .sidebar .open-editors:hover .save-all {
+  display: inline;
+}
+
+vsd-file {
+  display: block;
+}
+
+vsd-file .box {
+  height: 100%;
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+vsd-file .box .box-header {
+  flex: 0 0 auto;
+}
+
+vsd-file .box .box-footer {
+  flex: 0 0 auto;
+}
+
+vsd-file .box .box-body {
+  flex: 1 1 auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+vsd-file .box .box-body vsd-ace {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+vsd-file .box .box-body vsd-db, vsd-file .box .box-body vsd-routes {
+  display: block;
+  flex: 1 1 auto;
+  overflow: auto;
 }
 
 a {
@@ -169,12 +227,13 @@ header.main-header {
 }
 
 section.content {
-  padding-top: 60px;
+  padding: 0;
+  padding-top: 50px;
 }
 
 @media (max-width: 768px) {
   section.content {
-    padding-top: 110px;
+    padding-top: 100px;
   }
 }
 
