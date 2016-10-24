@@ -1,7 +1,7 @@
-var path = require('path')
 var supermodels = require('supermodels.js')
 var recent = require('../recent')
 var sessions = require('../sessions')
+var Main = require('../controller')
 var editor = require('../ace/editor')
 var files = window.UCO.files
 
@@ -166,6 +166,7 @@ function saveAll (e) {
 }
 
 var schema = {
+  main: Main,
   name: String,
   recent: Object,
   query: String,
@@ -178,10 +179,5 @@ var schema = {
 }
 
 var Controller = supermodels(schema)
-var ctrl = new Controller({
-  query: '',
-  recent: recent,
-  name: path.basename(window.UCO.path)
-})
 
-module.exports = ctrl
+module.exports = Controller

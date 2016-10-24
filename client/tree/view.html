@@ -1,7 +1,7 @@
-<template name="tree" args="model data root">
+<template name="tree" args="ctrl data root">
   <script>
     var isRoot = root === data[0]
-    var current = model.current
+    var current = ctrl.current
     function sorter (a, b) {
       if (a.fso.isDirectory) {
         if (b.fso.isDirectory) {
@@ -21,21 +21,21 @@
   </script>
   <ul class="{isRoot ? 'tree noselect' : 'noselect'}">
     <li each="node, node.path in data"
-      oncontextmenu="{model.onRightClick($event, node)}"
+      oncontextmenu="{ctrl.onRightClick($event, node)}"
       title="{node.fso.getRelativePath()}"
       class="{node.fso.isDirectory ? 'dir' : 'file' + (node.fso === current ? ' selected' : '')}">
       <script>
         var fso = node.fso
-        var isExpanded = model.isExpanded(fso)
+        var isExpanded = ctrl.isExpanded(fso)
       </script>
       <if condition="!fso.isDirectory">
-        <a class="file" href="#{fso.getRelativePath()}">
+        <a class="file" onclick="{ctrl.main.setCurrentFile(fso)}">
           <span data-name="{fso.name}" class="name icon icon-file-text"></span>
           <span class="file-name">{fso.name}</span>
         </a>
       </if>
       <if condition="fso.isDirectory">
-        <a onclick="{model.onClick(fso)}">
+        <a onclick="{ctrl.onClick(fso)}">
           <small if="isExpanded" class="expanded"><i class="fa fa-angle-down"></i></small>
           <small if="!isExpanded" class="collapsed"><i class="fa fa-angle-right"></i></small>
           <span data-name="{fso.name}" class="name icon icon-file-directory"></span>
@@ -45,7 +45,7 @@
       <span if="!fso.isDirectory && fso === current" class="triangle-left"></span>
       <if condition="fso.isDirectory && isExpanded">
         <script>
-          tree(model, node.children, root)
+          tree(ctrl, node.children, root)
         </script>
       </if>
     </li>

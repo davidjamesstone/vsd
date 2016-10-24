@@ -11,6 +11,7 @@ var fso = {
   ext: prop(String),
   filesize: prop(String),
   stat: prop(Object),
+  session: prop(Object),
   getRelativePath: function (to) {
     to = to || window.UCO.path
     return path.relative(to, this.path)
@@ -18,6 +19,9 @@ var fso = {
   getRelativeDir: function (to) {
     to = to || window.UCO.path
     return path.relative(to, this.dir)
+  },
+  getDisplayName: function () {
+    return this.path.replace(window.UCO.path, '').slice(1)
   }
 }
 

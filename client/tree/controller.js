@@ -1,6 +1,6 @@
 var supermodels = require('supermodels.js')
 var File = require('../fso')
-var Files = require('../files')
+var Main = require('../controller')
 var fileMenu = require('../file-menu')
 var treeify = require('./treeify')
 
@@ -32,15 +32,14 @@ function isExpanded (file, value) {
 }
 
 var model = {
-  current: File,
+  main: Main,
   root: Object,
   expanded: [File],
-  files: Files,
   isExpanded: isExpanded,
   onClick: onClick,
   onRightClick: onRightClick,
   get tree () {
-    return treeify(this.files.slice(1))
+    return treeify(this.main.files.slice(1))
   }
 }
 

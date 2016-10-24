@@ -1,4 +1,5 @@
-var Model = require('./model')
+var main = require('../main')
+var Controller = require('./controller')
 var view = require('./view.html')
 var patch = require('../patch')
 
@@ -17,9 +18,9 @@ var Tree = document.registerElement(
         },
         createdCallback: {
           value: function () {
-            var files = window.UCO.files
-            var model = new Model({
-              files: files,
+            var files = main.files
+            var model = new Controller({
+              main: main,
               expanded: [files[1]]
             })
 

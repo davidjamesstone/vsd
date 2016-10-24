@@ -1,5 +1,4 @@
 var config = require('../../config/client')
-// var client = require('../client')
 var el = document.getElementById('ace')
 var editor = window.ace.edit(el)
 

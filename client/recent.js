@@ -67,7 +67,7 @@ var schema = {
 
 var Model = supermodels(schema)
 var storage = window.localStorage.getItem(storageKey)
-var recent = storage ? JSON.parse(storage) : {}
+var recent = storage ? JSON.parse(storage) : []
 
 // Filter out any deleted files
 if (recent.items) {
@@ -78,9 +78,9 @@ if (recent.items) {
 
 var model = new Model(recent)
 
-model.on('change', function () {
-  window.localStorage.setItem(storageKey, JSON.stringify(this))
-})
+// model.on('change', function () {
+//   window.localStorage.setItem(storageKey, JSON.stringify(this))
+// })
 
 files.on('splice', function (e) {
   e.detail.removed.forEach(function (item) {

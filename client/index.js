@@ -27,11 +27,12 @@ client.connect(function (err) {
 
     watcher.watch(payload.id, files)
 
+    require('./main')
     require('./tree')
     require('./ace')
     require('./file')
     require('./sidebar')
-    require('./workspace')
+    // require('./workspace')
 
     console.log('connect')
   })

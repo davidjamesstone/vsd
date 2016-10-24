@@ -1,8 +1,8 @@
-var ctrl = require('./controller')
+var path = require('path')
+var Controller = require('./controller')
 var view = require('./view.html')
 var patch = require('../patch')
-var sessions = require('../sessions')
-var files = window.UCO.files
+var main = require('../main')
 
 var Sidebar = document.registerElement(
   'vsd-sidebar',
@@ -11,20 +11,25 @@ var Sidebar = document.registerElement(
       window.HTMLElement.prototype, {
         render: {
           value: function () {
-            patch(this, view, ctrl)
+            patch(this, view, this.ctrl)
           }
         },
         createdCallback: {
           value: function () {
+            var ctrl = new Controller({
+              main: main,
+              query: '',
+              name: path.basename(window.UCO.path)
+            })
+
             var update = function update () {
               this.render()
             }.bind(this)
 
-            files.on('change', update)
-            sessions.on('change', update)
+            main.on('change', update)
             ctrl.on('change', update)
-            ctrl.recent.on('change', update)
 
+            this.ctrl = ctrl
             this.render()
           }
         }
