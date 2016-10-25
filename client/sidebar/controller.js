@@ -1,6 +1,4 @@
 var supermodels = require('supermodels.js')
-var recent = require('../recent')
-var sessions = require('../sessions')
 var Main = require('../controller')
 var editor = require('../ace/editor')
 var files = window.UCO.files

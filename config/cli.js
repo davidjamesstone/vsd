@@ -27,6 +27,11 @@ var definition = {
     description: 'New project type (vsd-web) [vsd-web, api, web, gov]',
     alias: 'type',
     type: 'string'
+  },
+  f: {
+    description: 'Client config file',
+    alias: 'config',
+    type: 'string'
   }
 }
 

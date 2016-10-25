@@ -1,11 +1,9 @@
-var Controller = require('./controller')
+var File = require('./file')
 var util = require('./util')
+var lint = require('./lint')
 var client = require('./client')
 var editor = require('./ace/editor')
-
-/**
- * Initialise the controller
- */
+var Controller = require('./controller')
 var projectPath = window.UCO.path
 var files = window.UCO.files
 var storageKey = 'vsd-' + projectPath
@@ -14,7 +12,7 @@ storage = storage ? JSON.parse(storage) : {}
 var recent = storage.recent || []
 
 /**
- * Construct main controller
+ * Initialise the main controller
  */
 var main = new Controller({
   files: files
@@ -43,17 +41,32 @@ function onFileAdded (payload) {
   // Create it only if it
   // doesn't already exist.
   // It could've been added by the file-editor mkfile'
-  var file = files.create(payload)
-  controller.files.push(file)
+  var file = new File(payload)
+  main.files.push(file)
 }
 
 function onFileRemoved (payload) {
-  var idx = controller.findFileIndex(payload.path)
-  controller.files.splice(idx, 1)
+  var idx = main.findFileIndex(payload.path)
+  var file = main.files[idx]
+
+  // Remove the file from the list
+  main.files.splice(idx, 1)
+
+  // If the removed file was the current one,
+  // reset the current file
+  if (file === main.current) {
+    main.resetCurrentFile()
+  }
+
+  // If the file was in the recent files list, remove it
+  idx = main.recent.indexOf(file)
+  if (~idx) {
+    main.recent.splice(idx, 1)
+  }
 }
 
 function onFileChanged (payload) {
-  var file = controller.findFile(payload.path)
+  var file = main.findFile(payload.path)
   file.stat = payload.stat
 }
 
@@ -75,11 +88,11 @@ editor.commands.addCommands([{
     mac: 'Command-S'
   },
   exec: function (editor) {
-    var file = main.file
-    if (file && file.isDirty) {
-      current.save(function (err, result) {
-        if (!err) {
-          current.manager.markClean()
+    var session = main.current && main.current.session
+    if (session && session.isDirty) {
+      session.save(function (err, result) {
+        if (err) {
+          return util.handleError(err)
         }
       })
     }
@@ -92,14 +105,24 @@ editor.commands.addCommands([{
     mac: 'Command-Option-S'
   },
   exec: function (editor) {
-    sessions.saveAll()
+    main.getDirtyFiles().forEach(function (item) {
+      item.session.save(function (err, result) {
+        if (err) {
+          return util.handleError(err)
+        }
+      })
+    })
   },
   readOnly: false
 }])
 
-main.recent.on('change', function () {
+// On change, upload the localStorage state
+main.on('change', function (e) {
+  console.log('Main controller change', e)
+
   var state = JSON.stringify({
-    recent: this.map(function (item) {
+    current: this.current && this.current.getRelativePath(),
+    recent: this.recent.map(function (item) {
       return item.getRelativePath()
     })
   })
@@ -109,7 +132,19 @@ main.recent.on('change', function () {
 })
 
 main.on('change', function (e) {
-  console.log(e)
 })
+
+// Set initial current file
+if (storage.current) {
+  var initialFile = main.findFile(storage.current)
+  if (initialFile) {
+    main.setCurrentFile(initialFile)
+  }
+}
+
+// Set the linter
+setInterval(function () {
+  lint(editor.getSession())
+}, 1000)
 
 module.exports = main

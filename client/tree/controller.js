@@ -1,5 +1,5 @@
 var supermodels = require('supermodels.js')
-var File = require('../fso')
+var File = require('../file')
 var Main = require('../controller')
 var fileMenu = require('../file-menu')
 var treeify = require('./treeify')

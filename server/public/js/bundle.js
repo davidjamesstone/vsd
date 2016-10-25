@@ -1,20 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var config = require('../../config/client')
-var modes = require('../modes')
-var EditSession = window.ace.require('ace/edit_session').EditSession
-var UndoManager = window.ace.require('ace/undomanager').UndoManager
-
-module.exports = function (contents, file) {
-  var editSession = new EditSession(contents, modes(file))
-  editSession.setUseWorker(false)
-  editSession.setTabSize(config.ace.tabSize)
-  editSession.setUseSoftTabs(config.ace.useSoftTabs)
-  editSession.setUndoManager(new UndoManager())
-  return editSession
-}
-
-},{"../../config/client":71,"../modes":48}],2:[function(require,module,exports){
-var config = require('../../config/client')
+var config = window.UCO.config
 var el = document.getElementById('ace')
 var editor = window.ace.edit(el)
 
@@ -25,8 +10,7 @@ editor.setOptions({
   enableLiveAutocompletion: true,
   tabSize: config.ace.tabSize,
   fontSize: config.ace.fontSize,
-  autoScrollEditorIntoView: true // ,
-  // maxLines: config.ace.maxLines
+  autoScrollEditorIntoView: true
 })
 
 // Set theme
@@ -36,144 +20,21 @@ if (config.ace.theme) {
 
 module.exports = editor
 
-},{"../../config/client":71}],3:[function(require,module,exports){
-var config = require('../../config/client')
-var client = require('../client')
-
-function lint (session) {
-  if (session.getMode().$id === 'ace/mode/javascript') {
-    client.request({
-      path: '/standard',
-      payload: {
-        value: session.getValue(),
-        projectDir: window.UCO.path
-      },
-      method: 'POST'
-    }, function (err, payload) {
-      if (err) {
-        // return util.handleError(err)
-      }
-      session.setAnnotations(payload)
-    })
-  }
-}
-
-var Ace = document.registerElement(
-  'vsd-ace',
-  {
-    prototype: Object.create(
-      window.HTMLElement.prototype, {
-        createdCallback: {
-          value: function () {
-            var editor = window.ace.edit(this)
-
-            // Set editor options
-            editor.setOptions({
-              enableSnippets: true,
-              enableBasicAutocompletion: true,
-              enableLiveAutocompletion: true,
-              tabSize: config.ace.tabSize,
-              fontSize: config.ace.fontSize,
-              autoScrollEditorIntoView: true,
-              // maxLines: config.ace.maxLines
-            })
-
-            // Set theme
-            if (config.ace.theme) {
-              editor.setTheme('ace/theme/' + config.ace.theme)
-            }
-
-            // Call change handler when the session changes
-            var session = editor.getSession()
-            session.setUseWorker(false)
-
-            session.on('change', function (e) {
-              // Lint to update annotations
-              lint(session)
-
-              if (this.oncontentchange) {
-                var event = new window.CustomEvent('contentchange', {
-                  detail: {
-                    originalEvent: e,
-                    contents: session.getValue()
-                  }
-                })
-
-                this.oncontentchange(event)
-              }
-            }.bind(this))
-
-            // Properties
-            this.editor = editor
-            this.session = session
-          }
-        },
-        attributeChangedCallback: {
-          value: function (name, previousValue, value) {
-            if (name === 'contents') {
-              this.session.setValue(value)
-            } else if (name === 'mode') {
-              this.session.setMode(value)
-            }
-            lint(this.session)
-          }
-        },
-        focus: {
-          value: function () {
-            this.editor.focus()
-          }
-        }
-      })
-  }
-)
-
-module.exports = Ace
-
-},{"../../config/client":71,"../client":8}],4:[function(require,module,exports){
-var config = require('../../config/client')
-var modes = require('../modes')
+},{}],2:[function(require,module,exports){
+var config = window.UCO.config
 var EditSession = window.ace.require('ace/edit_session').EditSession
 var UndoManager = window.ace.require('ace/undomanager').UndoManager
 
-function Session (file, contents) {
-  var editSession = new EditSession(contents, modes(file))
+module.exports = function (contents, mode) {
+  var editSession = new EditSession(contents, mode)
   editSession.setUseWorker(false)
   editSession.setTabSize(config.ace.tabSize)
   editSession.setUseSoftTabs(config.ace.useSoftTabs)
   editSession.setUndoManager(new UndoManager())
-
-  this.file = file
-  this.editSession = editSession
+  return editSession
 }
-Session.prototype.markClean = function () {
-  this.editSession.getUndoManager().markClean()
-}
-Session.prototype.getValue = function () {
-  return this.editSession.getValue()
-}
-Session.prototype.setValue = function (content, markClean) {
-  this.editSession.setValue(content)
 
-  if (markClean) {
-    this.markClean()
-  }
-}
-Object.defineProperties(Session.prototype, {
-  isClean: {
-    get: function () {
-      return this.editSession.getUndoManager().isClean()
-    }
-  },
-  isDirty: {
-    get: function () {
-      return !this.isClean
-    }
-  }
-})
-
-module.exports = Session
-
-},{"../../config/client":71,"../modes":48}],5:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 var patch = require('incremental-dom').patch
 var view = require('./view.html')
 var Model = require('./model')
@@ -213,7 +74,7 @@ var Breadcrumbs = document.registerElement(
 
 module.exports = Breadcrumbs
 
-},{"./model":6,"./view.html":7,"incremental-dom":176}],6:[function(require,module,exports){
+},{"./model":4,"./view.html":5,"incremental-dom":166}],4:[function(require,module,exports){
 function Model (crumbs, icon) {
   this.crumbs = crumbs || []
   this.icon = icon
@@ -227,7 +88,7 @@ Model.prototype.isLast = function (crumb) {
 
 module.exports = Model
 
-},{}],7:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -242,12 +103,12 @@ var __target
 module.exports = function description (model) {
 var el = model
   model = model.model
-elementOpen("ol", "a6e3b1d5-eb40-4d1a-961b-aa008c88d16a", hoisted1)
+elementOpen("ol", "aa17e052-6f0a-4405-bf46-e35f7bbac6e6", hoisted1)
   __target = model.crumbs
   if (__target) {
     ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
       var crumb = $value
-      var $key = "5d8eff83-5442-42c3-b884-ea1f3ad391a5_" + $item
+      var $key = "cdd6ad6f-e183-4734-a2ea-99cc486ebcb0_" + $item
       elementOpen("li", $key, null, "class", model.isLast(crumb) ? 'active' : '')
         if (model.isFirst(crumb)) {
           elementOpen("a", null, null, "onclick", function ($event) {
@@ -277,7 +138,7 @@ elementOpen("ol", "a6e3b1d5-eb40-4d1a-961b-aa008c88d16a", hoisted1)
 elementClose("ol")
 }
 
-},{"incremental-dom":176}],8:[function(require,module,exports){
+},{"incremental-dom":166}],6:[function(require,module,exports){
 var Nes = require('nes/client')
 var host = window.location.host
 var protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
@@ -285,15 +146,17 @@ var client = new Nes.Client(protocol + '//' + host)
 
 module.exports = client
 
-},{"nes/client":177}],9:[function(require,module,exports){
+},{"nes/client":167}],7:[function(require,module,exports){
 var path = require('path')
 var util = require('./util')
 var editor = require('./ace/editor')
-var makeEditSession = require('./ace/edit-session')
+var Session = require('./session')
+var modes = require('./modes')
+var makeEditSession = require('./ace/session')
 var service = require('./file-service')
 var supermodels = require('supermodels.js')
-var EditSession = window.ace.require('ace/edit_session').EditSession
-var File = require('./fso')
+var Files = require('./files')
+var File = require('./file')
 
 /**
  * Declare the controller
@@ -310,54 +173,121 @@ function findFileIndex (relativeOrAbsolute) {
   return file && this.files.indexOf(file)
 }
 
+function getDirtyFiles () {
+  return this.files.filter(function (item) {
+    return item.session && item.session.isDirty
+  })
+}
+
 function setCurrentFile (file) {
-  var isSessionLoaded = file.session instanceof EditSession
+  var main = this
+
+  if (!file) {
+    main.current = null
+    return editor.container.classList.add('hide')
+  }
+
+
+  function loadFile () {
+    // Load the current file
+    main.current = file
+    editor.container.classList.remove('hide')
+    editor.setSession(file.session.edit)
+    editor.focus()
+  }
+
+  var isSessionLoaded = !!file.session
 
   if (isSessionLoaded) {
-    this.file = file
-    editor.setSession(file.session)
-    editor.focus()
+    loadFile()
   } else {
     service.readFile(file.path, function (err, result) {
       if (err) {
         return util.handleError(err)
       }
 
-      file.session = makeEditSession(result.contents, file)
+      var edit = makeEditSession(result.contents, modes(file))
+      var session = new Session({
+        file: file,
+        edit: edit
+      })
 
-      this.file = file
-      editor.setSession(file.session)
-      editor.focus()
-      this.recent.push(file)
-      // var session = new Session({
-      //   file: file,
-      //   manager: new AceSession(file, result.contents)
-      // })
+      edit.on('change', function () {
+        setTimeout(function () {
+          var isClean = edit.getUndoManager().isClean()
+          session.setDirty(!isClean)
+        }, 0)
+      })
 
-      // session.manager.editSession.on('change', function () {
-      //   setTimeout(function () {
-      //     session.setDirty(session.manager.isDirty)
-      //   }, 0)
-      // })
+      // Set the session on the file
+      file.session = session
 
-      // self.items.push(session)
-      // self.current = session
+      loadFile()
+
+      // Add to to the list of recent files
+      if (this.recent.indexOf(file) === -1) {
+        this.recent.push(file)
+      }
     }.bind(this))
   }
 }
 
+function resetCurrentFile () {
+  var firstLoadedRecentFile = this.recent.find(function (item) {
+    return item.session
+  })
+  this.setCurrentFile(firstLoadedRecentFile)
+}
+
+function closeFile (file) {
+  var main = this
+  var recent = this.recent
+  var idx = recent.indexOf(file)
+  var session = file.session
+  var isCurrent = file === this.current
+
+  function close () {
+    recent.splice(idx, 1)
+    file.session = null
+    if (isCurrent) {
+      main.resetCurrentFile()
+    }
+  }
+
+  if (!session) {
+    recent.splice(idx, 1)
+  } else {
+    var dirty = session.isDirty
+
+    if (dirty) {
+      if (window.confirm('There are unsaved changes to ' +
+        file.name + '. Save changes?')) {
+        return session.save(function (err, data) {
+          if (!err) {
+            close()
+          }
+        })
+      }
+    }
+    close()
+  }
+}
+
 var Controller = supermodels({
-  file: File,
-  files: [File],
+  current: File,
+  files: Files,
   recent: [File],
   findFile: findFile,
   findFileIndex: findFileIndex,
-  setCurrentFile: setCurrentFile
+  closeFile: closeFile,
+  setCurrentFile: setCurrentFile,
+  resetCurrentFile: resetCurrentFile,
+  getDirtyFiles: getDirtyFiles
 })
 
 module.exports = Controller
 
-},{"./ace/edit-session":1,"./ace/editor":2,"./file-service":40,"./fso":45,"./util":69,"path":72,"supermodels.js":180}],10:[function(require,module,exports){
+},{"./ace/editor":1,"./ace/session":2,"./file":38,"./file-service":37,"./files":39,"./modes":43,"./session":54,"./util":62,"path":63,"supermodels.js":169}],8:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var Model = require('./model')
 var prop = require('../prop')
@@ -500,7 +430,7 @@ var model = {
 
 module.exports = supermodels(model)
 
-},{"../prop":53,"./model":31,"supermodels.js":180}],11:[function(require,module,exports){
+},{"../prop":48,"./model":29,"supermodels.js":169}],9:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -549,7 +479,7 @@ module.exports = function description (type, def, root) {
   }
 }
 
-},{"./defs/array.html":13,"./defs/boolean.html":14,"./defs/buffer.html":15,"./defs/childdocument.html":16,"./defs/date.html":17,"./defs/foreignkey.html":18,"./defs/mixed.html":19,"./defs/nesteddocument.html":20,"./defs/number.html":21,"./defs/objectid.html":22,"./defs/string.html":23,"incremental-dom":176}],12:[function(require,module,exports){
+},{"./defs/array.html":11,"./defs/boolean.html":12,"./defs/buffer.html":13,"./defs/childdocument.html":14,"./defs/date.html":15,"./defs/foreignkey.html":16,"./defs/mixed.html":17,"./defs/nesteddocument.html":18,"./defs/number.html":19,"./defs/objectid.html":20,"./defs/string.html":21,"incremental-dom":166}],10:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var prop = require('../prop')
 var Keys = require('./keys')
@@ -698,7 +628,7 @@ module.exports = {
   factory: factory
 }
 
-},{"../prop":53,"./keys":29,"supermodels.js":180}],13:[function(require,module,exports){
+},{"../prop":48,"./keys":27,"supermodels.js":169}],11:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -713,18 +643,18 @@ var hoisted3 = ["id", "oftype", "class", "form-control input-sm"]
 var __target
 
 module.exports = function description (model, root) {
-  elementOpen("div", "2df95b77-3af6-4482-a9b9-a1a3848f70c7", hoisted1)
-    elementOpen("label", "d1dedb93-462e-4018-a7b1-fc9cb1167799", hoisted2)
+  elementOpen("div", "0b6c7fd5-957f-4439-9113-7b0a26bffe5f", hoisted1)
+    elementOpen("label", "bce21b82-4312-483f-9454-8fcfd2723a68", hoisted2)
       text("Of")
     elementClose("label")
-    elementOpen("select", "78e48ed3-17e0-4fe9-b0d3-9f29fe1f0eb5", hoisted3, "value", model.oftype, "onchange", function ($event) {
+    elementOpen("select", "b1e64d96-8433-4224-b741-7c146cacd446", hoisted3, "value", model.oftype, "onchange", function ($event) {
       var $element = this;
     model.oftype = this.value})
       __target = root.staticTypes
       if (__target) {
         ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
           var type = $value
-          var $key = "4049e716-a583-469a-aa64-f7f503dc07bc_" + $item
+          var $key = "2cc6ea3e-bc55-402a-b1c8-62c71f4b8d46_" + $item
           elementOpen("option", $key, null, "value", type, "selected", model.oftype === type ? 'selected' : null)
             text("" + (type) + "")
           elementClose("option")
@@ -736,7 +666,7 @@ module.exports = function description (model, root) {
       defsView(model.oftype, model.def, root)
 }
 
-},{"../defs.html":11,"incremental-dom":176}],14:[function(require,module,exports){
+},{"../defs.html":9,"incremental-dom":166}],12:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -756,10 +686,10 @@ var hoisted8 = ["value", "false"]
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "9e1261bb-749e-4b1e-a09d-6f97b0aca331", hoisted1)
+elementOpen("div", "62a27031-76e4-4d42-8346-53cd4354824d", hoisted1)
   elementOpen("div")
-    elementOpen("label", "a706aef7-167c-4c5c-bd43-dec9da6a238a", hoisted2)
-      elementOpen("input", "ed515b05-2398-41b5-9812-d1eac84ceff4", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "9112017c-adcf-4749-a2ef-ffc8f6b8caea", hoisted2)
+      elementOpen("input", "4c0b7aaf-8b9b-4386-8718-4e241a7e2b9e", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
@@ -768,26 +698,26 @@ elementOpen("div", "9e1261bb-749e-4b1e-a09d-6f97b0aca331", hoisted1)
     elementClose("label")
   elementClose("div")
 elementClose("div")
-elementOpen("div", "f07ca50e-2319-46c2-908d-0c2ac39c8c1a", hoisted4)
-  elementOpen("label", "86a19463-9ce8-42e4-a170-88145c7c6f53", hoisted5)
+elementOpen("div", "89137a7c-a891-4d3a-b21c-32d4c7f73d43", hoisted4)
+  elementOpen("label", "bdc0c86f-bd5c-471c-8705-540cb94f3702", hoisted5)
     text("Default value")
   elementClose("label")
-  elementOpen("select", "7a51653c-8fde-4423-81a6-c90e971bcc6c", hoisted6, "value", model.defaultValue, "onchange", function ($event) {
+  elementOpen("select", "7d291180-28d9-4839-b244-f654f154cae9", hoisted6, "value", model.defaultValue, "onchange", function ($event) {
     var $element = this;
   model.defaultValue = this.value ? this.value : null})
     elementOpen("option")
     elementClose("option")
-    elementOpen("option", "094a1373-17c5-4eb9-86cf-b4573ba9ea9c", hoisted7, "selected", model.defaultValue === true ? 'selected' : null)
+    elementOpen("option", "f0c6fc03-e8d1-4a17-8e93-f93ae8e062b1", hoisted7, "selected", model.defaultValue === true ? 'selected' : null)
       text("true")
     elementClose("option")
-    elementOpen("option", "2ababb6f-281f-4252-908c-94aaf85a843c", hoisted8, "selected", model.defaultValue === false ? 'selected' : null)
+    elementOpen("option", "faadb01b-0700-49fb-8160-e7c674251f39", hoisted8, "selected", model.defaultValue === false ? 'selected' : null)
       text("false")
     elementClose("option")
   elementClose("select")
 elementClose("div")
 }
 
-},{"incremental-dom":176}],15:[function(require,module,exports){
+},{"incremental-dom":166}],13:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -802,10 +732,10 @@ var hoisted3 = ["type", "checkbox"]
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "ad2bd3b4-9cc9-4571-b661-4857ce24ac28", hoisted1)
+elementOpen("div", "6ccae458-5805-4220-9168-f792dae0404a", hoisted1)
   elementOpen("div")
-    elementOpen("label", "649d659b-8e4b-4912-98ef-6398d062386a", hoisted2)
-      elementOpen("input", "98def4b6-186a-4064-ae19-a57e42789459", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "9324187e-ace4-4d94-acc1-e908205ac054", hoisted2)
+      elementOpen("input", "254b1647-dc78-4a4d-8ec0-4279eae62843", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
@@ -816,7 +746,7 @@ elementOpen("div", "ad2bd3b4-9cc9-4571-b661-4857ce24ac28", hoisted1)
 elementClose("div")
 }
 
-},{"incremental-dom":176}],16:[function(require,module,exports){
+},{"incremental-dom":166}],14:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -834,10 +764,10 @@ var hoisted6 = ["id", "ref", "class", "form-control input-sm"]
 var __target
 
 module.exports = function description (model, root) {
-  elementOpen("div", "21c7167d-3925-40fa-b863-0510ac4e622f", hoisted1)
+  elementOpen("div", "c22863cd-5590-48d6-933d-dfa21c8f55c3", hoisted1)
     elementOpen("div")
-      elementOpen("label", "a43b8b8f-0b1d-4c26-88c9-0cda7c55fe24", hoisted2)
-        elementOpen("input", "49d54905-daa3-4226-8d10-fe36e247c51b", hoisted3, "checked", model.required, "onchange", function ($event) {
+      elementOpen("label", "e87f91d6-c385-4836-9bf4-807d7d291889", hoisted2)
+        elementOpen("input", "54ac3d1c-c18c-48be-8802-74e868975d19", hoisted3, "checked", model.required, "onchange", function ($event) {
           var $element = this;
         model.required = this.checked})
         elementClose("input")
@@ -846,11 +776,11 @@ module.exports = function description (model, root) {
       elementClose("label")
     elementClose("div")
   elementClose("div")
-  elementOpen("div", "67109d24-8541-452d-a068-2f743b99a613", hoisted4)
-    elementOpen("label", "4157b7f7-4b37-4d53-abdb-38a409050f66", hoisted5)
+  elementOpen("div", "3b4eadb0-8d69-467f-a16c-03f18809ca7d", hoisted4)
+    elementOpen("label", "791ec317-0a48-4c09-8464-5063abf1dff6", hoisted5)
       text("Ref")
     elementClose("label")
-    elementOpen("select", "fab30e40-379f-46a6-b72e-4f958897c4b1", hoisted6, "value", model.ref, "onchange", function ($event) {
+    elementOpen("select", "481143bc-eb9f-41e3-9d20-8c081970b431", hoisted6, "value", model.ref, "onchange", function ($event) {
       var $element = this;
     model.ref = this.value})
       elementOpen("option")
@@ -859,7 +789,7 @@ module.exports = function description (model, root) {
       if (__target) {
         ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
           var schema = $value
-          var $key = "e6f490e5-6ee0-4e4c-99a1-6a6c3386598f_" + $item
+          var $key = "8e9cc5c4-5bb5-484f-8e8e-1e94ffeb1b0c_" + $item
           elementOpen("option", $key, null, "value", schema.id, "selected", model.ref === schema.id ? 'selected' : null)
             text("" + (schema.name) + "")
           elementClose("option")
@@ -869,7 +799,7 @@ module.exports = function description (model, root) {
   elementClose("div")
 }
 
-},{"incremental-dom":176}],17:[function(require,module,exports){
+},{"incremental-dom":166}],15:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -891,26 +821,26 @@ var hoisted10 = ["type", "text", "id", "defaultValue", "class", "form-control in
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "f8d5e396-c8b6-4a80-8979-ec75265adf29", hoisted1)
+elementOpen("div", "c476d427-2124-4d81-bdca-bbc4c5b3085b", hoisted1)
   elementOpen("div")
-    elementOpen("label", "523eb839-be01-4a87-a4b9-1d4ae1d1940e", hoisted2)
-      elementOpen("input", "780b59c4-8e52-497d-b749-a7c0cc6a1d6f", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "1746f067-56d4-4775-b416-c277f1708693", hoisted2)
+      elementOpen("input", "b0d0495c-787a-4957-ab6a-a260eb842909", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
       text(" Required \
           ")
     elementClose("label")
-    elementOpen("label", "4f63eca0-1bef-4284-ae16-f442ebcfbb07", hoisted4)
-      elementOpen("input", "ee224ede-9433-442e-ad1f-b2c0237eb70f", hoisted5, "checked", model.unique, "onchange", function ($event) {
+    elementOpen("label", "98735a60-39bb-42df-ae83-d74789ecd09f", hoisted4)
+      elementOpen("input", "272dee4b-49c6-4577-8fbe-e37a0ebf1c9e", hoisted5, "checked", model.unique, "onchange", function ($event) {
         var $element = this;
       model.unique = this.checked})
       elementClose("input")
       text(" Unique \
           ")
     elementClose("label")
-    elementOpen("label", "819123a3-c404-455f-9a9f-2307d741abdd", hoisted6)
-      elementOpen("input", "2a8f006d-b8a2-40ed-8427-75ffb22133b8", hoisted7, "checked", model.index, "onchange", function ($event) {
+    elementOpen("label", "e832ef2a-9fac-41b0-ac2e-c19cff620fdb", hoisted6)
+      elementOpen("input", "05adfac3-c166-4fac-bd18-8ab9738d522f", hoisted7, "checked", model.index, "onchange", function ($event) {
         var $element = this;
       model.index = this.checked})
       elementClose("input")
@@ -919,18 +849,18 @@ elementOpen("div", "f8d5e396-c8b6-4a80-8979-ec75265adf29", hoisted1)
     elementClose("label")
   elementClose("div")
 elementClose("div")
-elementOpen("div", "9e8790a6-2b1e-4990-b126-db1396314b91", hoisted8)
-  elementOpen("label", "8578e2e5-cf61-40fb-9775-f16318a7172e", hoisted9)
+elementOpen("div", "a1011b9e-ace2-4058-8301-f6f86f2e7e8c", hoisted8)
+  elementOpen("label", "600165fd-1a35-45fd-853b-0a0abc1908ca", hoisted9)
     text("Default value")
   elementClose("label")
-  elementOpen("input", "dfc2919f-4c5d-4c10-b38c-b1cbbc75e6af", hoisted10, "value", model.defaultValue, "onchange", function ($event) {
+  elementOpen("input", "3af0612f-5ad6-45e2-93b9-3495dd2769c8", hoisted10, "value", model.defaultValue, "onchange", function ($event) {
     var $element = this;
   model.defaultValue = this.value})
   elementClose("input")
 elementClose("div")
 }
 
-},{"incremental-dom":176}],18:[function(require,module,exports){
+},{"incremental-dom":166}],16:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -948,10 +878,10 @@ var hoisted6 = ["id", "ref", "class", "form-control input-sm"]
 var __target
 
 module.exports = function description (model, root) {
-  elementOpen("div", "3b45e4b8-293e-4280-a8ca-c5cc9bc60ee8", hoisted1)
+  elementOpen("div", "17ecec26-a246-49d9-80bf-bd9bac4593af", hoisted1)
     elementOpen("div")
-      elementOpen("label", "701b4912-08a2-48ab-8589-dce668c91179", hoisted2)
-        elementOpen("input", "535daa14-1e40-442e-94d1-60acd5e3b8e3", hoisted3, "checked", model.required, "onchange", function ($event) {
+      elementOpen("label", "32509b21-115c-41e7-beae-a14bfa9611fc", hoisted2)
+        elementOpen("input", "59f0551f-85da-4832-b290-57f2dcf7f461", hoisted3, "checked", model.required, "onchange", function ($event) {
           var $element = this;
         model.required = this.checked})
         elementClose("input")
@@ -960,11 +890,11 @@ module.exports = function description (model, root) {
       elementClose("label")
     elementClose("div")
   elementClose("div")
-  elementOpen("div", "66d1c4c4-46a8-4dd8-a0ce-3b3bb89ae679", hoisted4)
-    elementOpen("label", "f8e55a40-192b-459a-8d45-93725e244c85", hoisted5)
+  elementOpen("div", "3214ccc9-02cd-4021-877d-8c08e25be9b7", hoisted4)
+    elementOpen("label", "13f332e8-3c2c-47fc-a801-7848b448ade8", hoisted5)
       text("Ref")
     elementClose("label")
-    elementOpen("select", "2598d41f-4027-4308-b963-56342bf4b3ff", hoisted6, "value", model.ref, "onchange", function ($event) {
+    elementOpen("select", "9d0cf38d-b8c4-4851-abe0-bfdd6b535c5b", hoisted6, "value", model.ref, "onchange", function ($event) {
       var $element = this;
     model.ref = this.value})
       elementOpen("option")
@@ -973,7 +903,7 @@ module.exports = function description (model, root) {
       if (__target) {
         ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
           var schema = $value
-          var $key = "0f73769e-4b76-4e3d-b509-05099a5b3fbd_" + $item
+          var $key = "c0438f66-422f-4286-9cd6-279a928f6fc1_" + $item
           elementOpen("option", $key, null, "value", schema.id, "selected", model.ref === schema.id ? 'selected' : null)
             text("" + (schema.name) + "")
           elementClose("option")
@@ -983,7 +913,7 @@ module.exports = function description (model, root) {
   elementClose("div")
 }
 
-},{"incremental-dom":176}],19:[function(require,module,exports){
+},{"incremental-dom":166}],17:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -998,10 +928,10 @@ var hoisted3 = ["type", "checkbox"]
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "877eee86-82fa-45e4-a1c2-99e7bb63d9aa", hoisted1)
+elementOpen("div", "bc6667ae-aa61-4409-bea0-f0a45c46c000", hoisted1)
   elementOpen("div")
-    elementOpen("label", "c88f2a58-4c3a-4680-9636-603639e73f15", hoisted2)
-      elementOpen("input", "b97c854c-edc6-4729-9c51-a4f6b7086b1c", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "922ea779-6341-4b26-8c90-5271f9272d13", hoisted2)
+      elementOpen("input", "0c594b7b-5839-4da1-b7d0-0356d2039bf6", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
@@ -1012,7 +942,7 @@ elementOpen("div", "877eee86-82fa-45e4-a1c2-99e7bb63d9aa", hoisted1)
 elementClose("div")
 }
 
-},{"incremental-dom":176}],20:[function(require,module,exports){
+},{"incremental-dom":166}],18:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -1025,14 +955,14 @@ var hoisted1 = ["type", "button", "class", "btn btn-primary btn-xs"]
 var __target
 
 module.exports = function description (model, root) {
-  elementOpen("button", "1d53ff96-aed3-46fd-9510-abed53757b0b", hoisted1, "onclick", function ($event) {
+  elementOpen("button", "9c76d687-6ac1-4f4f-af32-f62129d3ccdb", hoisted1, "onclick", function ($event) {
     var $element = this;
   root.currentItem = model.keys.addKey()})
     text("Add key")
   elementClose("button")
 }
 
-},{"incremental-dom":176}],21:[function(require,module,exports){
+},{"incremental-dom":166}],19:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -1060,26 +990,26 @@ var hoisted16 = ["type", "number", "id", "defaultValue", "class", "form-control 
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "0f2b96e8-96b1-4520-90f9-ea02a631dacb", hoisted1)
+elementOpen("div", "6fd8f8d0-be8e-441c-9fdd-6eaa43d4ab66", hoisted1)
   elementOpen("div")
-    elementOpen("label", "12a43c33-1fb8-4d03-98af-f49e0dae79d6", hoisted2)
-      elementOpen("input", "93b9ed60-26f5-4517-b245-e0108cf0f23f", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "dfd948bd-4dad-40d8-a857-a8ee6b5d78c8", hoisted2)
+      elementOpen("input", "63c502c6-50ea-48c7-b6b6-31f1f3b45f07", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
       text(" Required \
           ")
     elementClose("label")
-    elementOpen("label", "6d6431cb-61df-4655-8a47-30681adeceda", hoisted4)
-      elementOpen("input", "fc27ca81-2016-4984-8aa8-983fe1199646", hoisted5, "checked", model.unique, "onchange", function ($event) {
+    elementOpen("label", "8adfd38c-0d73-4117-9cc6-73da08c2cbc9", hoisted4)
+      elementOpen("input", "7d350c92-1ad6-461d-9302-a19fe97031ac", hoisted5, "checked", model.unique, "onchange", function ($event) {
         var $element = this;
       model.unique = this.checked})
       elementClose("input")
       text(" Unique \
           ")
     elementClose("label")
-    elementOpen("label", "a3bbd1b0-6cca-4060-854b-d8af2e70d13a", hoisted6)
-      elementOpen("input", "08326a19-a3e5-4c5b-bf00-765380f7267f", hoisted7, "checked", model.index, "onchange", function ($event) {
+    elementOpen("label", "9c39127c-8214-47ce-8b71-a45312087bc1", hoisted6)
+      elementOpen("input", "6b08d9dd-585e-4450-abc8-90c0b795f736", hoisted7, "checked", model.index, "onchange", function ($event) {
         var $element = this;
       model.index = this.checked})
       elementClose("input")
@@ -1088,36 +1018,36 @@ elementOpen("div", "0f2b96e8-96b1-4520-90f9-ea02a631dacb", hoisted1)
     elementClose("label")
   elementClose("div")
 elementClose("div")
-elementOpen("div", "6fedb35b-0ea7-4869-8f90-0a9968b151e1", hoisted8)
-  elementOpen("label", "4d202a17-5b14-4b14-8364-15b947b12e30", hoisted9)
+elementOpen("div", "d35acbff-efbe-4a04-9108-4f3958833e6e", hoisted8)
+  elementOpen("label", "81110b0f-3f7a-4235-bbc8-9576d64d2769", hoisted9)
     text("Default value")
   elementClose("label")
-  elementOpen("input", "71eeaf12-1d97-4276-b57b-c5b3d5b021f9", hoisted10, "value", model.defaultValue, "onchange", function ($event) {
+  elementOpen("input", "15ddcc72-ae2a-4160-8a01-7b0eca1042a5", hoisted10, "value", model.defaultValue, "onchange", function ($event) {
     var $element = this;
   model.defaultValue = this.value})
   elementClose("input")
 elementClose("div")
-elementOpen("div", "8e61b90f-74a7-4043-932d-267785296462", hoisted11)
-  elementOpen("label", "f39e13c6-085a-4320-a706-bf227c9f1873", hoisted12)
+elementOpen("div", "62bd19a5-632d-480d-baa5-a91c9a2edb86", hoisted11)
+  elementOpen("label", "e4a729d5-ab7f-4b4a-998a-a7cdce6aab85", hoisted12)
     text("Minimum value")
   elementClose("label")
-  elementOpen("input", "f5d2680f-8aca-44f2-a085-0476443d972d", hoisted13, "value", model.min, "onchange", function ($event) {
+  elementOpen("input", "540c035b-f780-4eb5-8a50-71b777c218b5", hoisted13, "value", model.min, "onchange", function ($event) {
     var $element = this;
   model.min = this.value})
   elementClose("input")
 elementClose("div")
-elementOpen("div", "70e496e0-02a4-4d8d-9856-91f6f50782c9", hoisted14)
-  elementOpen("label", "70c2ba65-ac52-49ea-b596-fa49f3ffbd63", hoisted15)
+elementOpen("div", "e2098fd0-6831-4c30-8971-8110e7e62a76", hoisted14)
+  elementOpen("label", "6d8a2a18-bdf1-409b-979c-bbca20655428", hoisted15)
     text("Maximum value")
   elementClose("label")
-  elementOpen("input", "f1c8491b-0828-4db0-87a0-b04ac0156362", hoisted16, "value", model.max, "onchange", function ($event) {
+  elementOpen("input", "7a2f10ba-64ee-4273-9ad9-ca7663ce0e63", hoisted16, "value", model.max, "onchange", function ($event) {
     var $element = this;
   model.max = this.value})
   elementClose("input")
 elementClose("div")
 }
 
-},{"incremental-dom":176}],22:[function(require,module,exports){
+},{"incremental-dom":166}],20:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -1138,34 +1068,34 @@ var hoisted9 = ["type", "checkbox"]
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "ad1caaff-2550-47b4-9484-b1c20afe3a35", hoisted1)
+elementOpen("div", "ba296f27-2ebb-4d1b-b878-5b29019f5c22", hoisted1)
   elementOpen("div")
-    elementOpen("label", "c4f76f58-24c5-47e8-94ed-b5f40075d1ab", hoisted2)
-      elementOpen("input", "9e72383a-8035-4e74-9193-928b0d26e127", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "69c630ca-8f4f-4eca-91a5-bf3b1522ac8e", hoisted2)
+      elementOpen("input", "d6c505f9-9f6d-4740-a4c5-7fc793222bb0", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
       text(" Required \
           ")
     elementClose("label")
-    elementOpen("label", "2d93d533-32c7-4167-b825-180daedcfd1c", hoisted4)
-      elementOpen("input", "f7869b7c-c606-4706-84b7-99529977b766", hoisted5, "checked", model.unique, "onchange", function ($event) {
+    elementOpen("label", "fbcd68e7-76c6-4d5c-912f-68c0938f6a1e", hoisted4)
+      elementOpen("input", "735bd01f-9b8d-4845-a278-ce88a79b0660", hoisted5, "checked", model.unique, "onchange", function ($event) {
         var $element = this;
       model.unique = this.checked})
       elementClose("input")
       text(" Unique \
           ")
     elementClose("label")
-    elementOpen("label", "2c8e85c0-da6e-4db3-a66f-9647ab10846e", hoisted6)
-      elementOpen("input", "179af6c1-ca36-457a-b4ac-ccb2c962a979", hoisted7, "checked", model.auto, "onchange", function ($event) {
+    elementOpen("label", "1d8e22be-481c-4d9b-8269-27ad45e85d1d", hoisted6)
+      elementOpen("input", "a8ba2026-0cc3-467f-ad0a-1bb9cd6bcb15", hoisted7, "checked", model.auto, "onchange", function ($event) {
         var $element = this;
       model.auto = this.checked})
       elementClose("input")
       text(" Auto \
           ")
     elementClose("label")
-    elementOpen("label", "e01612b2-f9a9-437f-86b8-151e9c8bb96d", hoisted8)
-      elementOpen("input", "ee536903-a289-420f-888e-f0e39d1ebbe9", hoisted9, "checked", model.index, "onchange", function ($event) {
+    elementOpen("label", "a74451af-0013-4563-9e64-634063fae72c", hoisted8)
+      elementOpen("input", "d7860f39-db3d-4ff5-a4a2-5771be094ae6", hoisted9, "checked", model.index, "onchange", function ($event) {
         var $element = this;
       model.index = this.checked})
       elementClose("input")
@@ -1176,7 +1106,7 @@ elementOpen("div", "ad1caaff-2550-47b4-9484-b1c20afe3a35", hoisted1)
 elementClose("div")
 }
 
-},{"incremental-dom":176}],23:[function(require,module,exports){
+},{"incremental-dom":166}],21:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -1212,34 +1142,34 @@ var hoisted24 = ["type", "text", "id", "match", "class", "form-control input-sm"
 var __target
 
 module.exports = function description (model) {
-elementOpen("div", "d643fb64-797a-447f-9f9d-684e160f3fb0", hoisted1)
+elementOpen("div", "d2d3d90f-8e8e-4f2a-8cda-698567b4a8c3", hoisted1)
   elementOpen("div")
-    elementOpen("label", "ca9ca107-5363-4c77-960d-3a4d16ea7f3e", hoisted2)
-      elementOpen("input", "19116b6b-c0d7-4cc5-9737-e749be99e9f2", hoisted3, "checked", model.required, "onchange", function ($event) {
+    elementOpen("label", "5b0a0328-1e18-4a0b-8681-a56dd65abb57", hoisted2)
+      elementOpen("input", "3e5f956c-d4ff-4e25-8520-8063d23c7710", hoisted3, "checked", model.required, "onchange", function ($event) {
         var $element = this;
       model.required = this.checked})
       elementClose("input")
       text(" Required \
           ")
     elementClose("label")
-    elementOpen("label", "aa66e4b8-757d-4812-91cb-9afa0d6892bc", hoisted4)
-      elementOpen("input", "ef452a80-c0ce-4d44-bbc8-2e94a0d325cf", hoisted5, "checked", model.trim, "onchange", function ($event) {
+    elementOpen("label", "65f650cf-9a3c-4fb2-a727-77ad18d4bedd", hoisted4)
+      elementOpen("input", "f4369aeb-e3dc-47c3-8d9c-b4f05190b83a", hoisted5, "checked", model.trim, "onchange", function ($event) {
         var $element = this;
       model.trim = this.checked})
       elementClose("input")
       text(" Trim \
           ")
     elementClose("label")
-    elementOpen("label", "69c99f2f-8f9c-4293-8f22-ea816ae996b4", hoisted6)
-      elementOpen("input", "27303a5f-7560-45f9-94fa-0bdf672f67f4", hoisted7, "checked", model.unique, "onchange", function ($event) {
+    elementOpen("label", "c4c4ca8f-7468-407f-beb6-b41f4f2022dc", hoisted6)
+      elementOpen("input", "4e18e3a6-3230-4fd8-a734-a868fc620489", hoisted7, "checked", model.unique, "onchange", function ($event) {
         var $element = this;
       model.unique = this.checked})
       elementClose("input")
       text(" Unique \
           ")
     elementClose("label")
-    elementOpen("label", "c1389a2d-ccc9-48f6-a010-2a7c7baeac1f", hoisted8)
-      elementOpen("input", "830082ff-403d-4a50-bad9-494d99f1c761", hoisted9, "checked", model.index, "onchange", function ($event) {
+    elementOpen("label", "63e0dfb2-aa81-4bd6-af51-46db5625af8f", hoisted8)
+      elementOpen("input", "f9986d5d-a826-4c8b-8d0c-df6a97e6f119", hoisted9, "checked", model.index, "onchange", function ($event) {
         var $element = this;
       model.index = this.checked})
       elementClose("input")
@@ -1248,53 +1178,53 @@ elementOpen("div", "d643fb64-797a-447f-9f9d-684e160f3fb0", hoisted1)
     elementClose("label")
   elementClose("div")
 elementClose("div")
-elementOpen("div", "400dad0c-0c31-458d-9339-9d62a10c3375", hoisted10)
-  elementOpen("label", "62a0dce3-8b5d-4476-af74-a33a850313b2", hoisted11)
+elementOpen("div", "5aa00d4d-ded1-468c-a7b0-3166fa37eb3c", hoisted10)
+  elementOpen("label", "a681a723-8065-41ce-8bf8-d90b878e6f26", hoisted11)
     text("Default value")
   elementClose("label")
-  elementOpen("input", "695a06f8-de25-40a7-b264-e628c686e854", hoisted12, "value", model.defaultValue, "onchange", function ($event) {
+  elementOpen("input", "5ada0a29-d7c1-4565-b81e-ad54b6a62656", hoisted12, "value", model.defaultValue, "onchange", function ($event) {
     var $element = this;
   model.defaultValue = this.value})
   elementClose("input")
 elementClose("div")
-elementOpen("div", "b633e621-d3d9-4d1a-b972-0fa4c249c21a", hoisted13)
-  elementOpen("label", "3182fa83-65e9-4b5b-a7cf-b975effea973", hoisted14)
+elementOpen("div", "994e1d9d-a197-4317-858d-2f4f0add835e", hoisted13)
+  elementOpen("label", "883a38a0-e389-4720-94a2-b97ea8c087ad", hoisted14)
     text("Enumeration")
   elementClose("label")
-  elementOpen("input", "f71930a8-b218-4c7d-b8eb-0d327de20b0e", hoisted15, "value", model.enumeration, "onchange", function ($event) {
+  elementOpen("input", "a8dfd308-93d3-48cb-aaca-d6ba6303c52b", hoisted15, "value", model.enumeration, "onchange", function ($event) {
     var $element = this;
   model.enumeration = this.value})
   elementClose("input")
 elementClose("div")
-elementOpen("div", "b706b1cd-7109-43b8-9885-48c12ac695a5", hoisted16)
-  elementOpen("label", "8bd7ff12-86d4-4d0b-ae6f-eaddea3a653e", hoisted17)
+elementOpen("div", "c8813671-c8c6-4e06-b51b-e5b0b9334684", hoisted16)
+  elementOpen("label", "43fef195-4d91-42ab-bb2f-5b048d07efeb", hoisted17)
     text("Casing")
   elementClose("label")
-  elementOpen("select", "244c711b-d33b-4771-bb0f-cf1050dc5388", hoisted18, "value", model.casing, "onchange", function ($event) {
+  elementOpen("select", "1e8788e9-8046-4148-b0c0-0fa6bfcc1b12", hoisted18, "value", model.casing, "onchange", function ($event) {
     var $element = this;
   model.casing = this.value})
-    elementOpen("option", "62ad8e5b-93ef-40d3-9a6d-ac8c96b61e89", hoisted19)
+    elementOpen("option", "a204cb51-40bf-4cfb-ba42-950b0f9dedcc", hoisted19)
     elementClose("option")
-    elementOpen("option", "47cc2e02-c7ee-4cba-a2a4-2a34c0766c72", hoisted20, "selected", model.casing === 'upper' ? 'selected' : null)
+    elementOpen("option", "7a559e96-53ee-4f8e-8913-2052edb19da1", hoisted20, "selected", model.casing === 'upper' ? 'selected' : null)
       text("Uppercase")
     elementClose("option")
-    elementOpen("option", "bc0f6e44-3200-4a8a-8049-1b50055c51f7", hoisted21, "selected", model.casing === 'lower' ? 'selected' : null)
+    elementOpen("option", "95a5c6f0-2458-4229-9a30-1056d94d898e", hoisted21, "selected", model.casing === 'lower' ? 'selected' : null)
       text("Lowercase")
     elementClose("option")
   elementClose("select")
 elementClose("div")
-elementOpen("div", "7c20f559-923c-4962-8d0b-f6b3939172f9", hoisted22)
-  elementOpen("label", "11b0080c-39d0-486b-845e-a837abbfa5eb", hoisted23)
+elementOpen("div", "17c4936a-e9c3-4b9d-b62d-3cfda0ba0a38", hoisted22)
+  elementOpen("label", "2f452587-9a57-440b-a4a0-5f95d8c5941f", hoisted23)
     text("Match (RegEx)")
   elementClose("label")
-  elementOpen("input", "f12192a2-56fc-479d-bf3d-26956242be98", hoisted24, "value", model.match, "onchange", function ($event) {
+  elementOpen("input", "89fffcd4-750c-403a-8382-e9632e901885", hoisted24, "value", model.match, "onchange", function ($event) {
     var $element = this;
   model.match = this.value})
   elementClose("input")
 elementClose("div")
 }
 
-},{"incremental-dom":176}],24:[function(require,module,exports){
+},{"incremental-dom":166}],22:[function(require,module,exports){
 /* global d3 */
 var dagreD3 = require('dagre-d3')
 
@@ -1364,7 +1294,7 @@ module.exports = function (el, model) {
     .event(svg)
 }
 
-},{"dagre-d3":74}],25:[function(require,module,exports){
+},{"dagre-d3":65}],23:[function(require,module,exports){
 /* global $ */
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
@@ -1427,7 +1357,7 @@ var Db = document.registerElement('vsd-db', {
 
 module.exports = Db
 
-},{"./controller":10,"./graph":24,"./key.html":26,"./keys.html":28,"./model.html":30,"./schema.html":32,"./view.html":34,"incremental-dom":176}],26:[function(require,module,exports){
+},{"./controller":8,"./graph":22,"./key.html":24,"./keys.html":26,"./model.html":28,"./schema.html":30,"./view.html":32,"incremental-dom":166}],24:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -1464,14 +1394,14 @@ var __target
 
 module.exports = function description (model, root) {
   var keys = model.keys
-  elementOpen("form", "c771eae6-6006-41f8-b72f-f65e9783b6d4", hoisted1)
+  elementOpen("form", "19375dd7-cded-4ade-a802-e09f8b9951d8", hoisted1)
     if (model.errors.length) {
-      elementOpen("ul", "e389bbdc-6965-4219-85bc-80c803ddda95", hoisted2)
+      elementOpen("ul", "11976f75-307f-4976-899e-72db7350b6b0", hoisted2)
         __target = model.errors
         if (__target) {
           ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
             var item = $value
-            var $key = "cd2491dd-b4c9-47a7-8c2c-9e4b56a75296_" + $item
+            var $key = "5c920bb3-57af-40c5-8136-749843222693_" + $item
             elementOpen("li", $key)
               text(" \
                       " + (item.error) + " \
@@ -1481,39 +1411,39 @@ module.exports = function description (model, root) {
         }
       elementClose("ul")
     }
-    elementOpen("div", "116e8119-7c31-460d-a3ae-97d745293ecd", hoisted3)
-      elementOpen("label", "2025e806-ea2c-4433-a6c7-832a1a03ec68", hoisted4)
+    elementOpen("div", "41fb5fcf-0fd6-4aeb-91c9-e2cfc4c44494", hoisted3)
+      elementOpen("label", "31d45992-cfd4-4075-853b-f3cd887cb3d4", hoisted4)
         text("Key Name")
       elementClose("label")
-      elementOpen("div", "ccbb3485-3f1f-433e-b036-96d7028f21a4", hoisted5)
-        elementOpen("input", "e3588753-23dc-4ddb-a2ca-5a60f60af089", hoisted6, "value", model.name, "onchange", function ($event) {
+      elementOpen("div", "5c481835-36a1-451c-8809-2612d4d785aa", hoisted5)
+        elementOpen("input", "39c24fd3-7f5a-4099-8365-f944f44a090d", hoisted6, "value", model.name, "onchange", function ($event) {
           var $element = this;
         model.name = this.value})
         elementClose("input")
-        elementOpen("div", "5dd2b285-14e6-4c31-9ef2-175e7d89db48", hoisted7)
-          elementOpen("button", "2be61286-1294-4cdf-aa34-87b7a8b36af5", hoisted8, "onclick", function ($event) {
+        elementOpen("div", "c40348fd-2be7-4b8e-b6d0-0d7f09aeda49", hoisted7)
+          elementOpen("button", "36d63ef4-e411-4009-bc3f-63f2b8f65b31", hoisted8, "onclick", function ($event) {
             var $element = this;
           keys.moveKeyUp(model)}, "title", "Move key [" + (model.name) + "] up")
-            elementOpen("i", "468f445d-2274-4f8f-8e2d-dc0fa3b8d6cd", hoisted9)
+            elementOpen("i", "3d0744d4-bc60-4d39-9d74-17c7e28ec108", hoisted9)
             elementClose("i")
           elementClose("button")
-          elementOpen("button", "4323708b-e652-4208-b1f9-079dea749f30", hoisted10, "onclick", function ($event) {
+          elementOpen("button", "f5ddf131-0134-43d2-853a-64c8968724a6", hoisted10, "onclick", function ($event) {
             var $element = this;
           keys.moveKeyDown(model)}, "title", "Move key [" + (model.name) + "] down")
-            elementOpen("i", "0056874a-27a9-48c2-8ce9-14be9027f458", hoisted11)
+            elementOpen("i", "afdb0c2f-9441-4c9a-9cad-a9711e26155b", hoisted11)
             elementClose("i")
           elementClose("button")
-          elementOpen("button", "0a692fd9-1cac-44e0-8994-1cae3f8c90be", hoisted12, "onclick", function ($event) {
+          elementOpen("button", "8203bc89-9d76-4d90-854c-aac8779e356c", hoisted12, "onclick", function ($event) {
             var $element = this;
           root.currentItem = keys.insertKey(model.index + 1)}, "title", "Add key below [" + (model.name) + "]")
-            elementOpen("i", "a93fee8c-c906-4bcb-9f2a-a1d39fee3bc2", hoisted13)
+            elementOpen("i", "0446d241-fa61-473e-9d18-fda6e5e82f08", hoisted13)
             elementClose("i")
           elementClose("button")
-          elementOpen("button", "0acad624-dc1d-4a6b-a7eb-3305029debd2", hoisted14)
-            elementOpen("span", "800e8fba-2b7d-4877-8b8a-667b46f849fa", hoisted15)
+          elementOpen("button", "eb1bc76a-0768-4d15-b359-1d51b29636cb", hoisted14)
+            elementOpen("span", "4bdf74e6-2551-46a8-943e-d776e2f28b50", hoisted15)
             elementClose("span")
           elementClose("button")
-          elementOpen("ul", "a79892d9-e06b-413f-bc39-2808cb4f290d", hoisted16)
+          elementOpen("ul", "2be66c50-82d7-4602-903b-5578c854adec", hoisted16)
             elementOpen("li")
               elementOpen("a", null, null, "onclick", function ($event) {
                 var $element = this;
@@ -1528,9 +1458,9 @@ module.exports = function description (model, root) {
                 text("Add key above [" + (model.name) + "]")
               elementClose("a")
             elementClose("li")
-            elementOpen("li", "e345d188-4993-47a7-b92f-8ccbba7b40d0", hoisted17)
+            elementOpen("li", "9f365da0-ad82-4918-88f3-0880393e3ee7", hoisted17)
             elementClose("li")
-            elementOpen("li", "4563878d-e81b-4fbd-a524-7b6527aadf42", hoisted18)
+            elementOpen("li", "c77a11ac-453e-4a7a-8b06-2c4c4448e477", hoisted18)
               elementOpen("a", null, null, "onclick", function ($event) {
                 var $element = this;
               keys.deleteKey(model); root.currentItem = model.owner})
@@ -1541,29 +1471,29 @@ module.exports = function description (model, root) {
         elementClose("div")
       elementClose("div")
     elementClose("div")
-    elementOpen("div", "c20b42b6-5b5f-455c-95a5-51e1969e8267", hoisted19)
-      elementOpen("label", "df720d82-9dd5-43d3-aed7-3eb7af6e0dca", hoisted20)
+    elementOpen("div", "fcd93c38-6696-43c8-b726-26603596ab77", hoisted19)
+      elementOpen("label", "7a94dce8-263d-414e-a3a4-a26172ea2578", hoisted20)
         text("Key Description")
       elementClose("label")
-      elementOpen("textarea", "c17748d1-a664-4ac0-b902-e261ae1c1352", hoisted21, "value", model.description, "onchange", function ($event) {
+      elementOpen("textarea", "80853ccf-3024-4ea8-89d5-78869624f22e", hoisted21, "value", model.description, "onchange", function ($event) {
         var $element = this;
       model.description = this.value})
       elementClose("textarea")
     elementClose("div")
     elementOpen("hr")
     elementClose("hr")
-    elementOpen("div", "850dedcd-ade2-4551-ad6c-74dc32944625", hoisted22)
-      elementOpen("label", "4cc8e0ae-878c-4a3e-96df-b2e4f13caf78", hoisted23)
+    elementOpen("div", "72331dfe-4205-478f-a8e6-beb7f6d70dfa", hoisted22)
+      elementOpen("label", "7d994e39-0bd7-4169-832d-5965dcc947f0", hoisted23)
         text("Type")
       elementClose("label")
-      elementOpen("select", "cb4d8ddb-13dd-45c2-b8ff-a70893f14f58", hoisted24, "value", model.type, "onchange", function ($event) {
+      elementOpen("select", "bc1c04f9-3e6c-42c1-814f-6ec1f16702f0", hoisted24, "value", model.type, "onchange", function ($event) {
         var $element = this;
       model.type = this.value})
         __target = root.staticTypes
         if (__target) {
           ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
             var type = $value
-            var $key = "4041498b-fa00-49f1-9c3d-edf3665d619b_" + $item
+            var $key = "8da63b0f-0f82-4bf7-923e-f1541907ab22_" + $item
             elementOpen("option", $key, null, "value", type, "selected", model.type === type ? 'selected' : null)
               text("" + (type) + "")
             elementClose("option")
@@ -1576,7 +1506,7 @@ module.exports = function description (model, root) {
   elementClose("form")
 }
 
-},{"./defs.html":11,"incremental-dom":176}],27:[function(require,module,exports){
+},{"./defs.html":9,"incremental-dom":166}],25:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var prop = require('../prop')
 
@@ -1682,7 +1612,7 @@ var key = {
 
 module.exports = supermodels(key)
 
-},{"../prop":53,"./defs":12,"supermodels.js":180}],28:[function(require,module,exports){
+},{"../prop":48,"./defs":10,"supermodels.js":169}],26:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -1703,12 +1633,12 @@ module.exports = function description (model, root) {
     if (__target) {
       ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
         var key = $value
-        var $key = "fba118c7-44df-4380-84bb-062a0af2d2a2_" + $item
+        var $key = "62f2aa58-2b0d-4ba0-9799-edc93435b445_" + $item
         elementOpen("li", $key)
           var isExpanded = root.isExpanded(key)
-          elementOpen("div", "acbfbc64-3188-4f8c-ae13-27560e3296a1_" + $key, hoisted1)
+          elementOpen("div", "45d14803-4fad-42dd-b836-e956d55b6150_" + $key, hoisted1)
             if (!key.isNested) {
-              elementOpen("i", "676e615d-b8a0-4ea2-96bc-f63f3c914238_" + $key, hoisted2)
+              elementOpen("i", "ca10ead6-7762-425d-90eb-9cb1289e044a_" + $key, hoisted2)
               elementClose("i")
             }
             if (key.isNested) {
@@ -1722,12 +1652,12 @@ module.exports = function description (model, root) {
             root.onClickTreeNode(key)})
               text("" + (key.name) + "")
               if (key.def.required) {
-                elementOpen("span", "7e530ed3-9632-476e-b27a-20b23fbb7475_" + $key, hoisted3)
+                elementOpen("span", "4923755b-bc90-4ec6-99d1-fd74fc10f226_" + $key, hoisted3)
                   text(" *")
                 elementClose("span")
               }
             elementClose("a")
-            elementOpen("span", "061a512b-2441-44a8-a1c9-a84a6127a439_" + $key, hoisted4)
+            elementOpen("span", "071ff911-d35b-42b5-92f4-c3a4e7333734_" + $key, hoisted4)
               text("" + (root.keyAsString(key)) + "")
             elementClose("span")
           elementClose("div")
@@ -1746,7 +1676,7 @@ module.exports = function description (model, root) {
   elementClose("ul")
 }
 
-},{"incremental-dom":176}],29:[function(require,module,exports){
+},{"incremental-dom":166}],27:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var Key = require('./key')
 var prop = require('../prop')
@@ -1820,7 +1750,7 @@ var keys = {
 
 module.exports = supermodels(keys)
 
-},{"../prop":53,"./key":27,"supermodels.js":180}],30:[function(require,module,exports){
+},{"../prop":48,"./key":25,"supermodels.js":169}],28:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -1841,29 +1771,29 @@ var hoisted9 = ["class", "fa fa-plus"]
 var __target
 
 module.exports = function description (model, root) {
-  elementOpen("form", "35b67fa8-c7d0-44e8-a0fe-55986af9091d", hoisted1)
-    elementOpen("div", "303ff2fb-92e5-4342-b60a-193fd8e2f680", hoisted2)
-      elementOpen("label", "05c71f84-b864-4511-a956-425399f50128", hoisted3)
+  elementOpen("form", "9bb87594-d912-4317-9221-cc4185e62d19", hoisted1)
+    elementOpen("div", "1e9caf01-fa5b-44c1-8123-5c2279aa4b9f", hoisted2)
+      elementOpen("label", "5f2c6a29-5329-4054-bab2-e5bff3747c50", hoisted3)
         text("Model Name")
       elementClose("label")
-      elementOpen("input", "90e35810-205e-4794-b517-400b057d7479", hoisted4, "value", model.name, "onchange", function ($event) {
+      elementOpen("input", "c2601dab-700e-4e9a-aefd-9e53f8b35bd1", hoisted4, "value", model.name, "onchange", function ($event) {
         var $element = this;
       model.name = this.value})
       elementClose("input")
     elementClose("div")
-    elementOpen("div", "2b990422-6969-4b46-98c9-27691c07867e", hoisted5)
-      elementOpen("label", "64c8b743-d566-4a9d-837a-29f569c3f79e", hoisted6)
+    elementOpen("div", "4042a95a-e8b3-45ef-9ea5-077844b31c5a", hoisted5)
+      elementOpen("label", "300a40f2-631a-4878-ae78-01120832cb6a", hoisted6)
         text("Model Description")
       elementClose("label")
-      elementOpen("textarea", "4ecf675b-92c0-43ea-ada9-619954a0499d", hoisted7, "value", model.description, "onchange", function ($event) {
+      elementOpen("textarea", "f732f074-42de-4425-88f1-fb1e7d43f288", hoisted7, "value", model.description, "onchange", function ($event) {
         var $element = this;
       model.description = this.value})
       elementClose("textarea")
     elementClose("div")
-    elementOpen("button", "ac742a27-2aab-44cf-974e-cc7b3b839f02", hoisted8, "onclick", function ($event) {
+    elementOpen("button", "6fb5fffb-faef-4375-af3e-827d4a0a9595", hoisted8, "onclick", function ($event) {
       var $element = this;
     root.currentItem = model.addSchema()})
-      elementOpen("i", "a9072f85-57a4-42ae-9622-a4a914c11eab", hoisted9)
+      elementOpen("i", "9266665c-c066-49c1-9137-aa90c557e0ce", hoisted9)
       elementClose("i")
       text(" \
             Add schema to [" + ( model.name ) + "] \
@@ -1872,7 +1802,7 @@ module.exports = function description (model, root) {
   elementClose("form")
 }
 
-},{"incremental-dom":176}],31:[function(require,module,exports){
+},{"incremental-dom":166}],29:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var Schema = require('./schema')
 var prop = require('../prop')
@@ -1914,7 +1844,7 @@ var Model = supermodels(model)
 
 module.exports = Model
 
-},{"../prop":53,"./schema":33,"supermodels.js":180}],32:[function(require,module,exports){
+},{"../prop":48,"./schema":31,"supermodels.js":169}],30:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -1937,28 +1867,28 @@ var hoisted11 = ["type", "button", "class", "btn btn-primary btn-xs"]
 var __target
 
 module.exports = function description (model, root) {
-  elementOpen("form", "a36677d0-42c2-45e5-805f-1b292be42c67", hoisted1)
-    elementOpen("div", "ac6b405f-3160-446c-a5d6-ee9e86859e8b", hoisted2)
-      elementOpen("label", "ee8d2960-c09b-4421-b699-8e76ee1ca3f8", hoisted3)
+  elementOpen("form", "f951fd6a-96dd-4cb9-bad1-adcfec574bac", hoisted1)
+    elementOpen("div", "ae8e1e76-91b1-4ddb-933e-c0a913f4fbb8", hoisted2)
+      elementOpen("label", "9c68d38e-b9c6-4c78-9162-96a4e5aacfea", hoisted3)
         text("Schema Name")
       elementClose("label")
-      elementOpen("input", "b9210cbd-3133-4ef7-8db0-32f8ea691f6d", hoisted4, "value", model.name, "onchange", function ($event) {
+      elementOpen("input", "f2a807a6-df06-462b-a88d-d59fd554789c", hoisted4, "value", model.name, "onchange", function ($event) {
         var $element = this;
       model.name = this.value})
       elementClose("input")
     elementClose("div")
-    elementOpen("div", "f8c1f452-d96a-47cd-b263-85f916bd2779", hoisted5)
-      elementOpen("label", "4d1b4d93-dbdc-48fe-adb9-f6159d05d398", hoisted6)
+    elementOpen("div", "185ed1b0-d39a-4d4a-88ee-6462f5c5c901", hoisted5)
+      elementOpen("label", "e08f2dbb-eb47-4e69-b634-898517584d3d", hoisted6)
         text("Schema Description")
       elementClose("label")
-      elementOpen("textarea", "e9137de7-c43d-48d8-ad3d-4f518366cc95", hoisted7, "value", model.description, "onchange", function ($event) {
+      elementOpen("textarea", "a5152bc7-0a6b-4660-b59f-4a3fd73a0acd", hoisted7, "value", model.description, "onchange", function ($event) {
         var $element = this;
       model.description = this.value})
       elementClose("textarea")
     elementClose("div")
-    elementOpen("div", "bafc03b6-0718-4b52-a594-cf1e968b29f8", hoisted8)
+    elementOpen("div", "987937e5-a800-436d-a1bc-ddc768968fee", hoisted8)
       elementOpen("label")
-        elementOpen("input", "64664712-21d4-47e3-81bf-f74a1040655c", hoisted9, "checked", model.isVirtual, "onchange", function ($event) {
+        elementOpen("input", "0a889ade-4a47-4d6b-bed7-2574e7e8862f", hoisted9, "checked", model.isVirtual, "onchange", function ($event) {
           var $element = this;
         model.isVirtual = this.value}, "disabled", model.isReferenced() ? 'disabled' : null)
         elementClose("input")
@@ -1966,12 +1896,12 @@ module.exports = function description (model, root) {
               ")
       elementClose("label")
     elementClose("div")
-    elementOpen("button", "75a9bbf8-e26a-416b-92b6-ba94aae9c069", hoisted10, "onclick", function ($event) {
+    elementOpen("button", "2951d99b-6e2d-4ae4-818f-2203a079070f", hoisted10, "onclick", function ($event) {
       var $element = this;
     model.model.removeSchema(model); root.currentItem = model.model}, "disabled", model.isReferenced() ? 'disabled' : null)
       text("Remove schema")
     elementClose("button")
-    elementOpen("button", "2fcdf09e-e748-4969-9f11-5234b1eaa5b9", hoisted11, "onclick", function ($event) {
+    elementOpen("button", "71b9e283-8ea7-45b8-9c54-a1584afa5af7", hoisted11, "onclick", function ($event) {
       var $element = this;
     root.currentItem = model.keys.addKey()})
       text("Add key")
@@ -1979,7 +1909,7 @@ module.exports = function description (model, root) {
   elementClose("form")
 }
 
-},{"incremental-dom":176}],33:[function(require,module,exports){
+},{"incremental-dom":166}],31:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var Keys = require('./keys')
 var prop = require('../prop')
@@ -2022,7 +1952,7 @@ var schema = {
 
 module.exports = supermodels(schema)
 
-},{"../prop":53,"./keys":29,"supermodels.js":180}],34:[function(require,module,exports){
+},{"../prop":48,"./keys":27,"supermodels.js":169}],32:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -2062,27 +1992,27 @@ var __target
 module.exports = function description (ctrl, modelView, schemaView, keysView, keyView) {
   var model = ctrl.model
       var breadcrumbs = ctrl.breadcrumbs
-  elementOpen("div", "bc259a94-8a5f-48fe-a6e5-7dc5c1c60617", hoisted1)
-    elementOpen("ul", "84f5340f-da04-4b52-9bd8-1c30b927a759", hoisted2)
-      elementOpen("li", "fdafce2d-bc3c-4fc2-aa6d-07a8d010a4dd", hoisted3)
-        elementOpen("a", "1a09b839-7866-4828-8980-c699b62b5532", hoisted4, "href", "#_" + (ctrl.id) + "_1")
+  elementOpen("div", "64a20ab1-2eac-46c9-8fe0-6298c993b268", hoisted1)
+    elementOpen("ul", "b99da1ae-e324-4988-aaaa-0fa0cc162363", hoisted2)
+      elementOpen("li", "6901bf3a-3347-4726-bc5f-ac6b516454b4", hoisted3)
+        elementOpen("a", "cb11872f-2ae0-4f45-beab-a96f373596aa", hoisted4, "href", "#_" + (ctrl.id) + "_1")
           text("Editor")
         elementClose("a")
       elementClose("li")
       elementOpen("li")
-        elementOpen("a", "72d78b8b-3cd0-4f12-a4fe-1a3c330eeefc", hoisted5, "href", "#_" + (ctrl.id) + "_2")
+        elementOpen("a", "a5bc736e-dc38-47bc-a491-58be352b5b00", hoisted5, "href", "#_" + (ctrl.id) + "_2")
           text("Diagram")
         elementClose("a")
       elementClose("li")
       elementOpen("li")
-        elementOpen("a", "a1960dc9-a4b8-474b-a3f5-d9cdc277becf", hoisted6, "href", "#_" + (ctrl.id) + "_3")
+        elementOpen("a", "0f6355fa-1d96-410a-8732-737bf05a28f3", hoisted6, "href", "#_" + (ctrl.id) + "_3")
           text("JSON")
         elementClose("a")
       elementClose("li")
     elementClose("ul")
-    elementOpen("div", "820c9ee2-0496-4972-a21d-0ae31047e398", hoisted7)
-      elementOpen("div", "0212bf58-91b4-444b-af32-f1bf79dfb9a7", hoisted8, "id", "_" + (ctrl.id) + "_1")
-        elementOpen("vsd-breadcrumbs", "eab9c131-8acb-40cb-b217-a03edde3aa6a", hoisted9, "model", breadcrumbs, "onclickcrumb", function ($event) {
+    elementOpen("div", "038c0a5c-54e9-4fbf-904c-271cfe933b8c", hoisted7)
+      elementOpen("div", "c758b953-55c7-463b-a23c-a10a333c2396", hoisted8, "id", "_" + (ctrl.id) + "_1")
+        elementOpen("vsd-breadcrumbs", "54bca7dd-ee16-4df7-9825-63fbdc630548", hoisted9, "model", breadcrumbs, "onclickcrumb", function ($event) {
           var $element = this;
         ctrl.onClickTreeNode($event.item)})
           if (true) {
@@ -2091,8 +2021,8 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
           }
         elementClose("vsd-breadcrumbs")
         if (model.errors.length) {
-          elementOpen("div", "bf88f358-bbaa-4997-a6dd-6964e26bd95e", hoisted10)
-            elementOpen("h4", "5b70898c-8837-4072-aafa-38640485a00d", hoisted11)
+          elementOpen("div", "875fd507-a523-4cbe-af40-0dd99e3a11a4", hoisted10)
+            elementOpen("h4", "3a25a516-4427-4887-88ed-63e4ce00342c", hoisted11)
               text("Errors")
             elementClose("h4")
             elementOpen("ul")
@@ -2100,9 +2030,9 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
               if (__target) {
                 ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
                   var item = $value
-                  var $key = "e14acfae-4645-4ef4-b16f-56e3c3175a58_" + $item
+                  var $key = "1ca7bc25-8604-4feb-b31a-e3a166a829f7_" + $item
                   elementOpen("li", $key)
-                    elementOpen("a", "f269feea-fd1f-4508-bb6e-0cf4b25ab95d_" + $key, hoisted12, "onclick", function ($event) {
+                    elementOpen("a", "1d5a3f98-e14d-471b-801f-e6c08aa88d3f_" + $key, hoisted12, "onclick", function ($event) {
                       var $element = this;
                     ctrl.onClickErrorNode(item)})
                       text("" + (item.error) + "")
@@ -2113,11 +2043,11 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
             elementClose("ul")
           elementClose("div")
         }
-        elementOpen("div", "50c8b768-43cf-41b0-b284-d2fa0c7f76bf", hoisted13)
-          elementOpen("div", "68c4739c-675d-4992-bd7f-118a0f0dc47f", hoisted14)
-            elementOpen("ul", "36e928fb-bf33-47ac-840a-3eece5f090b8", hoisted15)
+        elementOpen("div", "55334120-5508-42e1-8dc0-dccdce7d2b80", hoisted13)
+          elementOpen("div", "9d60246c-c092-428c-801a-8f0304f8bf8d", hoisted14)
+            elementOpen("ul", "00d815de-a013-473d-b6a3-376429554797", hoisted15)
               elementOpen("li")
-                elementOpen("i", "33257363-f7e5-4e10-b534-fd74e7939303", hoisted16)
+                elementOpen("i", "930259a7-87bf-48ec-820e-4ed7e05d4061", hoisted16)
                 elementClose("i")
                 elementOpen("a", null, null, "onclick", function ($event) {
                   var $element = this;
@@ -2130,10 +2060,10 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
                   if (__target) {
                     ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
                       var schema = $value
-                      var $key = "ff7dcd80-4742-4e1a-aa31-eab86a314c15_" + $item
+                      var $key = "41eaa714-bda4-4ea6-bdef-16b32efc931c_" + $item
                       elementOpen("li", $key)
                         var isExpanded = ctrl.isExpanded(schema)
-                        elementOpen("i", "b64052f6-be5d-4754-b4c6-d9ee3da0d736_" + $key, hoisted17, "style", {color: schema.isVirtual ? '#aaa' : '#000'}, "onclick", function ($event) {
+                        elementOpen("i", "e904bd4e-8eb7-4ee6-868b-2551394764b1_" + $key, hoisted17, "style", {color: schema.isVirtual ? '#aaa' : '#000'}, "onclick", function ($event) {
                           var $element = this;
                         ctrl.onClickToggleNode(schema)})
                         elementClose("i")
@@ -2153,7 +2083,7 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
             elementClose("ul")
           elementClose("div")
           if (ctrl.currentItem) {
-            elementOpen("div", "5c3d23e0-66d1-4613-97ab-cbc87a9eed47", hoisted18)
+            elementOpen("div", "ed7d2e79-9bbc-4494-8ec8-c16aa31ce6b3", hoisted18)
               if (ctrl.currentItem === model) {
                 modelView(model, ctrl)
               } else if (ctrl.currentItem.isSchema) {
@@ -2165,21 +2095,21 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
           }
         elementClose("div")
       elementClose("div")
-      elementOpen("div", "80cb6341-9f3b-46f4-b401-66f630948cfc", hoisted19, "id", "_" + (ctrl.id) + "_2")
+      elementOpen("div", "901a4c1d-033b-40bf-ac2c-f425c98c1e38", hoisted19, "id", "_" + (ctrl.id) + "_2")
         elementOpen("div", null, null, "class", ctrl.isGraphExpanded ? 'expanded' : '')
-          elementOpen("button", "7eaf6621-0013-438a-99c2-0c91fc6c6a74", hoisted20, "onclick", function ($event) {
+          elementOpen("button", "5e629846-6cb0-4306-b4c6-ba0326c146dd", hoisted20, "onclick", function ($event) {
             var $element = this;
           ctrl.isGraphExpanded = true})
-            elementOpen("i", "75d9f330-d7e4-4d7f-9fac-cd3f16c743dc", hoisted21)
+            elementOpen("i", "df5e5141-f3e2-4962-89bd-6096b75c50ba", hoisted21)
             elementClose("i")
           elementClose("button")
-          elementOpen("button", "e53a98ef-8420-46b8-8629-962425d2d3db", hoisted22, "onclick", function ($event) {
+          elementOpen("button", "77b20bfa-ab2d-4d63-bea2-f30af7f3fdac", hoisted22, "onclick", function ($event) {
             var $element = this;
           ctrl.isGraphExpanded = false})
-            elementOpen("i", "4bb66561-7c2a-4c5b-b005-9f09966caf32", hoisted23)
+            elementOpen("i", "29539621-c6e7-4f9c-a58c-9e1b281656b2", hoisted23)
             elementClose("i")
           elementClose("button")
-          elementOpen("svg", "eb5333ef-e954-4024-826e-d858fff6220d", hoisted24)
+          elementOpen("svg", "4912a02e-6ae3-43e9-96f6-f19abda38bca", hoisted24)
             elementOpen("g")
               if (true) {
                 skip()
@@ -2189,8 +2119,8 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
           elementClose("svg")
         elementClose("div")
       elementClose("div")
-      elementOpen("div", "565e69d7-1e9d-4268-8623-81c8d4525b87", hoisted25, "id", "_" + (ctrl.id) + "_3")
-        elementOpen("pre", "6dff0cd4-9518-48d0-abf1-df05c15e4875", hoisted26)
+      elementOpen("div", "8a87022c-5cbe-45a9-b94e-251c486459a8", hoisted25, "id", "_" + (ctrl.id) + "_3")
+        elementOpen("pre", "8ddd9ecb-9ad6-46b1-b6a0-8b2b1ca2a816", hoisted26)
           text("" + (JSON.stringify(model, null, 2)) + "")
         elementClose("pre")
       elementClose("div")
@@ -2198,26 +2128,12 @@ module.exports = function description (ctrl, modelView, schemaView, keysView, ke
   elementClose("div")
 }
 
-},{"incremental-dom":176}],35:[function(require,module,exports){
-module.exports = function debounce (fn, delay) {
-  var timer = null
-  return function () {
-    var context = this
-    var args = arguments
-    clearTimeout(timer)
-    timer = setTimeout(function () {
-      fn.apply(context, args)
-    }, delay)
-  }
-}
-
-},{}],36:[function(require,module,exports){
+},{"incremental-dom":166}],33:[function(require,module,exports){
 var path = require('path')
 var util = require('../util')
 var patch = require('../patch')
 var view = require('./view.html')
 var service = require('../file-service')
-var files = window.UCO.files
 
 function FileEditor (el) {
   var model = {
@@ -2247,20 +2163,6 @@ function FileEditor (el) {
           return util.handleError(err)
         }
         hide()
-
-        // Create it only if it
-        // doesn't already exist.
-        // It could've been added by the watcher'
-        var file = files.find(function (item) {
-          return item.path === payload.path
-        })
-
-        if (!file) {
-          file = files.create(payload)
-          files.push(file)
-        }
-
-        // window.location.hash = file.getRelativePath()
       })
     },
     mkdir: function ($event) {
@@ -2309,7 +2211,7 @@ var fileEditor = new FileEditor(fileEditorEl)
 
 module.exports = fileEditor
 
-},{"../file-service":40,"../patch":52,"../util":69,"./view.html":37,"path":72}],37:[function(require,module,exports){
+},{"../file-service":37,"../patch":47,"../util":62,"./view.html":34,"path":63}],34:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -2322,21 +2224,21 @@ var hoisted1 = ["class", "file-editor"]
 var hoisted2 = ["class", "form-group"]
 var hoisted3 = ["for", "name"]
 var hoisted4 = ["class", "input-group"]
-var hoisted5 = ["type", "text", "class", "form-control input-sm", "id", "filename"]
+var hoisted5 = ["type", "text", "class", "form-control input-sm", "id", "filename", "autocomplete", "off"]
 var hoisted6 = ["class", "input-group-btn"]
 var hoisted7 = ["class", "btn btn-primary btn-sm", "type", "submit"]
 var hoisted8 = ["class", "btn btn-secondary btn-sm", "type", "button"]
 var hoisted9 = ["class", "form-group"]
 var hoisted10 = ["for", "name"]
 var hoisted11 = ["class", "input-group"]
-var hoisted12 = ["type", "text", "class", "form-control input-sm", "id", "dirname"]
+var hoisted12 = ["type", "text", "class", "form-control input-sm", "id", "dirname", "autocomplete", "off"]
 var hoisted13 = ["class", "input-group-btn"]
 var hoisted14 = ["class", "btn btn-primary btn-sm", "type", "submit"]
 var hoisted15 = ["class", "btn btn-secondary btn-sm", "type", "button"]
 var hoisted16 = ["class", "form-group"]
 var hoisted17 = ["for", "name"]
 var hoisted18 = ["class", "input-group"]
-var hoisted19 = ["type", "text", "class", "form-control input-sm", "id", "rename"]
+var hoisted19 = ["type", "text", "class", "form-control input-sm", "id", "rename", "autocomplete", "off"]
 var hoisted20 = ["class", "input-group-btn"]
 var hoisted21 = ["class", "btn btn-primary btn-sm", "type", "submit"]
 var hoisted22 = ["class", "btn btn-secondary btn-sm", "type", "button"]
@@ -2345,23 +2247,23 @@ var __target
 module.exports = function fileEditor (model, hide) {
   var file = model.file
   if (file) {
-    elementOpen("div", "ce28842e-7f9e-4eca-a712-46b65abfd607", hoisted1)
+    elementOpen("div", "6e966fde-aeba-4797-858c-f2aac545c1ba", hoisted1)
       if (model.mode === 'mkfile') {
         elementOpen("form", "mkfile", null, "onsubmit", function ($event) {
           var $element = this;
         model.mkfile($event)})
-          elementOpen("div", "27a09f0a-583c-4964-9a80-8f2a6a90abeb", hoisted2)
-            elementOpen("label", "33354e0b-250f-4bbc-b852-53e9f26a6619", hoisted3)
+          elementOpen("div", "c17b00fe-c213-4aee-8de7-33870a4398c2", hoisted2)
+            elementOpen("label", "689e906d-441e-459d-ac38-1918a6300051", hoisted3)
               text("Add new file")
             elementClose("label")
-            elementOpen("div", "b9f6e5ae-17c8-45b0-a8ba-aedfef4a5ab0", hoisted4)
-              elementOpen("input", "5c6a763b-2412-4487-b174-6bdb6e0ac6cd", hoisted5)
+            elementOpen("div", "6a0ff950-186d-41b0-ac65-bc6c1dfda426", hoisted4)
+              elementOpen("input", "be6417b6-1aa4-4854-8ce0-4d44b3173714", hoisted5)
               elementClose("input")
-              elementOpen("span", "927c1034-6d75-48aa-96e9-4cc49004d9a3", hoisted6)
-                elementOpen("button", "46558d13-860a-40a8-afb5-9a0e2aa13104", hoisted7)
+              elementOpen("span", "467990eb-69db-4af4-8901-9e19ea83693b", hoisted6)
+                elementOpen("button", "e3d186c8-164e-4a97-bc24-e94758e70266", hoisted7)
                   text("OK")
                 elementClose("button")
-                elementOpen("button", "97fdfbf3-dce2-40fe-bbdf-b16989cfb631", hoisted8, "onclick", function ($event) {
+                elementOpen("button", "a7b94647-7cbe-4437-8382-445e058112d0", hoisted8, "onclick", function ($event) {
                   var $element = this;
                 hide()})
                   text("Cancel")
@@ -2375,18 +2277,18 @@ module.exports = function fileEditor (model, hide) {
         elementOpen("form", "mkdir", null, "onsubmit", function ($event) {
           var $element = this;
         model.mkdir($event)})
-          elementOpen("div", "1622bc70-27f3-4c43-8ed9-bc64489d2678", hoisted9)
-            elementOpen("label", "ef3c4ecf-e450-4502-9739-445db4dcba08", hoisted10)
+          elementOpen("div", "c3433448-1a36-4776-905d-d868cff800b2", hoisted9)
+            elementOpen("label", "eacaa9a2-028a-40b4-9dfc-3fabacbc4c87", hoisted10)
               text("Add new folder")
             elementClose("label")
-            elementOpen("div", "3075207f-cc0d-4827-ac3d-d9badc432f79", hoisted11)
-              elementOpen("input", "d95ad829-b600-4596-8159-8ef9b88c3197", hoisted12, "value", file.getRelativePath() ? file.getRelativePath() + '/' : '')
+            elementOpen("div", "6ebf30bf-220a-4f49-b339-6693324661e8", hoisted11)
+              elementOpen("input", "6d5cf1bf-faa6-4d32-b17f-7418c588fcd6", hoisted12, "value", file.getRelativePath() ? file.getRelativePath() + '/' : '')
               elementClose("input")
-              elementOpen("span", "b3a114dd-d239-4d5c-880b-f31522e1c12b", hoisted13)
-                elementOpen("button", "c59b8084-66f6-426a-9df4-a58df77ea3e5", hoisted14)
+              elementOpen("span", "fc87ce36-a17f-44ed-8170-af9ff1caf969", hoisted13)
+                elementOpen("button", "08e6b249-b4ef-4265-b0dd-b5c3674d4ff4", hoisted14)
                   text("OK")
                 elementClose("button")
-                elementOpen("button", "429d56a3-9297-481c-9279-683629ebe210", hoisted15, "onclick", function ($event) {
+                elementOpen("button", "02c1ca23-279a-4ec1-ba85-6ec8cbadb41e", hoisted15, "onclick", function ($event) {
                   var $element = this;
                 hide()})
                   text("Cancel")
@@ -2400,18 +2302,18 @@ module.exports = function fileEditor (model, hide) {
         elementOpen("form", "rename", null, "onsubmit", function ($event) {
           var $element = this;
         model.rename($event, file)})
-          elementOpen("div", "36628640-6bf1-4123-8103-df45654cb0b0", hoisted16)
-            elementOpen("label", "595f76c4-6958-4ded-bc3a-508526565623", hoisted17)
+          elementOpen("div", "d5a7e1be-3142-4f4d-be9c-21010ebda89f", hoisted16)
+            elementOpen("label", "bc6bc6af-4ae7-4c35-8454-3f72d28b804d", hoisted17)
               text("Rename")
             elementClose("label")
-            elementOpen("div", "c7e0aa2c-0774-432b-8d64-c1309ccf52ba", hoisted18)
-              elementOpen("input", "3e50434e-360c-42d7-aa8d-e5510bbd5947", hoisted19, "value", file.name)
+            elementOpen("div", "97625fd6-8bb0-48a7-af5d-6af3bee795d6", hoisted18)
+              elementOpen("input", "8e65a589-d09e-4c81-ad3d-8f0133509cca", hoisted19, "value", file.name)
               elementClose("input")
-              elementOpen("span", "cbe56eb6-7f9e-49d5-8ed1-6df0a71b89d3", hoisted20)
-                elementOpen("button", "24eb8eb5-e873-4eda-b807-bbed36a43ad8", hoisted21)
+              elementOpen("span", "6ba56784-50b8-4618-af48-90efdc6f9d16", hoisted20)
+                elementOpen("button", "80f9a4b6-7123-44b6-83a4-9dc693c3489f", hoisted21)
                   text("OK")
                 elementClose("button")
-                elementOpen("button", "c37ea096-256a-4986-ba04-0e974ef2a52b", hoisted22, "onclick", function ($event) {
+                elementOpen("button", "be24dedd-51c0-4aad-b885-fe22b30bf64f", hoisted22, "onclick", function ($event) {
                   var $element = this;
                 hide()})
                   text("Cancel")
@@ -2425,7 +2327,7 @@ module.exports = function fileEditor (model, hide) {
   }
 }
 
-},{"incremental-dom":176}],38:[function(require,module,exports){
+},{"incremental-dom":166}],35:[function(require,module,exports){
 var path = require('path')
 var patch = require('../patch')
 var service = require('../file-service')
@@ -2561,7 +2463,7 @@ var fileMenu = new FileMenu(fileMenuEl)
 
 module.exports = fileMenu
 
-},{"../file-editor":36,"../file-service":40,"../patch":52,"../util":69,"./view.html":39,"path":72}],39:[function(require,module,exports){
+},{"../file-editor":33,"../file-service":37,"../patch":47,"../util":62,"./view.html":36,"path":63}],36:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -2588,7 +2490,7 @@ module.exports = function fileMenu (model) {
   var node = model.node
       var file = model.file
   if (file) {
-    elementOpen("ul", "eb2fdf6c-9624-4088-846e-4e2593c35342", hoisted1, "style", { top: model.y, left: model.x })
+    elementOpen("ul", "ba5c177a-f6cf-4305-991e-dc3227cf26a7", hoisted1, "style", { top: model.y, left: model.x })
       elementOpen("li", "header", hoisted2)
         text("" + (file.name) + "")
       elementClose("li")
@@ -2596,7 +2498,7 @@ module.exports = function fileMenu (model) {
         elementOpen("a", null, null, "onclick", function ($event) {
           var $element = this;
         model.rename(file)})
-          elementOpen("i", "62fa532d-c7ad-4da3-898c-55f9d24c1e6f", hoisted3)
+          elementOpen("i", "b66d6b7e-a061-469a-aeb1-d4941f39f473", hoisted3)
           elementClose("i")
           text(" Rename")
         elementClose("a")
@@ -2607,7 +2509,7 @@ module.exports = function fileMenu (model) {
         elementOpen("a", null, null, "onclick", function ($event) {
           var $element = this;
         model.setPasteBuffer(file, 'cut')})
-          elementOpen("i", "17e3dd1b-f07a-45de-9323-c0e04e129cd3", hoisted5)
+          elementOpen("i", "fb6fcf19-0582-48a1-b997-dc02fdac5353", hoisted5)
           elementClose("i")
           text(" Cut")
         elementClose("a")
@@ -2616,7 +2518,7 @@ module.exports = function fileMenu (model) {
         elementOpen("a", null, null, "onclick", function ($event) {
           var $element = this;
         model.setPasteBuffer(file, 'copy')})
-          elementOpen("i", "4b560894-2f8b-4523-953b-6e414b4b42f4", hoisted6)
+          elementOpen("i", "4f32b3eb-7472-42c1-a224-35a1b8462656", hoisted6)
           elementClose("i")
           text(" Copy")
         elementClose("a")
@@ -2626,7 +2528,7 @@ module.exports = function fileMenu (model) {
           elementOpen("a", null, null, "onclick", function ($event) {
             var $element = this;
           model.paste(file)})
-            elementOpen("i", "753d1a9b-c8cb-4f6a-aac3-99f3560d7b9a", hoisted7)
+            elementOpen("i", "6f8ea954-6f47-4c9a-a0c4-becfa3c7b03b", hoisted7)
             elementClose("i")
             text(" Paste")
           elementClose("a")
@@ -2638,7 +2540,7 @@ module.exports = function fileMenu (model) {
         elementOpen("a", null, null, "onclick", function ($event) {
           var $element = this;
         model.mkfile(node)})
-          elementOpen("i", "63506ffd-44b3-46e6-bb34-507a4b8c3e7f", hoisted9)
+          elementOpen("i", "70167a73-e83a-4583-a419-1b888de3f81f", hoisted9)
           elementClose("i")
           text(" Add new file")
         elementClose("a")
@@ -2647,7 +2549,7 @@ module.exports = function fileMenu (model) {
         elementOpen("a", null, null, "onclick", function ($event) {
           var $element = this;
         model.mkdir(node)})
-          elementOpen("i", "be224b60-d8ce-45de-b579-72fedcde98e3", hoisted10)
+          elementOpen("i", "57c54f96-784f-4df5-a6e9-799ed7ec5f70", hoisted10)
           elementClose("i")
           text(" Add new folder")
         elementClose("a")
@@ -2658,7 +2560,7 @@ module.exports = function fileMenu (model) {
         elementOpen("a", null, null, "onclick", function ($event) {
           var $element = this;
         model.remove(file)})
-          elementOpen("i", "83576d22-c5d9-49c0-8ce0-b2911a50d091", hoisted12)
+          elementOpen("i", "e23e06f9-c911-4e9f-91f3-693973f904b3", hoisted12)
           elementClose("i")
           text(" Delete")
         elementClose("a")
@@ -2667,366 +2569,28 @@ module.exports = function fileMenu (model) {
   }
 }
 
-},{"incremental-dom":176}],40:[function(require,module,exports){
+},{"incremental-dom":166}],37:[function(require,module,exports){
 var Service = require('vsd-plugin-fs/client')
 var client = require('./client')
 var service = new Service(client, { mount: '/fs' })
 
 module.exports = service
 
-},{"./client":8,"vsd-plugin-fs/client":195}],41:[function(require,module,exports){
-var Model = require('./model')
-var view = require('./view.html')
-var patch = require('../patch')
-var util = require('../util')
-var service = require('../file-service')
-var files = window.UCO.files
-
-var Fs = document.registerElement(
-  'vsd-file',
-  {
-    prototype: Object.create(
-      window.HTMLElement.prototype, {
-        render: {
-          value: function () {
-            var model = this.model
-            patch(this, view, model)
-          }
-        },
-        createdCallback: {
-          value: function () {
-            var model = new Model({
-              el: this,
-              service: service
-            })
-
-            model.on('change', function () {
-              this.render()
-            }.bind(this))
-
-            this.model = model
-
-            // Look out for changes to the stat
-            // Reload the file if it has changed
-            // on disk but not initiated by us
-            files.on('change', function (e) {
-              if (e.target === model.file) {
-                if (model.stat.mtime !== model.file.stat.mtime) {
-                  this._readFile()
-                }
-              }
-            }.bind(this))
-
-            if (this.getAttribute('src')) {
-              this._load()
-            }
-          }
-        },
-        attributeChangedCallback: {
-          value: function (name, previousValue, value) {
-            if (name === 'src') {
-              this._load()
-            }
-          }
-        },
-        focus: {
-          value: function () {
-            var child = this.querySelector('[child]')
-            child && child.focus()
-          }
-        },
-        _load: {
-          value: function () {
-            var model = this.model
-            var src = this.getAttribute('src')
-            var file = files.find(function (item) {
-              return item.path === src
-            })
-
-            if (!file) {
-              return
-            }
-
-            model.file = file
-            this._readFile()
-          }
-        },
-        _readFile: {
-          value: function () {
-            var model = this.model
-            var file = model.file
-            var src = file.path
-
-            service.readFile(src, function (err, result) {
-              if (err) {
-                return util.handleError(err)
-              }
-
-              model.stat = result.stat
-              file.stat = result.stat
-              model.contents = result.contents
-            })
-          }
-        }
-      })
-  }
-)
-
-module.exports = Fs
-
-},{"../file-service":40,"../patch":52,"../util":69,"./model":42,"./view.html":43}],42:[function(require,module,exports){
-var path = require('path')
-var screenfull = require('screenfull')
-var filesize = require('filesize')
+},{"./client":6,"vsd-plugin-fs/client":184}],38:[function(require,module,exports){
 var supermodels = require('supermodels.js')
-var File = require('../fso')
-var recent = require('../recent')
-var getMode = require('../modes')
-var service = require('../file-service')
-var debounce = require('../debounce')
-var util = require('../util')
-
-function requestFullscreen (element) {
-  if (screenfull.enabled) {
-    screenfull.request(element)
-  }
-}
-
-function isFullscreen (element) {
-  if (screenfull.enabled) {
-    screenfull.request(element)
-  }
-}
-
-function onCloseClick (e, element) {
-  if (screenfull.element === element) {
-    screenfull.exit(element)
-  } else {
-    window.$(this.el).remove()
-    recent.remove(this.file.getRelativePath())
-    window.history.back()
-  }
-}
-
-function getType (e) {
-  var file = this.file
-  if (!file) {
-    return
-  }
-
-  if (file.name.endsWith('routes.json')) {
-    return 'routes'
-  } else if (file.name.endsWith('db.json')) {
-    return 'db'
-  }
-
-  return 'ace'
-}
-
-function getRelativePath (absolutePath) {
-  return path.relative(window.UCO.path, absolutePath)
-}
-
-function getFilesize () {
-  if (!this.stat) {
-    return ''
-  }
-  return filesize(this.stat.size, { bits: true, round: 0 })
-}
-
-function onContentChange (e) {
-  var self = this
-  var file = this.file
-  service.writeFile(file.path, e.detail.contents, function (err, result) {
-    if (err) {
-      return util.handleError(err)
-    }
-
-    // Update the stat
-    self.stat = result.stat
-  })
-}
-
-var model = {
-  el: Object,
-  file: File,
-  stat: Object,
-  contents: String,
-  service: Object,
-  getType: getType,
-  getMode: getMode,
-  onContentChange: debounce(onContentChange, 500),
-  getRelativePath: getRelativePath,
-  isFullscreen: isFullscreen,
-  onCloseClick: onCloseClick,
-  requestFullscreen: requestFullscreen,
-  getFilesize: getFilesize
-}
-
-var Model = supermodels(model)
-
-module.exports = Model
-
-},{"../debounce":35,"../file-service":40,"../fso":45,"../modes":48,"../recent":54,"../util":69,"filesize":175,"path":72,"screenfull":179,"supermodels.js":180}],43:[function(require,module,exports){
-var IncrementalDOM = require('incremental-dom')
-var patch = IncrementalDOM.patch
-var elementOpen = IncrementalDOM.elementOpen
-var elementClose = IncrementalDOM.elementClose
-var skip = IncrementalDOM.skip
-var currentElement = IncrementalDOM.currentElement
-var text = IncrementalDOM.text
-
-var hoisted1 = ["class", "box"]
-var hoisted2 = ["class", "box-header with-border"]
-var hoisted3 = ["class", "box-title"]
-var hoisted4 = ["class", "box-tools pull-right"]
-var hoisted5 = ["type", "button", "class", "btn btn-box-tool hide", "data-widget", "collapse"]
-var hoisted6 = ["class", "fa fa-minus"]
-var hoisted7 = ["type", "button", "class", "btn btn-box-tool"]
-var hoisted8 = ["class", "fa fa-square-o"]
-var hoisted9 = ["class", "btn-group hide"]
-var hoisted10 = ["type", "button", "class", "btn btn-box-tool dropdown-toggle", "data-toggle", "dropdown"]
-var hoisted11 = ["class", "fa fa-wrench"]
-var hoisted12 = ["class", "dropdown-menu", "role", "menu"]
-var hoisted13 = ["href", "#"]
-var hoisted14 = ["href", "#"]
-var hoisted15 = ["href", "#"]
-var hoisted16 = ["class", "divider"]
-var hoisted17 = ["href", "#"]
-var hoisted18 = ["type", "button", "class", "btn btn-box-tool"]
-var hoisted19 = ["class", "fa fa-times"]
-var hoisted20 = ["class", "box-body no-padding"]
-var hoisted21 = ["child", ""]
-var hoisted22 = ["child", ""]
-var hoisted23 = ["child", "", "style", "-webkit-font-smoothing: auto;"]
-var hoisted24 = ["class", "box-footer"]
-var hoisted25 = ["class", "text-muted pull-right"]
-var hoisted26 = ["class", "text-muted"]
-var __target
-
-module.exports = function description (model) {
-  if (model.file) {
-    elementOpen("div", "911cba26-03d8-4a1d-b63f-373e56433647", hoisted1)
-      var box = currentElement()
-      elementOpen("div", "d819bf9c-316e-415c-8960-5ba8082423da", hoisted2)
-        elementOpen("h3", "efcc6710-0791-4808-b758-a6fec7ba51ed", hoisted3)
-          text("" + (model.file.name) + "")
-        elementClose("h3")
-        elementOpen("div", "24e2c3a1-74c8-482f-b916-6c9a4583af26", hoisted4)
-          elementOpen("button", "21884adf-a69b-4a51-8fd2-7c105ef60e96", hoisted5)
-            elementOpen("i", "65b7bf09-6a57-4f4a-8edb-b716f7b52d89", hoisted6)
-            elementClose("i")
-          elementClose("button")
-          elementOpen("button", "9525a663-738e-495b-b35b-386c45397a93", hoisted7, "onclick", function ($event) {
-            var $element = this;
-          model.requestFullscreen(box)})
-            elementOpen("i", "5abc3030-53ff-4ccd-a1c7-b4791e78b4c3", hoisted8)
-            elementClose("i")
-          elementClose("button")
-          elementOpen("div", "c079c8c6-4227-47e1-bb48-57272f79b6aa", hoisted9)
-            elementOpen("button", "cf15b45a-b45c-4726-a44c-68d29961d7e9", hoisted10)
-              elementOpen("i", "d1a26a6f-fa08-4449-af9f-9659515931f9", hoisted11)
-              elementClose("i")
-            elementClose("button")
-            elementOpen("ul", "4e24ed60-9f3c-46ec-8f15-764c062e4b54", hoisted12)
-              elementOpen("li")
-                elementOpen("a", "ee3adb90-e882-4117-bcbc-1355c5b3a5fd", hoisted13)
-                  text("Rename")
-                elementClose("a")
-              elementClose("li")
-              elementOpen("li")
-                elementOpen("a", "aeb6052f-6627-45af-9538-7a4be8bf9990", hoisted14)
-                  text("Delete")
-                elementClose("a")
-              elementClose("li")
-              elementOpen("li")
-                elementOpen("a", "9ffd1a2d-d87a-45cd-b316-b8d2d6141305", hoisted15)
-                  text("Copy")
-                elementClose("a")
-              elementClose("li")
-              elementOpen("li", "aefebb94-5ce6-4366-87f5-d377778c5ae9", hoisted16)
-              elementClose("li")
-              elementOpen("li")
-                elementOpen("a", "4a744f3d-d09a-40f9-b188-29eaed811c17", hoisted17)
-                  text("Delete")
-                elementClose("a")
-              elementClose("li")
-            elementClose("ul")
-          elementClose("div")
-          elementOpen("button", "789ca2ec-f263-4169-a458-311ab379eb71", hoisted18, "onclick", function ($event) {
-            var $element = this;
-          model.onCloseClick($event, box)})
-            elementOpen("i", "5e397ebf-2d94-4a1b-a86d-0686d06b9f28", hoisted19)
-            elementClose("i")
-          elementClose("button")
-        elementClose("div")
-      elementClose("div")
-      var type = model.getType()
-      elementOpen("div", "82880f40-4945-48d2-a4e5-98ec8138c242", hoisted20)
-        if (type === 'routes') {
-          elementOpen("vsd-routes", "45d1829b-4dbd-41ea-881b-fd681f3be654", hoisted21, "contents", model.contents, "path", model.file.path, "oncontentchange", function ($event) {
-            var $element = this;
-          model.onContentChange($event)})
-            if (true) {
-              skip()
-            } else {
-            }
-          elementClose("vsd-routes")
-        } else if (type === 'db') {
-          elementOpen("vsd-db", "50bb0d53-0b78-485e-bf7b-87933069200b", hoisted22, "contents", model.contents, "oncontentchange", function ($event) {
-            var $element = this;
-          model.onContentChange($event)})
-            if (true) {
-              skip()
-            } else {
-            }
-          elementClose("vsd-db")
-        } else {
-          elementOpen("vsd-ace", "b269c411-dddb-4671-a8a7-efb7507ccc86", hoisted23, "mode", model.getMode(model.file), "contents", model.contents, "oncontentchange", function ($event) {
-            var $element = this;
-          model.onContentChange($event)})
-            if (true) {
-              skip()
-            } else {
-            }
-          elementClose("vsd-ace")
-        }
-      elementClose("div")
-      elementOpen("div", "b511d74a-4ebe-48dd-bcd7-02aca9b53686", hoisted24)
-        elementOpen("strong", "7bb447d7-9ed2-4b5f-9075-4b02748d2340", hoisted25)
-          text("" + (model.getFilesize()) + "")
-        elementClose("strong")
-        elementOpen("span", "ecdd0df9-60c7-4f35-845c-f94940cb24b1", hoisted26)
-          text("" + (model.getRelativePath(model.file.path)) + "")
-        elementClose("span")
-      elementClose("div")
-    elementClose("div")
-  }
-}
-
-},{"incremental-dom":176}],44:[function(require,module,exports){
-var supermodels = require('supermodels.js')
-var File = require('./fso')
-
-var Files = supermodels([File])
-
-module.exports = Files
-
-},{"./fso":45,"supermodels.js":180}],45:[function(require,module,exports){
-var supermodels = require('supermodels.js')
-var prop = require('./prop')
+var Session = require('./session')
 var path = require('path')
 
 var fso = {
-  name: prop(String).required(),
-  path: prop(String).required(),
-  dir: prop(String).required(),
-  isFile: prop(Boolean).required(),
-  isDirectory: prop(Boolean).required(),
-  ext: prop(String),
-  filesize: prop(String),
-  stat: prop(Object),
-  session: prop(Object),
+  name: String,
+  path: String,
+  dir: String,
+  isFile: Boolean,
+  isDirectory: Boolean,
+  ext: String,
+  filesize: String,
+  stat: Object,
+  session: Session,
   getRelativePath: function (to) {
     to = to || window.UCO.path
     return path.relative(to, this.path)
@@ -3044,12 +2608,21 @@ var File = supermodels(fso)
 
 module.exports = File
 
-},{"./prop":53,"path":72,"supermodels.js":180}],46:[function(require,module,exports){
+},{"./session":54,"path":63,"supermodels.js":169}],39:[function(require,module,exports){
+var supermodels = require('supermodels.js')
+var File = require('./file')
+
+var Files = supermodels([File])
+
+module.exports = Files
+
+},{"./file":38,"supermodels.js":169}],40:[function(require,module,exports){
 require('document-register-element')
 
 var client = require('./client')
 var Files = require('./files')
 var util = require('./util')
+var projectPath = window.UCO.path
 
 require('./notify')
 require('./db')
@@ -3061,9 +2634,10 @@ client.connect(function (err) {
     return util.handleError(err)
   }
 
-  var watcher = require('./watcher')
-
-  watcher.getWatched(function (err, payload) {
+  client.request({
+    path: '/fs/watched?path=' + projectPath,
+    method: 'GET'
+  }, function (err, payload) {
     if (err) {
       return util.handleError(err)
     }
@@ -3072,28 +2646,43 @@ client.connect(function (err) {
     window.files = payload.watched
     window.UCO.files = files
 
-    watcher.watch(payload.id, files)
-
     require('./main')
     require('./tree')
-    require('./ace')
-    require('./file')
     require('./sidebar')
-    // require('./workspace')
-
-    console.log('connect')
   })
 })
 
-},{"./ace":3,"./breadcrumbs":5,"./client":8,"./db":25,"./file":41,"./files":44,"./main":47,"./notify":50,"./routes":56,"./sidebar":63,"./tree":66,"./util":69,"./watcher":70,"document-register-element":174}],47:[function(require,module,exports){
-var Controller = require('./controller')
+},{"./breadcrumbs":3,"./client":6,"./db":23,"./files":39,"./main":42,"./notify":45,"./routes":50,"./sidebar":56,"./tree":59,"./util":62,"document-register-element":165}],41:[function(require,module,exports){
 var util = require('./util')
 var client = require('./client')
-var editor = require('./ace/editor')
 
-/**
- * Initialise the controller
- */
+function lint (session) {
+  if (session && session.getMode().$id === 'ace/mode/javascript') {
+    client.request({
+      path: '/standard',
+      payload: {
+        value: session.getValue(),
+        projectDir: window.UCO.path
+      },
+      method: 'POST'
+    }, function (err, payload) {
+      if (err) {
+        return util.handleError(err)
+      }
+      session.setAnnotations(payload)
+    })
+  }
+}
+
+module.exports = lint
+
+},{"./client":6,"./util":62}],42:[function(require,module,exports){
+var File = require('./file')
+var util = require('./util')
+var lint = require('./lint')
+var client = require('./client')
+var editor = require('./ace/editor')
+var Controller = require('./controller')
 var projectPath = window.UCO.path
 var files = window.UCO.files
 var storageKey = 'vsd-' + projectPath
@@ -3102,7 +2691,7 @@ storage = storage ? JSON.parse(storage) : {}
 var recent = storage.recent || []
 
 /**
- * Construct main controller
+ * Initialise the main controller
  */
 var main = new Controller({
   files: files
@@ -3131,17 +2720,32 @@ function onFileAdded (payload) {
   // Create it only if it
   // doesn't already exist.
   // It could've been added by the file-editor mkfile'
-  var file = files.create(payload)
-  controller.files.push(file)
+  var file = new File(payload)
+  main.files.push(file)
 }
 
 function onFileRemoved (payload) {
-  var idx = controller.findFileIndex(payload.path)
-  controller.files.splice(idx, 1)
+  var idx = main.findFileIndex(payload.path)
+  var file = main.files[idx]
+
+  // Remove the file from the list
+  main.files.splice(idx, 1)
+
+  // If the removed file was the current one,
+  // reset the current file
+  if (file === main.current) {
+    main.resetCurrentFile()
+  }
+
+  // If the file was in the recent files list, remove it
+  idx = main.recent.indexOf(file)
+  if (~idx) {
+    main.recent.splice(idx, 1)
+  }
 }
 
 function onFileChanged (payload) {
-  var file = controller.findFile(payload.path)
+  var file = main.findFile(payload.path)
   file.stat = payload.stat
 }
 
@@ -3163,11 +2767,11 @@ editor.commands.addCommands([{
     mac: 'Command-S'
   },
   exec: function (editor) {
-    var file = main.file
-    if (file && file.isDirty) {
-      current.save(function (err, result) {
-        if (!err) {
-          current.manager.markClean()
+    var session = main.current && main.current.session
+    if (session && session.isDirty) {
+      session.save(function (err, result) {
+        if (err) {
+          return util.handleError(err)
         }
       })
     }
@@ -3180,14 +2784,24 @@ editor.commands.addCommands([{
     mac: 'Command-Option-S'
   },
   exec: function (editor) {
-    sessions.saveAll()
+    main.getDirtyFiles().forEach(function (item) {
+      item.session.save(function (err, result) {
+        if (err) {
+          return util.handleError(err)
+        }
+      })
+    })
   },
   readOnly: false
 }])
 
-main.recent.on('change', function () {
+// On change, upload the localStorage state
+main.on('change', function (e) {
+  console.log('Main controller change', e)
+
   var state = JSON.stringify({
-    recent: this.map(function (item) {
+    current: this.current && this.current.getRelativePath(),
+    recent: this.recent.map(function (item) {
       return item.getRelativePath()
     })
   })
@@ -3197,12 +2811,24 @@ main.recent.on('change', function () {
 })
 
 main.on('change', function (e) {
-  console.log(e)
 })
+
+// Set initial current file
+if (storage.current) {
+  var initialFile = main.findFile(storage.current)
+  if (initialFile) {
+    main.setCurrentFile(initialFile)
+  }
+}
+
+// Set the linter
+setInterval(function () {
+  lint(editor.getSession())
+}, 1000)
 
 module.exports = main
 
-},{"./ace/editor":2,"./client":8,"./controller":9,"./util":69}],48:[function(require,module,exports){
+},{"./ace/editor":1,"./client":6,"./controller":7,"./file":38,"./lint":41,"./util":62}],43:[function(require,module,exports){
 module.exports = function (file) {
   var modes = {
     '.js': 'ace/mode/javascript',
@@ -3228,7 +2854,7 @@ module.exports = function (file) {
   return modes[file.ext] || 'ace/mode/text'
 }
 
-},{}],49:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 
 var schema = {
@@ -3244,7 +2870,7 @@ var Controller = supermodels(schema)
 
 module.exports = Controller
 
-},{"supermodels.js":180}],50:[function(require,module,exports){
+},{"supermodels.js":169}],45:[function(require,module,exports){
 var Controller = require('./controller')
 var view = require('./view.html')
 var patch = require('../patch')
@@ -3297,7 +2923,7 @@ var Notify = document.registerElement(
 
 module.exports = Notify
 
-},{"../patch":52,"./controller":49,"./view.html":51}],51:[function(require,module,exports){
+},{"../patch":47,"./controller":44,"./view.html":46}],46:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -3314,9 +2940,9 @@ module.exports = function description (ctrl) {
   if (__target) {
     ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
       var item = $value
-      var $key = "f70c5625-5fbf-413f-8276-f2d341fd0cba_" + $item
+      var $key = "95462af2-12d4-4049-b829-782b9f8abcf0_" + $item
       elementOpen("div", $key, null, "class", "alert alert-" + (item.type) + " alert-dismissible")
-        elementOpen("button", "4eb0f363-db78-4810-9cb0-ab29413a4d42_" + $key, hoisted1, "onclick", function ($event) {
+        elementOpen("button", "d0ce840f-00da-47b0-90de-5d562923de9b_" + $key, hoisted1, "onclick", function ($event) {
           var $element = this;
         ctrl.items.splice($item, 1)})
           text("×")
@@ -3334,7 +2960,7 @@ module.exports = function description (ctrl) {
   }
 }
 
-},{"incremental-dom":176}],52:[function(require,module,exports){
+},{"incremental-dom":166}],47:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 
@@ -3357,7 +2983,7 @@ module.exports = function (el, view, data) {
   }
 }
 
-},{"incremental-dom":176}],53:[function(require,module,exports){
+},{"incremental-dom":166}],48:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var prop = supermodels.prop()
 
@@ -3407,101 +3033,7 @@ prop.register('max', function (max) {
 
 module.exports = prop
 
-},{"supermodels.js":180}],54:[function(require,module,exports){
-var supermodels = require('supermodels.js')
-var prop = require('./prop')
-var sessions = require('./sessions')
-var projectPath = window.UCO.path
-var files = window.UCO.files
-var storageKey = 'vsd-' + projectPath
-
-function findFile (relativePath) {
-  return files.find(function (item) {
-    return item.getRelativePath() === relativePath
-  })
-}
-
-var schema = {
-  items: [{
-    ref: prop(String).required(),
-    getSession: function () {
-      var file = this.getFile()
-      return sessions.find(file)
-    },
-    hasSession: function () {
-      return !!this.getSession()
-    },
-    isDirty: function () {
-      var session = this.getSession()
-      return session && session.isDirty
-    },
-    isCurrent: function () {
-      return sessions.current
-        ? sessions.current === this.getSession()
-        : false
-    },
-    getDisplayName: function () {
-      return this.ref.replace(window.UCO.path, '')
-    },
-    getFile: function () {
-      return findFile(this.ref)
-    }
-  }],
-  exists: function (ref) {
-    return this.items.find(function (item) {
-      return item.ref === ref
-    })
-  },
-  insert: function (ref) {
-    if (ref && !this.exists(ref)) {
-      var item = this.items.create()
-      item.ref = ref
-      this.items.unshift(item)
-    }
-  },
-  remove: function (ref) {
-    var item = this.exists(ref)
-    if (item) {
-      this.items.splice(this.items.indexOf(item), 1)
-    }
-  },
-  dirty: function () {
-    return this.items.filter(function (item) {
-      return item.isDirty()
-    })
-  },
-  clear: function () {
-    this.items.splice(0, this.items.length)
-  }
-}
-
-var Model = supermodels(schema)
-var storage = window.localStorage.getItem(storageKey)
-var recent = storage ? JSON.parse(storage) : []
-
-// Filter out any deleted files
-if (recent.items) {
-  recent.items = recent.items.filter(function (item) {
-    return findFile(item.ref)
-  })
-}
-
-var model = new Model(recent)
-
-// model.on('change', function () {
-//   window.localStorage.setItem(storageKey, JSON.stringify(this))
-// })
-
-files.on('splice', function (e) {
-  e.detail.removed.forEach(function (item) {
-    var relativePath = item.getRelativePath()
-    model.remove(relativePath)
-  })
-})
-
-module.exports = model
-
-},{"./prop":53,"./sessions":61,"supermodels.js":180}],55:[function(require,module,exports){
+},{"supermodels.js":169}],49:[function(require,module,exports){
 var path = require('path')
 var supermodels = require('supermodels.js')
 var prop = require('../prop')
@@ -3580,7 +3112,7 @@ var Controller = supermodels(controller)
 
 module.exports = Controller
 
-},{"../prop":53,"./model":57,"./route":58,"path":72,"supermodels.js":180}],56:[function(require,module,exports){
+},{"../prop":48,"./model":51,"./route":52,"path":63,"supermodels.js":169}],50:[function(require,module,exports){
 var patch = require('../patch')
 var Controller = require('./controller')
 var Model = require('./model')
@@ -3653,7 +3185,7 @@ var Routes = document.registerElement(
 
 module.exports = Routes
 
-},{"../patch":52,"./controller":55,"./model":57,"./view.html":59}],57:[function(require,module,exports){
+},{"../patch":47,"./controller":49,"./model":51,"./view.html":53}],51:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var prop = require('../prop')
 var Route = require('./route')
@@ -3668,7 +3200,7 @@ var Model = supermodels(model)
 
 module.exports = Model
 
-},{"../prop":53,"./route":58,"supermodels.js":180}],58:[function(require,module,exports){
+},{"../prop":48,"./route":52,"supermodels.js":169}],52:[function(require,module,exports){
 var supermodels = require('supermodels.js')
 var prop = require('../prop')
 
@@ -3724,7 +3256,7 @@ var Route = supermodels(route)
 
 module.exports = Route
 
-},{"../prop":53,"supermodels.js":180}],59:[function(require,module,exports){
+},{"../prop":48,"supermodels.js":169}],53:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -3794,17 +3326,17 @@ var __target
 
 module.exports = function description (ctrl) {
   if (ctrl && ctrl.model) {
-    elementOpen("div", "a17c4b20-b397-47fa-b117-bb30af2880c0", hoisted1)
+    elementOpen("div", "539d561c-6048-4987-926c-36be4a49ca4e", hoisted1)
       var model = ctrl.model
             var routes = ctrl.filtered
-      elementOpen("div", "75dc053d-7fdf-45b8-aee7-c6ee1a206662", hoisted2)
+      elementOpen("div", "74f83048-3561-42ee-b21a-771234dba877", hoisted2)
         elementOpen("h4")
           text("" + (model.name) + "")
         elementClose("h4")
         text(" " + (model.description) + " \
               ")
         if (!routes.length) {
-          elementOpen("div", "8f7bbd4d-45a8-4fa5-ac20-f95e0c6f852e", hoisted3)
+          elementOpen("div", "4661d075-178e-4ad2-b832-2e57b76c6b17", hoisted3)
             elementOpen("h4")
               text("No routes found")
             elementClose("h4")
@@ -3821,8 +3353,8 @@ module.exports = function description (ctrl) {
           elementClose("div")
         }
         if (model.errors.length) {
-          elementOpen("div", "88508ba1-36be-44f5-a31e-043b0a86e180", hoisted4)
-            elementOpen("h4", "24329c9f-3ec3-4aa1-8d71-9a5532054020", hoisted5)
+          elementOpen("div", "97ac9f0c-0c8c-4904-89d9-58b9bede8a42", hoisted4)
+            elementOpen("h4", "28e130b4-a476-48c4-8053-e2568f3d9f93", hoisted5)
               text("Errors")
             elementClose("h4")
             elementOpen("ul")
@@ -3830,9 +3362,9 @@ module.exports = function description (ctrl) {
               if (__target) {
                 ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
                   var item = $value
-                  var $key = "ce1a0f01-56b8-4578-8fca-1f71e3174a0e_" + $item
+                  var $key = "2b2b4405-cc4e-4871-b31f-b9c05e9c2ca4_" + $item
                   elementOpen("li", $key)
-                    elementOpen("a", "6aab436a-9579-4196-8580-ac724d6eb89e_" + $key, hoisted6, "onclick", function ($event) {
+                    elementOpen("a", "885d4c80-91e1-4bfa-adf7-7eb7046847c4_" + $key, hoisted6, "onclick", function ($event) {
                       var $element = this;
                     ctrl.onClickErrorNode(item)})
                       text("" + (item.error) + "")
@@ -3843,30 +3375,30 @@ module.exports = function description (ctrl) {
             elementClose("ul")
           elementClose("div")
         }
-        elementOpen("div", "d630bd37-4044-4cf2-8d18-163793164284", hoisted7)
-          elementOpen("div", "a007b04a-875b-4522-bcaa-5924b9dfbe49", hoisted8)
-            elementOpen("div", "c2f16a92-4548-4cb2-bfcf-25eb48b3da0d", hoisted9)
-              elementOpen("div", "667a204d-b76d-4080-9459-711487f892aa", hoisted10)
-                elementOpen("input", "184415ac-9d1c-4d9c-9cde-e69867b23416", hoisted11, "value", ctrl.query, "onkeyup", function ($event) {
+        elementOpen("div", "7e7dfe73-3b63-4f3f-bc1a-daec549bfe24", hoisted7)
+          elementOpen("div", "f7a66a49-b0a6-43bc-9397-cd535f05c20c", hoisted8)
+            elementOpen("div", "e4232355-791e-4a92-bfdc-31cccb5162f9", hoisted9)
+              elementOpen("div", "d2203163-703a-46db-b086-b509bcb729ef", hoisted10)
+                elementOpen("input", "2836d3a6-9985-48ae-8c94-76ad5d205c9b", hoisted11, "value", ctrl.query, "onkeyup", function ($event) {
                   var $element = this;
                 ctrl.query = this.value})
                 elementClose("input")
-                elementOpen("div", "c86f1f57-1905-43ac-8a6d-ab64c7e35a4d", hoisted12)
-                  elementOpen("button", "a63ab1fc-48a1-43b9-9466-cc2e5ba2a5d6", hoisted13)
-                    elementOpen("i", "8c9a834b-b9f6-4fab-9ad6-43edc015e164", hoisted14)
+                elementOpen("div", "ffc8d6e9-dfa8-4069-95ea-84e3376a2bdc", hoisted12)
+                  elementOpen("button", "d1c2c469-257f-40a4-9aa7-da04dfa2d879", hoisted13)
+                    elementOpen("i", "11852433-50a8-48c8-bcca-172a5720159f", hoisted14)
                     elementClose("i")
                   elementClose("button")
                 elementClose("div")
               elementClose("div")
             elementClose("div")
             if (routes.length) {
-              elementOpen("table", "2e2cf6d0-6f65-47ba-bda2-9282e947adf5", hoisted15)
+              elementOpen("table", "3b87f9cb-06b2-4fd6-bc23-7668e7fe3f9c", hoisted15)
                 elementOpen("tbody")
                   __target = routes
                   if (__target) {
                     ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
                       var route = $value
-                      var $key = "a0110a6f-8eae-4eaa-83b6-f5600ef83cd0_" + $item
+                      var $key = "fcdf56ba-ed02-46ea-afc5-061f69ba9ed4_" + $item
                       elementOpen("tr", $key, null, "onclick", function ($event) {
                         var $element = this;
                       ctrl.currentRoute = route}, "class", route.getRowClassName(ctrl.currentRoute))
@@ -3883,7 +3415,7 @@ module.exports = function description (ctrl) {
                         elementClose("td")
                         elementOpen("td")
                           if (route.resourceDisplay) {
-                            elementOpen("a", "e0fa9403-ec1a-4e6c-8272-71b2e471b75f_" + $key, hoisted16, "href", "#" + (ctrl.getRelativePath(route)) + "")
+                            elementOpen("a", "544bc9c6-fff0-4ff2-b63e-c96fb179beb3_" + $key, hoisted16, "href", "#" + (ctrl.getRelativePath(route)) + "")
                               text("" + (route.resourceDisplay) + "")
                             elementClose("a")
                           }
@@ -3894,123 +3426,123 @@ module.exports = function description (ctrl) {
                 elementClose("tbody")
               elementClose("table")
             }
-            elementOpen("div", "6864403a-2493-4ec0-b7ef-7f3a79dbb52c", hoisted17)
-              elementOpen("button", "50d5ecc3-4395-4e01-b02b-d0df0c3ef86a", hoisted18, "onclick", function ($event) {
+            elementOpen("div", "4db7ac05-1622-4241-a1fa-d644ee4b32fe", hoisted17)
+              elementOpen("button", "a49c4672-d284-4575-ae2c-e189c40e70ae", hoisted18, "onclick", function ($event) {
                 var $element = this;
               ctrl.addRoute()})
                 text("Add")
               elementClose("button")
             elementClose("div")
-            elementOpen("ul", "0ab61f2b-f8e3-40bc-a98b-a4c730a2d665", hoisted19)
+            elementOpen("ul", "8395211c-3476-424b-8b22-92019388eaa1", hoisted19)
               elementOpen("li")
-                elementOpen("a", "5d6b5cab-0abd-48b4-8499-9ac202d0bd31", hoisted20)
+                elementOpen("a", "dca0236f-d25d-4c83-a341-776b316d7c9d", hoisted20)
                   text("«")
                 elementClose("a")
               elementClose("li")
               elementOpen("li")
-                elementOpen("a", "8cc822d2-e737-4d8b-a50b-0e7a628860b9", hoisted21)
+                elementOpen("a", "2cbce351-3c2b-4af6-9e1d-9d04a02fe319", hoisted21)
                   text("1")
                 elementClose("a")
               elementClose("li")
               elementOpen("li")
-                elementOpen("a", "a951c514-b8a5-4ede-846f-d35996d3ab1f", hoisted22)
+                elementOpen("a", "5606d4d8-33f2-45c8-a4d8-ea51aa0920a5", hoisted22)
                   text("2")
                 elementClose("a")
               elementClose("li")
               elementOpen("li")
-                elementOpen("a", "c8ad1768-d8db-45fc-af75-ac2abee07f22", hoisted23)
+                elementOpen("a", "1c4b455c-d13e-41b8-b72d-b360b93158d3", hoisted23)
                   text("3")
                 elementClose("a")
               elementClose("li")
               elementOpen("li")
-                elementOpen("a", "173045da-c83f-4528-89a1-4e8cdd80c2e8", hoisted24)
+                elementOpen("a", "7a4026e1-9c88-4d89-a00a-556f6244c8e1", hoisted24)
                   text("»")
                 elementClose("a")
               elementClose("li")
             elementClose("ul")
           elementClose("div")
           if (ctrl.currentRoute) {
-            elementOpen("div", "7aaa2432-23f3-44fc-a358-bcd6c7c34b69", hoisted25)
-              elementOpen("form", "4d464e5a-a866-40c6-bf27-72755338d49d", hoisted26)
-                elementOpen("div", "bd3dad7d-64c8-489d-8080-fe058585491b", hoisted27)
-                  elementOpen("label", "bf04b689-4b25-480c-ac4d-7e8e995836e4", hoisted28)
+            elementOpen("div", "7e6e5d8e-b339-4488-ba2e-770c3b768c78", hoisted25)
+              elementOpen("form", "0cf6b668-419f-4dc3-b1b6-4bf3230d2201", hoisted26)
+                elementOpen("div", "523c6338-c0cb-4c29-a2bd-5db8ae821966", hoisted27)
+                  elementOpen("label", "397eb6da-b715-452d-9963-f109ce3b1f0b", hoisted28)
                     text("Method")
                   elementClose("label")
-                  elementOpen("div", "71372a39-3376-4c0e-b8f6-ecb6f0b7ecfe", hoisted29)
-                    elementOpen("select", "f170a98f-8300-4070-8781-16ad3809862b", hoisted30, "onchange", function ($event) {
+                  elementOpen("div", "1988d75c-590b-4d17-ba67-1364c67cff9f", hoisted29)
+                    elementOpen("select", "8f685349-4314-4610-8a8f-c9636d859b16", hoisted30, "onchange", function ($event) {
                       var $element = this;
                     ctrl.currentRoute.method = this.value})
-                      elementOpen("option", "a3126fa1-5744-4fb0-9948-77d1863b1d4c", hoisted31, "selected", ctrl.currentRoute.method === 'GET' ? 'selected' : null)
+                      elementOpen("option", "80e8fcf3-75a9-4ac2-b1ed-fbd88770e853", hoisted31, "selected", ctrl.currentRoute.method === 'GET' ? 'selected' : null)
                         text("GET")
                       elementClose("option")
-                      elementOpen("option", "7c2b2a80-622e-4ede-8688-e0d16b9e0293", hoisted32, "selected", ctrl.currentRoute.method === 'POST' ? 'selected' : null)
+                      elementOpen("option", "73ddc0e1-8da9-433d-a718-e4401b3aebb6", hoisted32, "selected", ctrl.currentRoute.method === 'POST' ? 'selected' : null)
                         text("POST")
                       elementClose("option")
-                      elementOpen("option", "f1511fc4-856a-4df7-88ee-f1394f9b6347", hoisted33, "selected", ctrl.currentRoute.method === 'PUT' ? 'selected' : null)
+                      elementOpen("option", "5f22c1d7-8f1f-4f82-8896-2f3078789b8e", hoisted33, "selected", ctrl.currentRoute.method === 'PUT' ? 'selected' : null)
                         text("PUT")
                       elementClose("option")
-                      elementOpen("option", "b19550fa-11a8-4958-a7ae-3592dffbc6f4", hoisted34, "selected", ctrl.currentRoute.method === 'DELETE' ? 'selected' : null)
+                      elementOpen("option", "946cd813-3b85-4be4-a764-ba34dd75377d", hoisted34, "selected", ctrl.currentRoute.method === 'DELETE' ? 'selected' : null)
                         text("DELETE")
                       elementClose("option")
-                      elementOpen("option", "54f7edd4-220c-4cc4-a969-2c690fdbee64", hoisted35, "selected", ctrl.currentRoute.method === 'HEAD' ? 'selected' : null)
+                      elementOpen("option", "f89181d7-299d-4b6a-9db4-dd0c7ac809ba", hoisted35, "selected", ctrl.currentRoute.method === 'HEAD' ? 'selected' : null)
                         text("HEAD")
                       elementClose("option")
-                      elementOpen("option", "aec0c73d-5c97-4855-879a-4f9aa899a0a2", hoisted36, "selected", ctrl.currentRoute.method === 'OPTIONS' ? 'selected' : null)
+                      elementOpen("option", "7973f3dc-6440-4489-94b8-fa683577ffb7", hoisted36, "selected", ctrl.currentRoute.method === 'OPTIONS' ? 'selected' : null)
                         text("OPTIONS")
                       elementClose("option")
-                      elementOpen("option", "adf8cd48-05be-4387-aced-9312a1101726", hoisted37, "selected", ctrl.currentRoute.method === 'CONNECT' ? 'selected' : null)
+                      elementOpen("option", "b15f4d81-c138-4896-947d-de46805a4c25", hoisted37, "selected", ctrl.currentRoute.method === 'CONNECT' ? 'selected' : null)
                         text("CONNECT")
                       elementClose("option")
                     elementClose("select")
                   elementClose("div")
                 elementClose("div")
-                elementOpen("div", "06c36c95-9cfb-4511-8275-334f36369644", hoisted38)
-                  elementOpen("label", "3f9e8ff7-2f28-45eb-911e-2a7186a67c25", hoisted39)
+                elementOpen("div", "ad68f261-0a3a-436c-85f9-5764dab41122", hoisted38)
+                  elementOpen("label", "d94a9d46-2476-484d-a201-b23556181795", hoisted39)
                     text("Path")
                   elementClose("label")
-                  elementOpen("div", "c44e7fd9-24b6-48b2-8987-600414279ed3", hoisted40)
-                    elementOpen("input", "ed28e92d-9feb-46db-8d73-82bca63df8d7", hoisted41, "value", ctrl.currentRoute.path, "onchange", function ($event) {
+                  elementOpen("div", "9273201c-a4db-47ce-b8df-c58b7fe04e8e", hoisted40)
+                    elementOpen("input", "ca7dc136-0970-4641-ade2-80cb827a53d0", hoisted41, "value", ctrl.currentRoute.path, "onchange", function ($event) {
                       var $element = this;
                     ctrl.currentRoute.path = this.value})
                     elementClose("input")
                   elementClose("div")
                 elementClose("div")
-                elementOpen("div", "cc499272-a331-4e6a-8e15-f63e259799ec", hoisted42)
-                  elementOpen("label", "b85bfb40-47bf-4a45-8584-1055bb393856", hoisted43)
+                elementOpen("div", "2bd1bced-46e2-4f6e-82dd-22aa732f6fe7", hoisted42)
+                  elementOpen("label", "2f9e8340-d59c-4fdf-ae52-d8a87afd33b5", hoisted43)
                     text("Resource path")
                   elementClose("label")
-                  elementOpen("div", "e5efffd8-8636-4188-a166-d3369898e2e0", hoisted44)
-                    elementOpen("input", "cd174f83-7edd-4778-81f0-9e322acd7108", hoisted45, "value", ctrl.currentRoute.resource.path, "onchange", function ($event) {
+                  elementOpen("div", "9c6e12b4-e9f0-44fe-baf6-8c88524eb5df", hoisted44)
+                    elementOpen("input", "501d675c-de33-4c5c-b4f6-e8211cdb00d5", hoisted45, "value", ctrl.currentRoute.resource.path, "onchange", function ($event) {
                       var $element = this;
                     ctrl.currentRoute.resource.path = this.value})
                     elementClose("input")
                   elementClose("div")
                 elementClose("div")
-                elementOpen("div", "8c42ffd6-0de3-4d98-a59f-175295fd8977", hoisted46)
-                  elementOpen("label", "12537652-ecc8-4694-8ccd-e7d07739d1e6", hoisted47)
+                elementOpen("div", "1f573906-43e7-48b7-904c-534e2c715636", hoisted46)
+                  elementOpen("label", "6930be75-42e5-4409-91b4-62f389bdd64f", hoisted47)
                     text("Resource name")
                   elementClose("label")
-                  elementOpen("div", "0cc9b94a-db5d-4276-a73c-cf6f42976669", hoisted48)
-                    elementOpen("input", "3f18b418-ba3e-461d-8ac8-f15b75b9f422", hoisted49, "value", ctrl.currentRoute.resource.name, "onchange", function ($event) {
+                  elementOpen("div", "eb7250fe-4c95-4130-b3d7-ebb6054319fd", hoisted48)
+                    elementOpen("input", "1bc24327-149c-4004-9085-996a0ac5f261", hoisted49, "value", ctrl.currentRoute.resource.name, "onchange", function ($event) {
                       var $element = this;
                     ctrl.currentRoute.resource.name = this.value})
                     elementClose("input")
                   elementClose("div")
                 elementClose("div")
-                elementOpen("div", "aed66a13-66c0-4e88-8979-247ca0f682c2", hoisted50)
-                  elementOpen("label", "f1ca18a4-0edd-42b3-b3b5-29f832f651c2", hoisted51)
+                elementOpen("div", "653eaf79-1ce4-4e1d-badc-275bf4202211", hoisted50)
+                  elementOpen("label", "f86e53e3-e9f6-49bf-b639-079aa13e0755", hoisted51)
                     text("Description")
                   elementClose("label")
-                  elementOpen("div", "006d641e-8c13-4890-94f9-3d3cf2d0b99a", hoisted52)
-                    elementOpen("textarea", "b6df23a8-8926-40d3-950a-9a3b81cf39e7", hoisted53, "value", ctrl.currentRoute.description, "onchange", function ($event) {
+                  elementOpen("div", "753b94dd-d405-4bca-90ae-10da9b924fdf", hoisted52)
+                    elementOpen("textarea", "43e5689b-647e-441a-af5b-80b6dd869a96", hoisted53, "value", ctrl.currentRoute.description, "onchange", function ($event) {
                       var $element = this;
                     ctrl.currentRoute.description = this.value})
                     elementClose("textarea")
                   elementClose("div")
                 elementClose("div")
-                elementOpen("div", "86dba907-f811-47cf-a16b-d0494fe773b4", hoisted54)
-                  elementOpen("div", "48d9e9bc-ab32-49a7-bd76-4f99e80cd576", hoisted55)
-                    elementOpen("input", "2814e42b-954a-4d9a-aaf6-41764c820a69", hoisted56, "checked", ctrl.currentRoute.ignore, "onchange", function ($event) {
+                elementOpen("div", "395a2cac-443e-4874-8069-2456e5e4f3e0", hoisted54)
+                  elementOpen("div", "06dbf46d-68e1-4eb5-a6a6-44ea2b7401f9", hoisted55)
+                    elementOpen("input", "b28f4bb3-cda6-490c-97ee-bd7f9a735f61", hoisted56, "checked", ctrl.currentRoute.ignore, "onchange", function ($event) {
                       var $element = this;
                     ctrl.currentRoute.ignore = this.checked})
                     elementClose("input")
@@ -4019,7 +3551,7 @@ module.exports = function description (ctrl) {
                   elementClose("div")
                 elementClose("div")
               elementClose("form")
-              elementOpen("button", "580db453-c301-4b4f-86f5-ce03f0251389", hoisted57, "onclick", function ($event) {
+              elementOpen("button", "a4ae3367-9d74-4cdf-97ed-4ba15022f10b", hoisted57, "onclick", function ($event) {
                 var $element = this;
               ctrl.removeRoute(ctrl.currentRoute)})
                 text("Delete route")
@@ -4032,32 +3564,33 @@ module.exports = function description (ctrl) {
   }
 }
 
-},{"incremental-dom":176}],60:[function(require,module,exports){
+},{"incremental-dom":166}],54:[function(require,module,exports){
 var supermodels = require('supermodels.js')
-var util = require('./util')
-var prop = require('./prop')
-var Fso = require('./fso')
+var File = require('./file')
 var service = require('./file-service')
 
 var sessionSchema = {
-  file: Fso,
-  manager: prop(Object).enumerable(false),
-  isDirty: prop(Boolean).value(false),
+  file: File,
+  edit: Object,
+  isDirty: Boolean,
   setDirty: function (value) {
     if (this.isDirty !== value) {
       this.isDirty = value
     }
   },
+  markClean: function () {
+    this.setDirty(false)
+    this.edit.getUndoManager().markClean()
+  },
   save: function (callback) {
-    service.writeFile(this.file.path, this.manager.getValue(), function (err, result) {
+    service.writeFile(this.file.path, this.edit.getValue(), function (err, result) {
       if (err) {
-        util.handleError(err)
-        if (callback) callback(err)
+        return callback(err)
       }
 
       // Mark clean
-      this.setDirty(false)
-      if (callback) callback(null, result)
+      this.markClean()
+      callback(null, result)
     }.bind(this))
   }
 }
@@ -4066,107 +3599,8 @@ var Session = supermodels(sessionSchema)
 
 module.exports = Session
 
-},{"./file-service":40,"./fso":45,"./prop":53,"./util":69,"supermodels.js":180}],61:[function(require,module,exports){
+},{"./file":38,"./file-service":37,"supermodels.js":169}],55:[function(require,module,exports){
 var supermodels = require('supermodels.js')
-var util = require('./util')
-var Session = require('./session')
-var service = require('./file-service')
-var AceSession = require('./ace/session')
-var files = window.UCO.files
-
-var sessionsSchema = {
-  items: [Session],
-  current: Session,
-  find: function (file) {
-    return this.items.find(function (item) {
-      return item.file === file
-    })
-  },
-  add: function (file) {
-    if (!file || file.isDirectory) {
-      return
-    }
-
-    var self = this
-    var src = file.path
-
-    service.readFile(src, function (err, result) {
-      if (err) {
-        return util.handleError(err)
-      }
-
-      var session = new Session({
-        file: file,
-        manager: new AceSession(file, result.contents)
-      })
-
-      session.manager.editSession.on('change', function () {
-        setTimeout(function () {
-          session.setDirty(session.manager.isDirty)
-        }, 0)
-      })
-
-      self.items.push(session)
-      self.current = session
-    })
-  },
-  remove: function (session) {
-    var idx = this.items.indexOf(session)
-    if (~idx) {
-      this.items.splice(idx, 1)
-      if (session === this.current) {
-        this.current = this.items[0]
-      }
-    }
-  },
-  dirty: function () {
-    return this.items.filter(function (item) {
-      return item.isDirty
-    })
-  },
-  clear: function () {
-    this.items.splice(0, this.items.length)
-    this.current = null
-  },
-  saveAll: function () {
-    this.dirty().forEach(function (item) {
-      item.save()
-    })
-  }
-}
-
-var Sessions = supermodels(sessionsSchema)
-
-var sessions = new Sessions()
-
-// Listen for files being removed.
-// Remove the session if there is one associated.
-// If the current file was removed, move back to the first session.
-files.on('splice', function (e) {
-  var removedCurrent = false
-  var current = sessions.current
-
-  e.detail.removed.forEach(function (file) {
-    var session = sessions.find(file)
-    if (session) {
-      sessions.remove(session)
-      if (session === current) {
-        removedCurrent = true
-      }
-    }
-  })
-
-  if (removedCurrent) {
-    sessions.current = sessions.items[0]
-  }
-})
-
-module.exports = sessions
-
-},{"./ace/session":4,"./file-service":40,"./session":60,"./util":69,"supermodels.js":180}],62:[function(require,module,exports){
-var supermodels = require('supermodels.js')
-var recent = require('../recent')
-var sessions = require('../sessions')
 var Main = require('../controller')
 var editor = require('../ace/editor')
 var files = window.UCO.files
@@ -4348,7 +3782,7 @@ var Controller = supermodels(schema)
 
 module.exports = Controller
 
-},{"../ace/editor":2,"../controller":9,"../recent":54,"../sessions":61,"supermodels.js":180}],63:[function(require,module,exports){
+},{"../ace/editor":1,"../controller":7,"supermodels.js":169}],56:[function(require,module,exports){
 var path = require('path')
 var Controller = require('./controller')
 var view = require('./view.html')
@@ -4390,7 +3824,7 @@ var Sidebar = document.registerElement(
 
 module.exports = Sidebar
 
-},{"../main":47,"../patch":52,"./controller":62,"./view.html":64,"path":72}],64:[function(require,module,exports){
+},{"../main":42,"../patch":47,"./controller":55,"./view.html":57,"path":63}],57:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -4403,7 +3837,7 @@ var hoisted1 = ["class", "main-sidebar"]
 var hoisted2 = ["class", "sidebar"]
 var hoisted3 = ["class", "sidebar-form"]
 var hoisted4 = ["class", "input-group"]
-var hoisted5 = ["type", "text", "name", "q", "class", "form-control", "placeholder", "Search..."]
+var hoisted5 = ["type", "text", "name", "q", "class", "form-control", "placeholder", "Search...", "autocomplete", "off"]
 var hoisted6 = ["class", "input-group-btn"]
 var hoisted7 = ["type", "submit", "name", "search", "id", "search-btn", "class", "btn btn-flat"]
 var hoisted8 = ["class", "fa fa-search"]
@@ -4416,45 +3850,46 @@ var hoisted14 = ["class", "fa fa-dashboard"]
 var hoisted15 = ["class", "pull-right-container"]
 var hoisted16 = ["class", "fa fa-angle-left pull-right"]
 var hoisted17 = ["class", "treeview-menu menu-open"]
-var hoisted18 = ["class", ""]
+var hoisted18 = ["class", "clear pull-right"]
 var hoisted19 = ["class", "file"]
-var hoisted20 = ["class", "pull-right-container"]
-var hoisted21 = ["class", "fa fa-angle-left pull-right"]
-var hoisted22 = ["class", "treeview-menu"]
-var hoisted23 = ["class", "file"]
-var hoisted24 = ["class", "fa fa-circle-o"]
-var hoisted25 = ["class", "file"]
+var hoisted20 = ["class", "text-danger"]
+var hoisted21 = ["class", "pull-right-container"]
+var hoisted22 = ["class", "fa fa-angle-left pull-right"]
+var hoisted23 = ["class", "treeview-menu"]
+var hoisted24 = ["class", "file"]
+var hoisted25 = ["class", "fa fa-circle-o"]
+var hoisted26 = ["class", "file"]
 var __target
 
 module.exports = function description (ctrl) {
-  elementOpen("aside", "c9a4319a-a19e-42f7-a9d0-d7bbfd0ebcce", hoisted1)
-    elementOpen("section", "775b5c52-3741-404d-b35b-087cdfd9c750", hoisted2)
-      elementOpen("form", "7d1c06b2-efff-46b4-afaa-9298a55e7e86", hoisted3, "onsubmit", function ($event) {
+  elementOpen("aside", "604fd48a-40a3-4460-a4be-0079c2b9534f", hoisted1)
+    elementOpen("section", "8e07bc37-afaf-4f1f-9989-2f9a15026b30", hoisted2)
+      elementOpen("form", "f2b3c6be-4522-499f-8925-554ee0ca7471", hoisted3, "onsubmit", function ($event) {
         var $element = this;
       ctrl.query = this.q.value})
-        elementOpen("div", "45883489-546b-4919-b8c3-8b2b606e40b3", hoisted4)
-          elementOpen("input", "2312b4b5-c6a1-4447-a98c-25f2ae72ba52", hoisted5, "onkeyup", function ($event) {
+        elementOpen("div", "4f7417b9-5991-4588-9fc6-030136249a4c", hoisted4)
+          elementOpen("input", "29179392-60a0-4130-b33e-686803a4b5c4", hoisted5, "onkeyup", function ($event) {
             var $element = this;
           ctrl.query = this.value})
           elementClose("input")
-          elementOpen("span", "162c7ed9-d7f2-4bef-8115-f4e35d97073b", hoisted6)
-            elementOpen("button", "a0685cdd-6947-44f5-8f37-fca41ba12af4", hoisted7)
-              elementOpen("i", "50ba653d-fc44-42ae-919d-ff918b055b57", hoisted8)
+          elementOpen("span", "f97fd1ab-9f4f-47f6-9ca5-91d3217ea520", hoisted6)
+            elementOpen("button", "46330fbc-4ac4-4e9a-920b-6404bdb29397", hoisted7)
+              elementOpen("i", "b7065054-c44d-4aae-9c70-a87f718ad559", hoisted8)
               elementClose("i")
             elementClose("button")
           elementClose("span")
         elementClose("div")
       elementClose("form")
-      elementOpen("ul", "23e3164c-6fed-41f3-bcc2-1f6bef087d28", hoisted9)
+      elementOpen("ul", "0c186f49-f1da-42ce-b037-38e5f7e182eb", hoisted9)
         if (ctrl.query) {
           var results = ctrl.searchFiles()
           __target = results
           if (__target) {
             ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
               var result = $value
-              var $key = "b2a77a59-2d22-4364-9b35-da33688f8d9f_" + $item
+              var $key = "f0854f2e-0f95-43d3-99cf-7bdbbe940626_" + $item
               elementOpen("li", $key)
-                elementOpen("a", "b37369ca-cc8a-4b41-a210-bedbdf6f69d8_" + $key, hoisted10, "onclick", function ($event) {
+                elementOpen("a", "a59807f1-5bba-47c6-843b-d3ee0dde0add_" + $key, hoisted10, "onclick", function ($event) {
                   var $element = this;
                 ctrl.main.setCurrentFile(result)})
                   elementOpen("span")
@@ -4465,39 +3900,49 @@ module.exports = function description (ctrl) {
             }, this)
           }
         }
-        elementOpen("li", "7b36e480-c5a6-475c-a6f9-5fd996a81ab9", hoisted11)
+        elementOpen("li", "83d4a031-9d47-4e2d-95d4-5fae6b8a52e2", hoisted11)
           text("" + (ctrl.name) + "")
         elementClose("li")
-        elementOpen("li", "37b1feb0-747c-48c3-bdfb-f11a4bc5553a", hoisted12)
+        elementOpen("li", "d83dff84-9023-4d7d-948d-4023e407a717", hoisted12)
           var recent = ctrl.main.recent
                       // var items = recent.items
                       // var dirty = recent.dirty()
-          elementOpen("a", "5f7da684-45db-42c9-baac-e708a80906cb", hoisted13)
-            elementOpen("i", "17c728bc-e019-411f-864f-f27d22aa4a13", hoisted14)
+          elementOpen("a", "afb840aa-0920-4544-b8ba-a8fe807e11a2", hoisted13)
+            elementOpen("i", "dea3d1ba-89d7-4e33-b9ad-5ca67ec032c1", hoisted14)
             elementClose("i")
             elementOpen("span")
               text(" \
-                            Open editors \
+                            Open editors (" + (recent.length) + ") \
                             ")
             elementClose("span")
-            elementOpen("span", "ae151ac8-1562-44a0-b387-193d0fd63989", hoisted15)
-              elementOpen("i", "6ecef81d-78ed-42ec-b57d-42f1dfafd799", hoisted16)
+            elementOpen("span", "131b0e3e-6e47-4ac8-9c3b-76acb9cd5fec", hoisted15)
+              elementOpen("i", "681d2efa-ab76-41a9-9270-e3986dc1c66d", hoisted16)
               elementClose("i")
             elementClose("span")
           elementClose("a")
-          elementOpen("ul", "7d4cecfa-4b98-46ad-baa9-8b51c0615ebe", hoisted17)
+          elementOpen("ul", "6d8919a4-a523-4496-9496-77cafb347fda", hoisted17)
             __target = recent
             if (__target) {
               ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
                 var item = $value
-                var $key = "2a34eba6-ea5c-42bf-a5ec-7442ad5ac33e_" + item.path
-                elementOpen("li", $key, hoisted18)
-                  elementOpen("a", "61536eeb-04e0-49e9-ad94-3222228440a0_" + $key, hoisted19, "onclick", function ($event) {
+                var $key = "96a0e82b-a062-452e-9099-33a2c6698c65_" + item.path
+                elementOpen("li", $key, null, "class", item === ctrl.main.current ? 'active' : '')
+                  elementOpen("a", "c783f86a-950b-4df8-8275-9cd61a24d059_" + $key, hoisted18, "onclick", function ($event) {
+                    var $element = this;
+                  ctrl.main.closeFile(item)})
+                    text("×")
+                  elementClose("a")
+                  elementOpen("a", "ae57a18c-f833-4042-a1b1-1f83919b0cf9_" + $key, hoisted19, "onclick", function ($event) {
                     var $element = this;
                   ctrl.main.setCurrentFile(item)})
                     text(" \
                                     " + (item.getDisplayName()) + " \
-                                  ")
+                                    ")
+                    if (item.session && item.session.isDirty) {
+                      elementOpen("span", "8207190a-a32b-4860-99e2-73ecf8ed1a65_" + $key, hoisted20)
+                        text("*")
+                      elementClose("span")
+                    }
                   elementClose("a")
                 elementClose("li")
               }, this)
@@ -4508,7 +3953,7 @@ module.exports = function description (ctrl) {
         if (__target) {
           ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
             var link = $value
-            var $key = "973a1acc-1274-4357-a97c-36e5da82a67a_" + $item
+            var $key = "9fdc000b-41be-4490-a946-75dbc601f30a_" + $item
             elementOpen("li", $key, null, "class", link.children ? 'treeview' : '')
               if (link.children) {
                 elementOpen("a")
@@ -4517,20 +3962,20 @@ module.exports = function description (ctrl) {
                   elementOpen("span")
                     text("" + (link.text) + "")
                   elementClose("span")
-                  elementOpen("span", "208bf3f5-5af0-419d-9e0a-a7b4688bd369_" + $key, hoisted20)
-                    elementOpen("i", "0b780dd8-dbc3-402f-913c-143a45a0292f_" + $key, hoisted21)
+                  elementOpen("span", "c567c6d0-908b-495c-a850-5204442ac034_" + $key, hoisted21)
+                    elementOpen("i", "86cacfe0-0eeb-4a7a-985e-2e7fbc0a76be_" + $key, hoisted22)
                     elementClose("i")
                   elementClose("span")
                 elementClose("a")
-                elementOpen("ul", "c8306c43-7113-46fc-a0da-2a4927207507_" + $key, hoisted22)
+                elementOpen("ul", "a0709355-02e9-45e8-ac1e-f53ece52b380_" + $key, hoisted23)
                   __target = link.children
                   if (__target) {
                     ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
                       var child = $value
-                      var $key = "ee698e2f-b628-416a-8d4b-b36fe026377d_" + child.href
+                      var $key = "25b833be-d13b-4db9-be18-f1c9a4f2decf_" + child.href
                       elementOpen("li", $key)
-                        elementOpen("a", "c0eb280d-6f31-4dc9-af56-bf63e4fe5c65_" + $key, hoisted23, "href", child.href)
-                          elementOpen("i", "841233d3-ca92-48c8-a5c9-2469215b7968_" + $key, hoisted24)
+                        elementOpen("a", "ac7a5eb9-ef9c-4a85-b261-32ee49989d7c_" + $key, hoisted24, "href", child.href)
+                          elementOpen("i", "cdd4b3c3-0ed1-44a2-b7cf-532c0d208931_" + $key, hoisted25)
                           elementClose("i")
                           text(" " + (child.text) + "")
                         elementClose("a")
@@ -4539,7 +3984,7 @@ module.exports = function description (ctrl) {
                   }
                 elementClose("ul")
               } else {
-                elementOpen("a", "db491b77-b40c-464e-b066-45a4f9e95719_" + $key, hoisted25, "href", link.href)
+                elementOpen("a", "841df4a6-59aa-4038-a78b-d92ceb151c60_" + $key, hoisted26, "href", link.href)
                   elementOpen("i", null, null, "class", "fa fa-" + (link.icon) + "")
                   elementClose("i")
                   elementOpen("span")
@@ -4555,9 +4000,9 @@ module.exports = function description (ctrl) {
   elementClose("aside")
 }
 
-},{"incremental-dom":176}],65:[function(require,module,exports){
+},{"incremental-dom":166}],58:[function(require,module,exports){
 var supermodels = require('supermodels.js')
-var File = require('../fso')
+var File = require('../file')
 var Main = require('../controller')
 var fileMenu = require('../file-menu')
 var treeify = require('./treeify')
@@ -4605,7 +4050,7 @@ var Model = supermodels(model)
 
 module.exports = Model
 
-},{"../controller":9,"../file-menu":38,"../fso":45,"./treeify":67,"supermodels.js":180}],66:[function(require,module,exports){
+},{"../controller":7,"../file":38,"../file-menu":35,"./treeify":60,"supermodels.js":169}],59:[function(require,module,exports){
 var main = require('../main')
 var Controller = require('./controller')
 var view = require('./view.html')
@@ -4646,7 +4091,7 @@ var Tree = document.registerElement(
 
 module.exports = Tree
 
-},{"../main":47,"../patch":52,"./controller":65,"./view.html":68}],67:[function(require,module,exports){
+},{"../main":42,"../patch":47,"./controller":58,"./view.html":61}],60:[function(require,module,exports){
 function makeTree (files) {
   function treeify (list, idAttr, parentAttr, childrenAttr) {
     var treeList = []
@@ -4685,7 +4130,7 @@ function makeTree (files) {
 
 module.exports = makeTree
 
-},{}],68:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 var IncrementalDOM = require('incremental-dom')
 var patch = IncrementalDOM.patch
 var elementOpen = IncrementalDOM.elementOpen
@@ -4732,19 +4177,19 @@ module.exports = function tree (ctrl, data, root) {
     if (__target) {
       ;(__target.forEach ? __target : Object.keys(__target)).forEach(function($value, $item, $target) {
         var node = $value
-        var $key = "23531e59-21df-4654-909d-4e37074aa17d_" + node.path
+        var $key = "539d2ad2-cded-42cb-9f18-3f5297ef56b0_" + node.path
         elementOpen("li", $key, null, "oncontextmenu", function ($event) {
           var $element = this;
         ctrl.onRightClick($event, node)}, "title", node.fso.getRelativePath(), "class", node.fso.isDirectory ? 'dir' : 'file' + (node.fso === current ? ' selected' : ''))
           var fso = node.fso
                   var isExpanded = ctrl.isExpanded(fso)
           if (!fso.isDirectory) {
-            elementOpen("a", "f18d6e78-be78-40e9-99ac-d8d39da8b6b0_" + $key, hoisted1, "onclick", function ($event) {
+            elementOpen("a", "75c59a22-dae8-48b7-a5c5-578c095a1915_" + $key, hoisted1, "onclick", function ($event) {
               var $element = this;
             ctrl.main.setCurrentFile(fso)})
-              elementOpen("span", "22ff9bfd-8134-497a-85eb-8053a97b17ea_" + $key, hoisted2, "data-name", fso.name)
+              elementOpen("span", "d826ff0a-f13b-4131-b966-9811d1b57724_" + $key, hoisted2, "data-name", fso.name)
               elementClose("span")
-              elementOpen("span", "c0ac0a5a-f334-4145-bbb0-832d78cdf483_" + $key, hoisted3)
+              elementOpen("span", "80df8040-14a1-4a28-9966-732c29874c81_" + $key, hoisted3)
                 text("" + (fso.name) + "")
               elementClose("span")
             elementClose("a")
@@ -4754,26 +4199,26 @@ module.exports = function tree (ctrl, data, root) {
               var $element = this;
             ctrl.onClick(fso)})
               if (isExpanded) {
-                elementOpen("small", "e73f4bc4-0720-4b0d-9f8f-43f9655d753b_" + $key, hoisted4)
-                  elementOpen("i", "76514f80-9c5a-4244-bc58-ea1c49b3cdad_" + $key, hoisted5)
+                elementOpen("small", "efe3d42d-2c5f-4cc8-a215-acfe91e9cfac_" + $key, hoisted4)
+                  elementOpen("i", "5c3c14cd-7f8d-45d6-98f5-5716f17e0f2c_" + $key, hoisted5)
                   elementClose("i")
                 elementClose("small")
               }
               if (!isExpanded) {
-                elementOpen("small", "2f717853-5d22-4e39-8937-75368888a3fd_" + $key, hoisted6)
-                  elementOpen("i", "336dfcfb-4295-496a-8fbb-8e92e2321e8b_" + $key, hoisted7)
+                elementOpen("small", "e1ec9f15-a970-4612-b096-752a7cc18628_" + $key, hoisted6)
+                  elementOpen("i", "919a7c41-3bb1-46c1-bd17-691b99788b67_" + $key, hoisted7)
                   elementClose("i")
                 elementClose("small")
               }
-              elementOpen("span", "8ff83308-b3b1-47d8-835a-a12803e2a12a_" + $key, hoisted8, "data-name", fso.name)
+              elementOpen("span", "441dd551-b9cc-4d92-92a9-4d690318ee2a_" + $key, hoisted8, "data-name", fso.name)
               elementClose("span")
-              elementOpen("span", "0f102364-5e8e-45cc-ba4c-2efa92fd84ee_" + $key, hoisted9)
+              elementOpen("span", "3fb0b180-dd60-4b41-b527-2301172c1323_" + $key, hoisted9)
                 text("" + (fso.name) + "")
               elementClose("span")
             elementClose("a")
           }
           if (!fso.isDirectory && fso === current) {
-            elementOpen("span", "0664e9b2-3541-4884-951c-2fe66550895f_" + $key, hoisted10)
+            elementOpen("span", "f5afeb68-81a2-49d4-b28a-5608ce0b5901_" + $key, hoisted10)
             elementClose("span")
           }
           if (fso.isDirectory && isExpanded) {
@@ -4785,7 +4230,7 @@ module.exports = function tree (ctrl, data, root) {
   elementClose("ul")
 }
 
-},{"incremental-dom":176}],69:[function(require,module,exports){
+},{"incremental-dom":166}],62:[function(require,module,exports){
 var notify = document.querySelector('vsd-notify')
 
 function handleError (err) {
@@ -4804,110 +4249,7 @@ module.exports = {
   handleError: handleError
 }
 
-},{}],70:[function(require,module,exports){
-var util = require('./util')
-
-// Nes websocket file watcher service
-function Service (client, options) {
-  options = options || {}
-  var path = options.path
-  var mount = options.mount || ''
-
-  function getWatched (callback) {
-    client.request({
-      path: mount + '/watched?path=' + path,
-      method: 'GET'
-    }, callback)
-  }
-
-  function watch (id, files) {
-    function handleError (err) {
-      if (err) {
-        return util.handleError(err)
-      }
-    }
-
-    function addFile (payload) {
-      // Create it only if it
-      // doesn't already exist.
-      // It could've been added by the file-editor mkfile'
-      var file = files.find(function (item) {
-        return item.path === payload.path
-      })
-
-      if (!file) {
-        file = files.create(payload)
-        files.push(file)
-      }
-    }
-
-    function removeFile (payload) {
-      var idx = files.findIndex(function (item) {
-        return item.path === payload.path
-      })
-
-      if (idx > -1) {
-        files.splice(idx, 1)
-      }
-    }
-
-    function changeFile (payload) {
-      var file = files.find(function (item) {
-        return item.path === payload.path
-      })
-
-      if (file) {
-        if (!file.stat || payload.stat.mtime !== file.stat.mtime) {
-          // File has changed on disk
-          file.stat = payload.stat
-        }
-      }
-    }
-
-    // Subscribe to watched file changes
-    // that happen on the file system
-    // Reload the session if the changes
-    // do not match the state of the file
-    client.subscribe(mount + '/' + id + '/add', addFile, handleError)
-    client.subscribe(mount + '/' + id + '/addDir', addFile, handleError)
-    client.subscribe(mount + '/' + id + '/unlink', removeFile, handleError)
-    client.subscribe(mount + '/' + id + '/unlinkDir', removeFile, handleError)
-    client.subscribe(mount + '/' + id + '/change', changeFile, handleError)
-  }
-
-  this.watch = watch
-  this.getWatched = getWatched
-}
-
-var client = require('./client')
-var service = new Service(client, {
-  mount: '/fs',
-  path: window.UCO.path
-})
-
-module.exports = service
-
-},{"./client":8,"./util":69}],71:[function(require,module,exports){
-// var path = require('path')
-// var argv = require('./argv')
-
-var config = {
-  ace: {
-    tabSize: 2,
-    fontSize: 12,
-    // theme: 'monokai',
-    useSoftTabs: true,
-    maxLines: 300
-  }
-}
-
-// if (argv.client) {
-//   config = require(path.resolve(process.cwd(), argv.client))
-// }
-
-module.exports = config
-
-},{}],72:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5136,7 +4478,7 @@ var substr = 'ab'.substr(-1) === 'b'
 
 }).call(this,require('_process'))
 
-},{"_process":73}],73:[function(require,module,exports){
+},{"_process":64}],64:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -5318,7 +4660,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],74:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 /**
  * @license
  * Copyright (c) 2012-2013 Chris Pettitt
@@ -5350,7 +4692,7 @@ module.exports =  {
   version: require("./lib/version")
 };
 
-},{"./lib/dagre":81,"./lib/graphlib":82,"./lib/intersect":83,"./lib/render":98,"./lib/util":100,"./lib/version":101}],75:[function(require,module,exports){
+},{"./lib/dagre":72,"./lib/graphlib":73,"./lib/intersect":74,"./lib/render":89,"./lib/util":91,"./lib/version":92}],66:[function(require,module,exports){
 var util = require("./util");
 
 module.exports = {
@@ -5423,7 +4765,7 @@ function undirected(parent, id, edge, type) {
   }
 }
 
-},{"./util":100}],76:[function(require,module,exports){
+},{"./util":91}],67:[function(require,module,exports){
 var util = require("./util"),
     addLabel = require("./label/add-label");
 
@@ -5468,7 +4810,7 @@ function createClusters(selection, g) {
   return svgClusters;
 }
 
-},{"./label/add-label":91,"./util":100}],77:[function(require,module,exports){
+},{"./label/add-label":82,"./util":91}],68:[function(require,module,exports){
 "use strict";
 
 var _ = require("./lodash"),
@@ -5505,7 +4847,7 @@ function createEdgeLabels(selection, g) {
   return svgEdgeLabels;
 }
 
-},{"./d3":80,"./label/add-label":91,"./lodash":94,"./util":100}],78:[function(require,module,exports){
+},{"./d3":71,"./label/add-label":82,"./lodash":85,"./util":91}],69:[function(require,module,exports){
 "use strict";
 
 var _ = require("./lodash"),
@@ -5643,7 +4985,7 @@ function exit(svgPaths, g) {
     });
 }
 
-},{"./d3":80,"./intersect/intersect-node":87,"./lodash":94,"./util":100}],79:[function(require,module,exports){
+},{"./d3":71,"./intersect/intersect-node":78,"./lodash":85,"./util":91}],70:[function(require,module,exports){
 "use strict";
 
 var _ = require("./lodash"),
@@ -5703,11 +5045,11 @@ function createNodes(selection, g, shapes) {
   return svgNodes;
 }
 
-},{"./d3":80,"./label/add-label":91,"./lodash":94,"./util":100}],80:[function(require,module,exports){
+},{"./d3":71,"./label/add-label":82,"./lodash":85,"./util":91}],71:[function(require,module,exports){
 // Stub to get D3 either via NPM or from the global object
 module.exports = window.d3;
 
-},{}],81:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 /* global window */
 
 var dagre;
@@ -5724,7 +5066,7 @@ if (!dagre) {
 
 module.exports = dagre;
 
-},{"dagre":123}],82:[function(require,module,exports){
+},{"dagre":114}],73:[function(require,module,exports){
 /* global window */
 
 var graphlib;
@@ -5741,7 +5083,7 @@ if (!graphlib) {
 
 module.exports = graphlib;
 
-},{"graphlib":102}],83:[function(require,module,exports){
+},{"graphlib":93}],74:[function(require,module,exports){
 module.exports = {
   node: require("./intersect-node"),
   circle: require("./intersect-circle"),
@@ -5750,7 +5092,7 @@ module.exports = {
   rect: require("./intersect-rect")
 };
 
-},{"./intersect-circle":84,"./intersect-ellipse":85,"./intersect-node":87,"./intersect-polygon":88,"./intersect-rect":89}],84:[function(require,module,exports){
+},{"./intersect-circle":75,"./intersect-ellipse":76,"./intersect-node":78,"./intersect-polygon":79,"./intersect-rect":80}],75:[function(require,module,exports){
 var intersectEllipse = require("./intersect-ellipse");
 
 module.exports = intersectCircle;
@@ -5759,7 +5101,7 @@ function intersectCircle(node, rx, point) {
   return intersectEllipse(node, rx, rx, point);
 }
 
-},{"./intersect-ellipse":85}],85:[function(require,module,exports){
+},{"./intersect-ellipse":76}],76:[function(require,module,exports){
 module.exports = intersectEllipse;
 
 function intersectEllipse(node, rx, ry, point) {
@@ -5786,7 +5128,7 @@ function intersectEllipse(node, rx, ry, point) {
 }
 
 
-},{}],86:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 module.exports = intersectLine;
 
 /*
@@ -5858,14 +5200,14 @@ function sameSign(r1, r2) {
   return r1 * r2 > 0;
 }
 
-},{}],87:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 module.exports = intersectNode;
 
 function intersectNode(node, point) {
   return node.intersect(point);
 }
 
-},{}],88:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 var intersectLine = require("./intersect-line");
 
 module.exports = intersectPolygon;
@@ -5922,7 +5264,7 @@ function intersectPolygon(node, polyPoints, point) {
   return intersections[0];
 }
 
-},{"./intersect-line":86}],89:[function(require,module,exports){
+},{"./intersect-line":77}],80:[function(require,module,exports){
 module.exports = intersectRect;
 
 function intersectRect(node, point) {
@@ -5956,7 +5298,7 @@ function intersectRect(node, point) {
   return {x: x + sx, y: y + sy};
 }
 
-},{}],90:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 var util = require("../util");
 
 module.exports = addHtmlLabel;
@@ -5995,7 +5337,7 @@ function addHtmlLabel(root, node) {
   return fo;
 }
 
-},{"../util":100}],91:[function(require,module,exports){
+},{"../util":91}],82:[function(require,module,exports){
 var addTextLabel = require("./add-text-label"),
     addHtmlLabel = require("./add-html-label"),
     addSVGLabel  = require("./add-svg-label");
@@ -6034,7 +5376,7 @@ function addLabel(root, node, location) {
   return labelSvg;
 }
 
-},{"./add-html-label":90,"./add-svg-label":92,"./add-text-label":93}],92:[function(require,module,exports){
+},{"./add-html-label":81,"./add-svg-label":83,"./add-text-label":84}],83:[function(require,module,exports){
 var util = require("../util");
 
 module.exports = addSVGLabel;
@@ -6049,7 +5391,7 @@ function addSVGLabel(root, node) {
   return domNode;
 }
 
-},{"../util":100}],93:[function(require,module,exports){
+},{"../util":91}],84:[function(require,module,exports){
 var util = require("../util");
 
 module.exports = addTextLabel;
@@ -6096,7 +5438,7 @@ function processEscapeSequences(text) {
   return newText;
 }
 
-},{"../util":100}],94:[function(require,module,exports){
+},{"../util":91}],85:[function(require,module,exports){
 /* global window */
 
 var lodash;
@@ -6113,7 +5455,7 @@ if (!lodash) {
 
 module.exports = lodash;
 
-},{"lodash":122}],95:[function(require,module,exports){
+},{"lodash":113}],86:[function(require,module,exports){
 "use strict";
 
 var util = require("./util"),
@@ -6149,7 +5491,7 @@ function positionClusters(selection, g) {
 
 }
 
-},{"./d3":80,"./util":100}],96:[function(require,module,exports){
+},{"./d3":71,"./util":91}],87:[function(require,module,exports){
 "use strict";
 
 var util = require("./util"),
@@ -6173,7 +5515,7 @@ function positionEdgeLabels(selection, g) {
     .attr("transform", translate);
 }
 
-},{"./d3":80,"./lodash":94,"./util":100}],97:[function(require,module,exports){
+},{"./d3":71,"./lodash":85,"./util":91}],88:[function(require,module,exports){
 "use strict";
 
 var util = require("./util"),
@@ -6196,7 +5538,7 @@ function positionNodes(selection, g) {
     .attr("transform", translate);
 }
 
-},{"./d3":80,"./util":100}],98:[function(require,module,exports){
+},{"./d3":71,"./util":91}],89:[function(require,module,exports){
 var _ = require("./lodash"),
     layout = require("./dagre").layout;
 
@@ -6365,7 +5707,7 @@ function createOrSelectGroup(root, name) {
   return selection;
 }
 
-},{"./arrows":75,"./create-clusters":76,"./create-edge-labels":77,"./create-edge-paths":78,"./create-nodes":79,"./dagre":81,"./lodash":94,"./position-clusters":95,"./position-edge-labels":96,"./position-nodes":97,"./shapes":99}],99:[function(require,module,exports){
+},{"./arrows":66,"./create-clusters":67,"./create-edge-labels":68,"./create-edge-paths":69,"./create-nodes":70,"./dagre":72,"./lodash":85,"./position-clusters":86,"./position-edge-labels":87,"./position-nodes":88,"./shapes":90}],90:[function(require,module,exports){
 "use strict";
 
 var intersectRect = require("./intersect/intersect-rect"),
@@ -6448,7 +5790,7 @@ function diamond(parent, bbox, node) {
   return shapeSvg;
 }
 
-},{"./intersect/intersect-circle":84,"./intersect/intersect-ellipse":85,"./intersect/intersect-polygon":88,"./intersect/intersect-rect":89}],100:[function(require,module,exports){
+},{"./intersect/intersect-circle":75,"./intersect/intersect-ellipse":76,"./intersect/intersect-polygon":79,"./intersect/intersect-rect":80}],91:[function(require,module,exports){
 var _ = require("./lodash");
 
 // Public utility functions
@@ -6504,10 +5846,10 @@ function applyTransition(selection, g) {
   return selection;
 }
 
-},{"./lodash":94}],101:[function(require,module,exports){
+},{"./lodash":85}],92:[function(require,module,exports){
 module.exports = "0.4.17";
 
-},{}],102:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 /**
  * Copyright (c) 2014, Chris Pettitt
  * All rights reserved.
@@ -6547,7 +5889,7 @@ module.exports = {
   version: lib.version
 };
 
-},{"./lib":118,"./lib/alg":109,"./lib/json":119}],103:[function(require,module,exports){
+},{"./lib":109,"./lib/alg":100,"./lib/json":110}],94:[function(require,module,exports){
 var _ = require("../lodash");
 
 module.exports = components;
@@ -6576,7 +5918,7 @@ function components(g) {
   return cmpts;
 }
 
-},{"../lodash":120}],104:[function(require,module,exports){
+},{"../lodash":111}],95:[function(require,module,exports){
 var _ = require("../lodash");
 
 module.exports = dfs;
@@ -6617,7 +5959,7 @@ function doDfs(g, v, postorder, visited, acc) {
   }
 }
 
-},{"../lodash":120}],105:[function(require,module,exports){
+},{"../lodash":111}],96:[function(require,module,exports){
 var dijkstra = require("./dijkstra"),
     _ = require("../lodash");
 
@@ -6629,7 +5971,7 @@ function dijkstraAll(g, weightFunc, edgeFunc) {
   }, {});
 }
 
-},{"../lodash":120,"./dijkstra":106}],106:[function(require,module,exports){
+},{"../lodash":111,"./dijkstra":97}],97:[function(require,module,exports){
 var _ = require("../lodash"),
     PriorityQueue = require("../data/priority-queue");
 
@@ -6685,7 +6027,7 @@ function runDijkstra(g, source, weightFn, edgeFn) {
   return results;
 }
 
-},{"../data/priority-queue":116,"../lodash":120}],107:[function(require,module,exports){
+},{"../data/priority-queue":107,"../lodash":111}],98:[function(require,module,exports){
 var _ = require("../lodash"),
     tarjan = require("./tarjan");
 
@@ -6697,7 +6039,7 @@ function findCycles(g) {
   });
 }
 
-},{"../lodash":120,"./tarjan":114}],108:[function(require,module,exports){
+},{"../lodash":111,"./tarjan":105}],99:[function(require,module,exports){
 var _ = require("../lodash");
 
 module.exports = floydWarshall;
@@ -6749,7 +6091,7 @@ function runFloydWarshall(g, weightFn, edgeFn) {
   return results;
 }
 
-},{"../lodash":120}],109:[function(require,module,exports){
+},{"../lodash":111}],100:[function(require,module,exports){
 module.exports = {
   components: require("./components"),
   dijkstra: require("./dijkstra"),
@@ -6764,7 +6106,7 @@ module.exports = {
   topsort: require("./topsort")
 };
 
-},{"./components":103,"./dijkstra":106,"./dijkstra-all":105,"./find-cycles":107,"./floyd-warshall":108,"./is-acyclic":110,"./postorder":111,"./preorder":112,"./prim":113,"./tarjan":114,"./topsort":115}],110:[function(require,module,exports){
+},{"./components":94,"./dijkstra":97,"./dijkstra-all":96,"./find-cycles":98,"./floyd-warshall":99,"./is-acyclic":101,"./postorder":102,"./preorder":103,"./prim":104,"./tarjan":105,"./topsort":106}],101:[function(require,module,exports){
 var topsort = require("./topsort");
 
 module.exports = isAcyclic;
@@ -6781,7 +6123,7 @@ function isAcyclic(g) {
   return true;
 }
 
-},{"./topsort":115}],111:[function(require,module,exports){
+},{"./topsort":106}],102:[function(require,module,exports){
 var dfs = require("./dfs");
 
 module.exports = postorder;
@@ -6790,7 +6132,7 @@ function postorder(g, vs) {
   return dfs(g, vs, "post");
 }
 
-},{"./dfs":104}],112:[function(require,module,exports){
+},{"./dfs":95}],103:[function(require,module,exports){
 var dfs = require("./dfs");
 
 module.exports = preorder;
@@ -6799,7 +6141,7 @@ function preorder(g, vs) {
   return dfs(g, vs, "pre");
 }
 
-},{"./dfs":104}],113:[function(require,module,exports){
+},{"./dfs":95}],104:[function(require,module,exports){
 var _ = require("../lodash"),
     Graph = require("../graph"),
     PriorityQueue = require("../data/priority-queue");
@@ -6853,7 +6195,7 @@ function prim(g, weightFunc) {
   return result;
 }
 
-},{"../data/priority-queue":116,"../graph":117,"../lodash":120}],114:[function(require,module,exports){
+},{"../data/priority-queue":107,"../graph":108,"../lodash":111}],105:[function(require,module,exports){
 var _ = require("../lodash");
 
 module.exports = tarjan;
@@ -6902,7 +6244,7 @@ function tarjan(g) {
   return results;
 }
 
-},{"../lodash":120}],115:[function(require,module,exports){
+},{"../lodash":111}],106:[function(require,module,exports){
 var _ = require("../lodash");
 
 module.exports = topsort;
@@ -6938,7 +6280,7 @@ function topsort(g) {
 
 function CycleException() {}
 
-},{"../lodash":120}],116:[function(require,module,exports){
+},{"../lodash":111}],107:[function(require,module,exports){
 var _ = require("../lodash");
 
 module.exports = PriorityQueue;
@@ -7092,7 +6434,7 @@ PriorityQueue.prototype._swap = function(i, j) {
   keyIndices[origArrI.key] = j;
 };
 
-},{"../lodash":120}],117:[function(require,module,exports){
+},{"../lodash":111}],108:[function(require,module,exports){
 "use strict";
 
 var _ = require("./lodash");
@@ -7613,14 +6955,14 @@ function edgeObjToId(isDirected, edgeObj) {
   return edgeArgsToId(isDirected, edgeObj.v, edgeObj.w, edgeObj.name);
 }
 
-},{"./lodash":120}],118:[function(require,module,exports){
+},{"./lodash":111}],109:[function(require,module,exports){
 // Includes only the "core" of graphlib
 module.exports = {
   Graph: require("./graph"),
   version: require("./version")
 };
 
-},{"./graph":117,"./version":121}],119:[function(require,module,exports){
+},{"./graph":108,"./version":112}],110:[function(require,module,exports){
 var _ = require("./lodash"),
     Graph = require("./graph");
 
@@ -7688,7 +7030,7 @@ function read(json) {
   return g;
 }
 
-},{"./graph":117,"./lodash":120}],120:[function(require,module,exports){
+},{"./graph":108,"./lodash":111}],111:[function(require,module,exports){
 /* global window */
 
 var lodash;
@@ -7705,10 +7047,10 @@ if (!lodash) {
 
 module.exports = lodash;
 
-},{"lodash":122}],121:[function(require,module,exports){
+},{"lodash":113}],112:[function(require,module,exports){
 module.exports = '1.0.7';
 
-},{}],122:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -20064,7 +19406,7 @@ module.exports = '1.0.7';
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],123:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 /*
 Copyright (c) 2012-2014 Chris Pettitt
 
@@ -20099,7 +19441,7 @@ module.exports = {
   version: require("./lib/version")
 };
 
-},{"./lib/debug":128,"./lib/graphlib":129,"./lib/layout":131,"./lib/util":151,"./lib/version":152}],124:[function(require,module,exports){
+},{"./lib/debug":119,"./lib/graphlib":120,"./lib/layout":122,"./lib/util":142,"./lib/version":143}],115:[function(require,module,exports){
 "use strict";
 
 var _ = require("./lodash"),
@@ -20168,7 +19510,7 @@ function undo(g) {
   });
 }
 
-},{"./greedy-fas":130,"./lodash":132}],125:[function(require,module,exports){
+},{"./greedy-fas":121,"./lodash":123}],116:[function(require,module,exports){
 var _ = require("./lodash"),
     util = require("./util");
 
@@ -20208,7 +19550,7 @@ function addBorderNode(g, prop, prefix, sg, sgNode, rank) {
   }
 }
 
-},{"./lodash":132,"./util":151}],126:[function(require,module,exports){
+},{"./lodash":123,"./util":142}],117:[function(require,module,exports){
 "use strict";
 
 var _ = require("./lodash");
@@ -20282,7 +19624,7 @@ function swapXYOne(attrs) {
   attrs.y = x;
 }
 
-},{"./lodash":132}],127:[function(require,module,exports){
+},{"./lodash":123}],118:[function(require,module,exports){
 /*
  * Simple doubly linked list implementation derived from Cormen, et al.,
  * "Introduction to Algorithms".
@@ -20340,7 +19682,7 @@ function filterOutLinks(k, v) {
   }
 }
 
-},{}],128:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 var _ = require("./lodash"),
     util = require("./util"),
     Graph = require("./graphlib").Graph;
@@ -20376,7 +19718,7 @@ function debugOrdering(g) {
   return h;
 }
 
-},{"./graphlib":129,"./lodash":132,"./util":151}],129:[function(require,module,exports){
+},{"./graphlib":120,"./lodash":123,"./util":142}],120:[function(require,module,exports){
 /* global window */
 
 var graphlib;
@@ -20393,7 +19735,7 @@ if (!graphlib) {
 
 module.exports = graphlib;
 
-},{"graphlib":153}],130:[function(require,module,exports){
+},{"graphlib":144}],121:[function(require,module,exports){
 var _ = require("./lodash"),
     Graph = require("./graphlib").Graph,
     List = require("./data/list");
@@ -20513,7 +19855,7 @@ function assignBucket(buckets, zeroIdx, entry) {
   }
 }
 
-},{"./data/list":127,"./graphlib":129,"./lodash":132}],131:[function(require,module,exports){
+},{"./data/list":118,"./graphlib":120,"./lodash":123}],122:[function(require,module,exports){
 "use strict";
 
 var _ = require("./lodash"),
@@ -20907,9 +20249,9 @@ function canonicalize(attrs) {
   return newAttrs;
 }
 
-},{"./acyclic":124,"./add-border-segments":125,"./coordinate-system":126,"./graphlib":129,"./lodash":132,"./nesting-graph":133,"./normalize":134,"./order":139,"./parent-dummy-chains":144,"./position":146,"./rank":148,"./util":151}],132:[function(require,module,exports){
-arguments[4][120][0].apply(exports,arguments)
-},{"dup":120,"lodash":173}],133:[function(require,module,exports){
+},{"./acyclic":115,"./add-border-segments":116,"./coordinate-system":117,"./graphlib":120,"./lodash":123,"./nesting-graph":124,"./normalize":125,"./order":130,"./parent-dummy-chains":135,"./position":137,"./rank":139,"./util":142}],123:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"dup":111,"lodash":164}],124:[function(require,module,exports){
 var _ = require("./lodash"),
     util = require("./util");
 
@@ -21043,7 +20385,7 @@ function cleanup(g) {
   });
 }
 
-},{"./lodash":132,"./util":151}],134:[function(require,module,exports){
+},{"./lodash":123,"./util":142}],125:[function(require,module,exports){
 "use strict";
 
 var _ = require("./lodash"),
@@ -21135,7 +20477,7 @@ function undo(g) {
   });
 }
 
-},{"./lodash":132,"./util":151}],135:[function(require,module,exports){
+},{"./lodash":123,"./util":142}],126:[function(require,module,exports){
 var _ = require("../lodash");
 
 module.exports = addSubgraphConstraints;
@@ -21190,7 +20532,7 @@ function addSubgraphConstraints(g, cg, vs) {
   */
 }
 
-},{"../lodash":132}],136:[function(require,module,exports){
+},{"../lodash":123}],127:[function(require,module,exports){
 var _ = require("../lodash");
 
 module.exports = barycenter;
@@ -21220,7 +20562,7 @@ function barycenter(g, movable) {
 }
 
 
-},{"../lodash":132}],137:[function(require,module,exports){
+},{"../lodash":123}],128:[function(require,module,exports){
 var _ = require("../lodash"),
     Graph = require("../graphlib").Graph;
 
@@ -21295,7 +20637,7 @@ function createRootNode(g) {
   return v;
 }
 
-},{"../graphlib":129,"../lodash":132}],138:[function(require,module,exports){
+},{"../graphlib":120,"../lodash":123}],129:[function(require,module,exports){
 "use strict";
 
 var _ = require("../lodash");
@@ -21367,7 +20709,7 @@ function twoLayerCrossCount(g, northLayer, southLayer) {
   return cc;
 }
 
-},{"../lodash":132}],139:[function(require,module,exports){
+},{"../lodash":123}],130:[function(require,module,exports){
 "use strict";
 
 var _ = require("../lodash"),
@@ -21448,7 +20790,7 @@ function assignOrder(g, layering) {
   });
 }
 
-},{"../graphlib":129,"../lodash":132,"../util":151,"./add-subgraph-constraints":135,"./build-layer-graph":137,"./cross-count":138,"./init-order":140,"./sort-subgraph":142}],140:[function(require,module,exports){
+},{"../graphlib":120,"../lodash":123,"../util":142,"./add-subgraph-constraints":126,"./build-layer-graph":128,"./cross-count":129,"./init-order":131,"./sort-subgraph":133}],131:[function(require,module,exports){
 "use strict";
 
 var _ = require("../lodash");
@@ -21488,7 +20830,7 @@ function initOrder(g) {
   return layers;
 }
 
-},{"../lodash":132}],141:[function(require,module,exports){
+},{"../lodash":123}],132:[function(require,module,exports){
 "use strict";
 
 var _ = require("../lodash");
@@ -21613,7 +20955,7 @@ function mergeEntries(target, source) {
   source.merged = true;
 }
 
-},{"../lodash":132}],142:[function(require,module,exports){
+},{"../lodash":123}],133:[function(require,module,exports){
 var _ = require("../lodash"),
     barycenter = require("./barycenter"),
     resolveConflicts = require("./resolve-conflicts"),
@@ -21691,7 +21033,7 @@ function mergeBarycenters(target, other) {
   }
 }
 
-},{"../lodash":132,"./barycenter":136,"./resolve-conflicts":141,"./sort":143}],143:[function(require,module,exports){
+},{"../lodash":123,"./barycenter":127,"./resolve-conflicts":132,"./sort":134}],134:[function(require,module,exports){
 var _ = require("../lodash"),
     util = require("../util");
 
@@ -21750,7 +21092,7 @@ function compareWithBias(bias) {
   };
 }
 
-},{"../lodash":132,"../util":151}],144:[function(require,module,exports){
+},{"../lodash":123,"../util":142}],135:[function(require,module,exports){
 var _ = require("./lodash");
 
 module.exports = parentDummyChains;
@@ -21838,7 +21180,7 @@ function postorder(g) {
   return result;
 }
 
-},{"./lodash":132}],145:[function(require,module,exports){
+},{"./lodash":123}],136:[function(require,module,exports){
 "use strict";
 
 var _ = require("../lodash"),
@@ -22238,7 +21580,7 @@ function width(g, v) {
   return g.node(v).width;
 }
 
-},{"../graphlib":129,"../lodash":132,"../util":151}],146:[function(require,module,exports){
+},{"../graphlib":120,"../lodash":123,"../util":142}],137:[function(require,module,exports){
 "use strict";
 
 var _ = require("../lodash"),
@@ -22270,7 +21612,7 @@ function positionY(g) {
 }
 
 
-},{"../lodash":132,"../util":151,"./bk":145}],147:[function(require,module,exports){
+},{"../lodash":123,"../util":142,"./bk":136}],138:[function(require,module,exports){
 "use strict";
 
 var _ = require("../lodash"),
@@ -22361,7 +21703,7 @@ function shiftRanks(t, g, delta) {
   });
 }
 
-},{"../graphlib":129,"../lodash":132,"./util":150}],148:[function(require,module,exports){
+},{"../graphlib":120,"../lodash":123,"./util":141}],139:[function(require,module,exports){
 "use strict";
 
 var rankUtil = require("./util"),
@@ -22411,7 +21753,7 @@ function networkSimplexRanker(g) {
   networkSimplex(g);
 }
 
-},{"./feasible-tree":147,"./network-simplex":149,"./util":150}],149:[function(require,module,exports){
+},{"./feasible-tree":138,"./network-simplex":140,"./util":141}],140:[function(require,module,exports){
 "use strict";
 
 var _ = require("../lodash"),
@@ -22647,7 +21989,7 @@ function isDescendant(tree, vLabel, rootLabel) {
   return rootLabel.low <= vLabel.lim && vLabel.lim <= rootLabel.lim;
 }
 
-},{"../graphlib":129,"../lodash":132,"../util":151,"./feasible-tree":147,"./util":150}],150:[function(require,module,exports){
+},{"../graphlib":120,"../lodash":123,"../util":142,"./feasible-tree":138,"./util":141}],141:[function(require,module,exports){
 "use strict";
 
 var _ = require("../lodash");
@@ -22710,7 +22052,7 @@ function slack(g, e) {
   return g.node(e.w).rank - g.node(e.v).rank - g.edge(e).minlen;
 }
 
-},{"../lodash":132}],151:[function(require,module,exports){
+},{"../lodash":123}],142:[function(require,module,exports){
 "use strict";
 
 var _ = require("./lodash"),
@@ -22948,50 +22290,50 @@ function notime(name, fn) {
   return fn();
 }
 
-},{"./graphlib":129,"./lodash":132}],152:[function(require,module,exports){
+},{"./graphlib":120,"./lodash":123}],143:[function(require,module,exports){
 module.exports = "0.7.4";
 
-},{}],153:[function(require,module,exports){
+},{}],144:[function(require,module,exports){
+arguments[4][93][0].apply(exports,arguments)
+},{"./lib":160,"./lib/alg":151,"./lib/json":161,"dup":93}],145:[function(require,module,exports){
+arguments[4][94][0].apply(exports,arguments)
+},{"../lodash":162,"dup":94}],146:[function(require,module,exports){
+arguments[4][95][0].apply(exports,arguments)
+},{"../lodash":162,"dup":95}],147:[function(require,module,exports){
+arguments[4][96][0].apply(exports,arguments)
+},{"../lodash":162,"./dijkstra":148,"dup":96}],148:[function(require,module,exports){
+arguments[4][97][0].apply(exports,arguments)
+},{"../data/priority-queue":158,"../lodash":162,"dup":97}],149:[function(require,module,exports){
+arguments[4][98][0].apply(exports,arguments)
+},{"../lodash":162,"./tarjan":156,"dup":98}],150:[function(require,module,exports){
+arguments[4][99][0].apply(exports,arguments)
+},{"../lodash":162,"dup":99}],151:[function(require,module,exports){
+arguments[4][100][0].apply(exports,arguments)
+},{"./components":145,"./dijkstra":148,"./dijkstra-all":147,"./find-cycles":149,"./floyd-warshall":150,"./is-acyclic":152,"./postorder":153,"./preorder":154,"./prim":155,"./tarjan":156,"./topsort":157,"dup":100}],152:[function(require,module,exports){
+arguments[4][101][0].apply(exports,arguments)
+},{"./topsort":157,"dup":101}],153:[function(require,module,exports){
 arguments[4][102][0].apply(exports,arguments)
-},{"./lib":169,"./lib/alg":160,"./lib/json":170,"dup":102}],154:[function(require,module,exports){
+},{"./dfs":146,"dup":102}],154:[function(require,module,exports){
 arguments[4][103][0].apply(exports,arguments)
-},{"../lodash":171,"dup":103}],155:[function(require,module,exports){
+},{"./dfs":146,"dup":103}],155:[function(require,module,exports){
 arguments[4][104][0].apply(exports,arguments)
-},{"../lodash":171,"dup":104}],156:[function(require,module,exports){
+},{"../data/priority-queue":158,"../graph":159,"../lodash":162,"dup":104}],156:[function(require,module,exports){
 arguments[4][105][0].apply(exports,arguments)
-},{"../lodash":171,"./dijkstra":157,"dup":105}],157:[function(require,module,exports){
+},{"../lodash":162,"dup":105}],157:[function(require,module,exports){
 arguments[4][106][0].apply(exports,arguments)
-},{"../data/priority-queue":167,"../lodash":171,"dup":106}],158:[function(require,module,exports){
+},{"../lodash":162,"dup":106}],158:[function(require,module,exports){
 arguments[4][107][0].apply(exports,arguments)
-},{"../lodash":171,"./tarjan":165,"dup":107}],159:[function(require,module,exports){
+},{"../lodash":162,"dup":107}],159:[function(require,module,exports){
 arguments[4][108][0].apply(exports,arguments)
-},{"../lodash":171,"dup":108}],160:[function(require,module,exports){
+},{"./lodash":162,"dup":108}],160:[function(require,module,exports){
 arguments[4][109][0].apply(exports,arguments)
-},{"./components":154,"./dijkstra":157,"./dijkstra-all":156,"./find-cycles":158,"./floyd-warshall":159,"./is-acyclic":161,"./postorder":162,"./preorder":163,"./prim":164,"./tarjan":165,"./topsort":166,"dup":109}],161:[function(require,module,exports){
+},{"./graph":159,"./version":163,"dup":109}],161:[function(require,module,exports){
 arguments[4][110][0].apply(exports,arguments)
-},{"./topsort":166,"dup":110}],162:[function(require,module,exports){
+},{"./graph":159,"./lodash":162,"dup":110}],162:[function(require,module,exports){
 arguments[4][111][0].apply(exports,arguments)
-},{"./dfs":155,"dup":111}],163:[function(require,module,exports){
+},{"dup":111,"lodash":164}],163:[function(require,module,exports){
 arguments[4][112][0].apply(exports,arguments)
-},{"./dfs":155,"dup":112}],164:[function(require,module,exports){
-arguments[4][113][0].apply(exports,arguments)
-},{"../data/priority-queue":167,"../graph":168,"../lodash":171,"dup":113}],165:[function(require,module,exports){
-arguments[4][114][0].apply(exports,arguments)
-},{"../lodash":171,"dup":114}],166:[function(require,module,exports){
-arguments[4][115][0].apply(exports,arguments)
-},{"../lodash":171,"dup":115}],167:[function(require,module,exports){
-arguments[4][116][0].apply(exports,arguments)
-},{"../lodash":171,"dup":116}],168:[function(require,module,exports){
-arguments[4][117][0].apply(exports,arguments)
-},{"./lodash":171,"dup":117}],169:[function(require,module,exports){
-arguments[4][118][0].apply(exports,arguments)
-},{"./graph":168,"./version":172,"dup":118}],170:[function(require,module,exports){
-arguments[4][119][0].apply(exports,arguments)
-},{"./graph":168,"./lodash":171,"dup":119}],171:[function(require,module,exports){
-arguments[4][120][0].apply(exports,arguments)
-},{"dup":120,"lodash":173}],172:[function(require,module,exports){
-arguments[4][121][0].apply(exports,arguments)
-},{"dup":121}],173:[function(require,module,exports){
+},{"dup":112}],164:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -35347,163 +34689,10 @@ arguments[4][121][0].apply(exports,arguments)
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],174:[function(require,module,exports){
+},{}],165:[function(require,module,exports){
 /*! (C) WebReflection Mit Style License */
 (function(e,t,n,r){"use strict";function rt(e,t){for(var n=0,r=e.length;n<r;n++)vt(e[n],t)}function it(e){for(var t=0,n=e.length,r;t<n;t++)r=e[t],nt(r,b[ot(r)])}function st(e){return function(t){j(t)&&(vt(t,e),rt(t.querySelectorAll(w),e))}}function ot(e){var t=e.getAttribute("is"),n=e.nodeName.toUpperCase(),r=S.call(y,t?v+t.toUpperCase():d+n);return t&&-1<r&&!ut(n,t)?-1:r}function ut(e,t){return-1<w.indexOf(e+'[is="'+t+'"]')}function at(e){var t=e.currentTarget,n=e.attrChange,r=e.attrName,i=e.target;Q&&(!i||i===t)&&t.attributeChangedCallback&&r!=="style"&&e.prevValue!==e.newValue&&t.attributeChangedCallback(r,n===e[a]?null:e.prevValue,n===e[l]?null:e.newValue)}function ft(e){var t=st(e);return function(e){X.push(t,e.target)}}function lt(e){K&&(K=!1,e.currentTarget.removeEventListener(h,lt)),rt((e.target||t).querySelectorAll(w),e.detail===o?o:s),B&&pt()}function ct(e,t){var n=this;q.call(n,e,t),G.call(n,{target:n})}function ht(e,t){D(e,t),et?et.observe(e,z):(J&&(e.setAttribute=ct,e[i]=Z(e),e.addEventListener(p,G)),e.addEventListener(c,at)),e.createdCallback&&Q&&(e.created=!0,e.createdCallback(),e.created=!1)}function pt(){for(var e,t=0,n=F.length;t<n;t++)e=F[t],E.contains(e)||(n--,F.splice(t--,1),vt(e,o))}function dt(e){throw new Error("A "+e+" type is already registered")}function vt(e,t){var n,r=ot(e);-1<r&&(tt(e,b[r]),r=0,t===s&&!e[s]?(e[o]=!1,e[s]=!0,r=1,B&&S.call(F,e)<0&&F.push(e)):t===o&&!e[o]&&(e[s]=!1,e[o]=!0,r=1),r&&(n=e[t+"Callback"])&&n.call(e))}if(r in t)return;var i="__"+r+(Math.random()*1e5>>0),s="attached",o="detached",u="extends",a="ADDITION",f="MODIFICATION",l="REMOVAL",c="DOMAttrModified",h="DOMContentLoaded",p="DOMSubtreeModified",d="<",v="=",m=/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/,g=["ANNOTATION-XML","COLOR-PROFILE","FONT-FACE","FONT-FACE-SRC","FONT-FACE-URI","FONT-FACE-FORMAT","FONT-FACE-NAME","MISSING-GLYPH"],y=[],b=[],w="",E=t.documentElement,S=y.indexOf||function(e){for(var t=this.length;t--&&this[t]!==e;);return t},x=n.prototype,T=x.hasOwnProperty,N=x.isPrototypeOf,C=n.defineProperty,k=n.getOwnPropertyDescriptor,L=n.getOwnPropertyNames,A=n.getPrototypeOf,O=n.setPrototypeOf,M=!!n.__proto__,_=n.create||function mt(e){return e?(mt.prototype=e,new mt):this},D=O||(M?function(e,t){return e.__proto__=t,e}:L&&k?function(){function e(e,t){for(var n,r=L(t),i=0,s=r.length;i<s;i++)n=r[i],T.call(e,n)||C(e,n,k(t,n))}return function(t,n){do e(t,n);while((n=A(n))&&!N.call(n,t));return t}}():function(e,t){for(var n in t)e[n]=t[n];return e}),P=e.MutationObserver||e.WebKitMutationObserver,H=(e.HTMLElement||e.Element||e.Node).prototype,B=!N.call(H,E),j=B?function(e){return e.nodeType===1}:function(e){return N.call(H,e)},F=B&&[],I=H.cloneNode,q=H.setAttribute,R=H.removeAttribute,U=t.createElement,z=P&&{attributes:!0,characterData:!0,attributeOldValue:!0},W=P||function(e){J=!1,E.removeEventListener(c,W)},X,V=e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.msRequestAnimationFrame||function(e){setTimeout(e,10)},$=!1,J=!0,K=!0,Q=!0,G,Y,Z,et,tt,nt;O||M?(tt=function(e,t){N.call(t,e)||ht(e,t)},nt=ht):(tt=function(e,t){e[i]||(e[i]=n(!0),ht(e,t))},nt=tt),B?(J=!1,function(){var e=k(H,"addEventListener"),t=e.value,n=function(e){var t=new CustomEvent(c,{bubbles:!0});t.attrName=e,t.prevValue=this.getAttribute(e),t.newValue=null,t[l]=t.attrChange=2,R.call(this,e),this.dispatchEvent(t)},r=function(e,t){var n=this.hasAttribute(e),r=n&&this.getAttribute(e),i=new CustomEvent(c,{bubbles:!0});q.call(this,e,t),i.attrName=e,i.prevValue=n?r:null,i.newValue=t,n?i[f]=i.attrChange=1:i[a]=i.attrChange=0,this.dispatchEvent(i)},s=function(e){var t=e.currentTarget,n=t[i],r=e.propertyName,s;n.hasOwnProperty(r)&&(n=n[r],s=new CustomEvent(c,{bubbles:!0}),s.attrName=n.name,s.prevValue=n.value||null,s.newValue=n.value=t[r]||null,s.prevValue==null?s[a]=s.attrChange=0:s[f]=s.attrChange=1,t.dispatchEvent(s))};e.value=function(e,o,u){e===c&&this.attributeChangedCallback&&this.setAttribute!==r&&(this[i]={className:{name:"class",value:this.className}},this.setAttribute=r,this.removeAttribute=n,t.call(this,"propertychange",s)),t.call(this,e,o,u)},C(H,"addEventListener",e)}()):P||(E.addEventListener(c,W),E.setAttribute(i,1),E.removeAttribute(i),J&&(G=function(e){var t=this,n,r,s;if(t===e.target){n=t[i],t[i]=r=Z(t);for(s in r){if(!(s in n))return Y(0,t,s,n[s],r[s],a);if(r[s]!==n[s])return Y(1,t,s,n[s],r[s],f)}for(s in n)if(!(s in r))return Y(2,t,s,n[s],r[s],l)}},Y=function(e,t,n,r,i,s){var o={attrChange:e,currentTarget:t,attrName:n,prevValue:r,newValue:i};o[s]=e,at(o)},Z=function(e){for(var t,n,r={},i=e.attributes,s=0,o=i.length;s<o;s++)t=i[s],n=t.name,n!=="setAttribute"&&(r[n]=t.value);return r})),t[r]=function(n,r){c=n.toUpperCase(),$||($=!0,P?(et=function(e,t){function n(e,t){for(var n=0,r=e.length;n<r;t(e[n++]));}return new P(function(r){for(var i,s,o,u=0,a=r.length;u<a;u++)i=r[u],i.type==="childList"?(n(i.addedNodes,e),n(i.removedNodes,t)):(s=i.target,Q&&s.attributeChangedCallback&&i.attributeName!=="style"&&(o=s.getAttribute(i.attributeName),o!==i.oldValue&&s.attributeChangedCallback(i.attributeName,i.oldValue,o)))})}(st(s),st(o)),et.observe(t,{childList:!0,subtree:!0})):(X=[],V(function E(){while(X.length)X.shift().call(null,X.shift());V(E)}),t.addEventListener("DOMNodeInserted",ft(s)),t.addEventListener("DOMNodeRemoved",ft(o))),t.addEventListener(h,lt),t.addEventListener("readystatechange",lt),t.createElement=function(e,n){var r=U.apply(t,arguments),i=""+e,s=S.call(y,(n?v:d)+(n||i).toUpperCase()),o=-1<s;return n&&(r.setAttribute("is",n=n.toLowerCase()),o&&(o=ut(i.toUpperCase(),n))),Q=!t.createElement.innerHTMLHelper,o&&nt(r,b[s]),r},H.cloneNode=function(e){var t=I.call(this,!!e),n=ot(t);return-1<n&&nt(t,b[n]),e&&it(t.querySelectorAll(w)),t}),-2<S.call(y,v+c)+S.call(y,d+c)&&dt(n);if(!m.test(c)||-1<S.call(g,c))throw new Error("The type "+n+" is invalid");var i=function(){return f?t.createElement(l,c):t.createElement(l)},a=r||x,f=T.call(a,u),l=f?r[u].toUpperCase():c,c,p;return f&&-1<S.call(y,d+l)&&dt(l),p=y.push((f?v:d)+c)-1,w=w.concat(w.length?",":"",f?l+'[is="'+n.toLowerCase()+'"]':l),i.prototype=b[p]=T.call(a,"prototype")?a.prototype:_(H),rt(t.querySelectorAll(w),s),i}})(window,document,Object,"registerElement");
-},{}],175:[function(require,module,exports){
-(function (global){
-"use strict";
-
-/**
- * filesize
- *
- * @copyright 2016 Jason Mulligan <jason.mulligan@avoidwork.com>
- * @license BSD-3-Clause
- * @version 3.3.0
- */
-(function (global) {
-	var b = /^(b|B)$/;
-	var symbol = {
-		iec: {
-			bits: ["b", "Kib", "Mib", "Gib", "Tib", "Pib", "Eib", "Zib", "Yib"],
-			bytes: ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"]
-		},
-		jedec: {
-			bits: ["b", "Kb", "Mb", "Gb", "Tb", "Pb", "Eb", "Zb", "Yb"],
-			bytes: ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
-		}
-	};
-
-	/**
-  * filesize
-  *
-  * @method filesize
-  * @param  {Mixed}   arg        String, Int or Float to transform
-  * @param  {Object}  descriptor [Optional] Flags
-  * @return {String}             Readable file size String
-  */
-	function filesize(arg) {
-		var descriptor = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-
-		var result = [],
-		    val = 0,
-		    e = void 0,
-		    base = void 0,
-		    bits = void 0,
-		    ceil = void 0,
-		    neg = void 0,
-		    num = void 0,
-		    output = void 0,
-		    round = void 0,
-		    unix = void 0,
-		    spacer = void 0,
-		    standard = void 0,
-		    symbols = void 0;
-
-		if (isNaN(arg)) {
-			throw new Error("Invalid arguments");
-		}
-
-		bits = descriptor.bits === true;
-		unix = descriptor.unix === true;
-		base = descriptor.base || 2;
-		round = descriptor.round !== undefined ? descriptor.round : unix ? 1 : 2;
-		spacer = descriptor.spacer !== undefined ? descriptor.spacer : unix ? "" : " ";
-		symbols = descriptor.symbols || descriptor.suffixes || {};
-		standard = base === 2 ? descriptor.standard || "jedec" : "jedec";
-		output = descriptor.output || "string";
-		e = descriptor.exponent !== undefined ? descriptor.exponent : -1;
-		num = Number(arg);
-		neg = num < 0;
-		ceil = base > 2 ? 1000 : 1024;
-
-		// Flipping a negative number to determine the size
-		if (neg) {
-			num = -num;
-		}
-
-		// Zero is now a special case because bytes divide by 1
-		if (num === 0) {
-			result[0] = 0;
-			result[1] = unix ? "" : !bits ? "B" : "b";
-		} else {
-			// Determining the exponent
-			if (e === -1 || isNaN(e)) {
-				e = Math.floor(Math.log(num) / Math.log(ceil));
-
-				if (e < 0) {
-					e = 0;
-				}
-			}
-
-			// Exceeding supported length, time to reduce & multiply
-			if (e > 8) {
-				e = 8;
-			}
-
-			val = base === 2 ? num / Math.pow(2, e * 10) : num / Math.pow(1000, e);
-
-			if (bits) {
-				val = val * 8;
-
-				if (val > ceil && e < 8) {
-					val = val / ceil;
-					e++;
-				}
-			}
-
-			result[0] = Number(val.toFixed(e > 0 ? round : 0));
-			result[1] = base === 10 && e === 1 ? bits ? "kb" : "kB" : symbol[standard][bits ? "bits" : "bytes"][e];
-
-			if (unix) {
-				result[1] = standard === "jedec" ? result[1].charAt(0) : e > 0 ? result[1].replace(/B$/, "") : result[1];
-
-				if (b.test(result[1])) {
-					result[0] = Math.floor(result[0]);
-					result[1] = "";
-				}
-			}
-		}
-
-		// Decorating a 'diff'
-		if (neg) {
-			result[0] = -result[0];
-		}
-
-		// Applying custom symbol
-		result[1] = symbols[result[1]] || result[1];
-
-		// Returning Array, Object, or String (default)
-		if (output === "array") {
-			return result;
-		}
-
-		if (output === "exponent") {
-			return e;
-		}
-
-		if (output === "object") {
-			return { value: result[0], suffix: result[1], symbol: result[1] };
-		}
-
-		return result.join(spacer);
-	}
-
-	// CommonJS, AMD, script tag
-	if (typeof exports !== "undefined") {
-		module.exports = filesize;
-	} else if (typeof define === "function" && define.amd) {
-		define(function () {
-			return filesize;
-		});
-	} else {
-		global.filesize = filesize;
-	}
-})(typeof window !== "undefined" ? window : global);
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-
-},{}],176:[function(require,module,exports){
+},{}],166:[function(require,module,exports){
 
 /**
  * @license
@@ -36572,12 +35761,12 @@ exports.applyProp = applyProp;
 exports.notifications = notifications;
 
 
-},{}],177:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./dist/client');
 
-},{"./dist/client":178}],178:[function(require,module,exports){
+},{"./dist/client":168}],168:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -37305,157 +36494,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],179:[function(require,module,exports){
-/*!
-* screenfull
-* v3.0.0 - 2015-11-24
-* (c) Sindre Sorhus; MIT License
-*/
-(function () {
-	'use strict';
-
-	var isCommonjs = typeof module !== 'undefined' && module.exports;
-	var keyboardAllowed = typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element;
-
-	var fn = (function () {
-		var val;
-		var valLength;
-
-		var fnMap = [
-			[
-				'requestFullscreen',
-				'exitFullscreen',
-				'fullscreenElement',
-				'fullscreenEnabled',
-				'fullscreenchange',
-				'fullscreenerror'
-			],
-			// new WebKit
-			[
-				'webkitRequestFullscreen',
-				'webkitExitFullscreen',
-				'webkitFullscreenElement',
-				'webkitFullscreenEnabled',
-				'webkitfullscreenchange',
-				'webkitfullscreenerror'
-
-			],
-			// old WebKit (Safari 5.1)
-			[
-				'webkitRequestFullScreen',
-				'webkitCancelFullScreen',
-				'webkitCurrentFullScreenElement',
-				'webkitCancelFullScreen',
-				'webkitfullscreenchange',
-				'webkitfullscreenerror'
-
-			],
-			[
-				'mozRequestFullScreen',
-				'mozCancelFullScreen',
-				'mozFullScreenElement',
-				'mozFullScreenEnabled',
-				'mozfullscreenchange',
-				'mozfullscreenerror'
-			],
-			[
-				'msRequestFullscreen',
-				'msExitFullscreen',
-				'msFullscreenElement',
-				'msFullscreenEnabled',
-				'MSFullscreenChange',
-				'MSFullscreenError'
-			]
-		];
-
-		var i = 0;
-		var l = fnMap.length;
-		var ret = {};
-
-		for (; i < l; i++) {
-			val = fnMap[i];
-			if (val && val[1] in document) {
-				for (i = 0, valLength = val.length; i < valLength; i++) {
-					ret[fnMap[0][i]] = val[i];
-				}
-				return ret;
-			}
-		}
-
-		return false;
-	})();
-
-	var screenfull = {
-		request: function (elem) {
-			var request = fn.requestFullscreen;
-
-			elem = elem || document.documentElement;
-
-			// Work around Safari 5.1 bug: reports support for
-			// keyboard in fullscreen even though it doesn't.
-			// Browser sniffing, since the alternative with
-			// setTimeout is even worse.
-			if (/5\.1[\.\d]* Safari/.test(navigator.userAgent)) {
-				elem[request]();
-			} else {
-				elem[request](keyboardAllowed && Element.ALLOW_KEYBOARD_INPUT);
-			}
-		},
-		exit: function () {
-			document[fn.exitFullscreen]();
-		},
-		toggle: function (elem) {
-			if (this.isFullscreen) {
-				this.exit();
-			} else {
-				this.request(elem);
-			}
-		},
-		raw: fn
-	};
-
-	if (!fn) {
-		if (isCommonjs) {
-			module.exports = false;
-		} else {
-			window.screenfull = false;
-		}
-
-		return;
-	}
-
-	Object.defineProperties(screenfull, {
-		isFullscreen: {
-			get: function () {
-				return Boolean(document[fn.fullscreenElement]);
-			}
-		},
-		element: {
-			enumerable: true,
-			get: function () {
-				return document[fn.fullscreenElement];
-			}
-		},
-		enabled: {
-			enumerable: true,
-			get: function () {
-				// Coerce to boolean in case of old WebKit
-				return Boolean(document[fn.fullscreenEnabled]);
-			}
-		}
-	});
-
-	if (isCommonjs) {
-		module.exports = screenfull;
-	} else {
-		window.screenfull = screenfull;
-	}
-})();
-
-},{}],180:[function(require,module,exports){
+},{}],169:[function(require,module,exports){
 module.exports = require('./lib/supermodels');
 
-},{"./lib/supermodels":191}],181:[function(require,module,exports){
+},{"./lib/supermodels":180}],170:[function(require,module,exports){
 'use strict'
 
 var util = require('./util')
@@ -37587,7 +36629,7 @@ function createDef (from) {
 
 module.exports = createDef
 
-},{"./factory":185,"./util":192}],182:[function(require,module,exports){
+},{"./factory":174,"./util":181}],171:[function(require,module,exports){
 'use strict'
 
 module.exports = function (callback) {
@@ -37701,7 +36743,7 @@ module.exports = function (callback) {
   return arr
 }
 
-},{}],183:[function(require,module,exports){
+},{}],172:[function(require,module,exports){
 'use strict'
 
 module.exports = function EmitterEvent (name, path, target, detail) {
@@ -37714,7 +36756,7 @@ module.exports = function EmitterEvent (name, path, target, detail) {
   }
 }
 
-},{}],184:[function(require,module,exports){
+},{}],173:[function(require,module,exports){
 'use strict'
 
 /**
@@ -37876,7 +36918,7 @@ Emitter.prototype.hasListeners = function (event) {
   return !!this.listeners(event).length
 }
 
-},{}],185:[function(require,module,exports){
+},{}],174:[function(require,module,exports){
 'use strict'
 
 var util = require('./util')
@@ -38032,7 +37074,7 @@ function createWrapperFactory (def) {
 
 module.exports = createWrapperFactory
 
-},{"./proto":189,"./util":192,"./wrapper":194}],186:[function(require,module,exports){
+},{"./proto":178,"./util":181,"./wrapper":183}],175:[function(require,module,exports){
 'use strict'
 
 function merge (model, obj) {
@@ -38080,7 +37122,7 @@ function merge (model, obj) {
 
 module.exports = merge
 
-},{}],187:[function(require,module,exports){
+},{}],176:[function(require,module,exports){
 'use strict'
 
 var EmitterEvent = require('./emitter-event')
@@ -38340,7 +37382,7 @@ module.exports = {
   descriptors: descriptors
 }
 
-},{"./emitter-event":183,"./merge":186,"./validation-error":193,"./wrapper":194}],188:[function(require,module,exports){
+},{"./emitter-event":172,"./merge":175,"./validation-error":182,"./wrapper":183}],177:[function(require,module,exports){
 'use strict'
 
 function factory () {
@@ -38411,7 +37453,7 @@ function factory () {
 
 module.exports = factory
 
-},{}],189:[function(require,module,exports){
+},{}],178:[function(require,module,exports){
 'use strict'
 
 var emitter = require('./emitter-object')
@@ -38571,12 +37613,12 @@ function createModelPrototype (def) {
 
 module.exports = createModelPrototype
 
-},{"./emitter-array":182,"./emitter-event":183,"./emitter-object":184,"./model":187,"./util":192}],190:[function(require,module,exports){
+},{"./emitter-array":171,"./emitter-event":172,"./emitter-object":173,"./model":176,"./util":181}],179:[function(require,module,exports){
 'use strict'
 
 module.exports = {}
 
-},{}],191:[function(require,module,exports){
+},{}],180:[function(require,module,exports){
 'use strict'
 
 var prop = require('./prop')
@@ -38610,7 +37652,7 @@ supermodels.merge = merge
 
 module.exports = supermodels
 
-},{"./def":181,"./merge":186,"./prop":188,"./supermodel":190}],192:[function(require,module,exports){
+},{"./def":170,"./merge":175,"./prop":177,"./supermodel":179}],181:[function(require,module,exports){
 'use strict'
 
 var Supermodel = require('./supermodel')
@@ -38724,7 +37766,7 @@ var util = {
 
 module.exports = util
 
-},{"./supermodel":190}],193:[function(require,module,exports){
+},{"./supermodel":179}],182:[function(require,module,exports){
 'use strict'
 
 function ValidationError (target, error, validator, key) {
@@ -38739,7 +37781,7 @@ function ValidationError (target, error, validator, key) {
 
 module.exports = ValidationError
 
-},{}],194:[function(require,module,exports){
+},{}],183:[function(require,module,exports){
 'use strict'
 
 var util = require('./util')
@@ -38840,7 +37882,7 @@ Object.defineProperties(Wrapper.prototype, {
 })
 module.exports = Wrapper
 
-},{"./util":192,"./validation-error":193}],195:[function(require,module,exports){
+},{"./util":181,"./validation-error":182}],184:[function(require,module,exports){
 // Nes websocket service
 function VsdFsService (client, options) {
   options = options || {}
@@ -38942,5 +37984,5 @@ function VsdFsService (client, options) {
 
 module.exports = VsdFsService
 
-},{}]},{},[46])
+},{}]},{},[40])
 //# sourceMappingURL=bundle.js.map

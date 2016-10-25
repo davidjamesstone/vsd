@@ -71,52 +71,13 @@ html, body, .wrapper, .content-wrapper, section.content, vsd-file {
 }
 
 .sidebar .open-editors .clear, .sidebar .open-editors .save, .sidebar .open-editors .clear-all, .sidebar .open-editors .save-all {
+  z-index: 10;
   display: none;
   margin-left: 10px;
 }
 
-.sidebar .open-editors:hover .clear, .sidebar .open-editors:hover .save, .sidebar .open-editors:hover .clear-all, .sidebar .open-editors:hover .save-all {
-  display: inline;
-}
-
-vsd-file {
+.sidebar .open-editors li:hover .clear, .sidebar .open-editors li:hover .save, .sidebar .open-editors li:hover .clear-all, .sidebar .open-editors li:hover .save-all {
   display: block;
-}
-
-vsd-file .box {
-  height: 100%;
-  margin-bottom: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-vsd-file .box .box-header {
-  flex: 0 0 auto;
-}
-
-vsd-file .box .box-footer {
-  flex: 0 0 auto;
-}
-
-vsd-file .box .box-body {
-  flex: 1 1 auto;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-vsd-file .box .box-body vsd-ace {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-vsd-file .box .box-body vsd-db, vsd-file .box .box-body vsd-routes {
-  display: block;
-  flex: 1 1 auto;
-  overflow: auto;
 }
 
 a {
@@ -160,22 +121,6 @@ a {
   white-space: nowrap;
   user-select: none;
   -webkit-user-select: none;
-}
-
-/* horizontal line on inner list items */
-/* vertical line on list items */
-/* lower line on list items from the first level because they don't have parents */
-.tree > li::after {
-  top: 10px;
-}
-
-/* hide line from the last of the first level list items */
-.tree > li:last-child::after {
-  display: none;
-}
-
-.tree ul:last-child li:last-child:after {
-  height: 20px;
 }
 
 text {
@@ -265,7 +210,7 @@ section.content {
   overflow: auto;
 }
 
-#file-editor {
+.file-editor {
   padding: 5px;
 }
 

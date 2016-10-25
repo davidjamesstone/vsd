@@ -4,7 +4,7 @@
       <!-- search form -->
       <form onsubmit="{ctrl.query = this.q.value}" class="sidebar-form">
         <div class="input-group">
-          <input onkeyup="{ctrl.query = this.value}" type="text" name="q" class="form-control" placeholder="Search...">
+          <input onkeyup="{ctrl.query = this.value}" type="text" name="q" class="form-control" placeholder="Search..." autocomplete="off">
           <span class="input-group-btn">
             <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
             </button>
@@ -32,7 +32,7 @@
           <a href="#">
             <i class="fa fa-dashboard"></i> 
             <span>
-              Open editors
+              Open editors ({recent.length})
               <!--<a if="items.length" class="clear-all" onclick="{ctrl.closeAll($event)}">
                 <small>×</small>
               </a>
@@ -45,9 +45,11 @@
             </span>
           </a>
           <ul class="treeview-menu menu-open">
-            <li each="item, item.path in recent" class="">
+            <li each="item, item.path in recent" class="{item === ctrl.main.current ? 'active' : ''}">
+              <a class="clear pull-right" onclick="{ctrl.main.closeFile(item)}">×</a>
               <a class="file" onclick="{ctrl.main.setCurrentFile(item)}">
                 {item.getDisplayName()}
+                <span if="item.session && item.session.isDirty" class="text-danger">*</span>
               </a>
             </li>
           </ul>

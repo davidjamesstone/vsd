@@ -1,4 +1,4 @@
-var config = require('../../config/client')
+var config = window.UCO.config
 var el = document.getElementById('ace')
 var editor = window.ace.edit(el)
 
@@ -9,8 +9,7 @@ editor.setOptions({
   enableLiveAutocompletion: true,
   tabSize: config.ace.tabSize,
   fontSize: config.ace.fontSize,
-  autoScrollEditorIntoView: true // ,
-  // maxLines: config.ace.maxLines
+  autoScrollEditorIntoView: true
 })
 
 // Set theme

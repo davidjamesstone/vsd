@@ -3,7 +3,6 @@ var util = require('../util')
 var patch = require('../patch')
 var view = require('./view.html')
 var service = require('../file-service')
-var files = window.UCO.files
 
 function FileEditor (el) {
   var model = {
@@ -33,20 +32,6 @@ function FileEditor (el) {
           return util.handleError(err)
         }
         hide()
-
-        // Create it only if it
-        // doesn't already exist.
-        // It could've been added by the watcher'
-        var file = files.find(function (item) {
-          return item.path === payload.path
-        })
-
-        if (!file) {
-          file = files.create(payload)
-          files.push(file)
-        }
-
-        // window.location.hash = file.getRelativePath()
       })
     },
     mkdir: function ($event) {

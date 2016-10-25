@@ -2,8 +2,7 @@ var path = require('path')
 var screenfull = require('screenfull')
 var filesize = require('filesize')
 var supermodels = require('supermodels.js')
-var File = require('../fso')
-var recent = require('../recent')
+var File = require('../file')
 var getMode = require('../modes')
 var service = require('../file-service')
 var debounce = require('../debounce')
@@ -21,15 +20,15 @@ function isFullscreen (element) {
   }
 }
 
-function onCloseClick (e, element) {
-  if (screenfull.element === element) {
-    screenfull.exit(element)
-  } else {
-    window.$(this.el).remove()
-    recent.remove(this.file.getRelativePath())
-    window.history.back()
-  }
-}
+// function onCloseClick (e, element) {
+//   if (screenfull.element === element) {
+//     screenfull.exit(element)
+//   } else {
+//     window.$(this.el).remove()
+//     recent.remove(this.file.getRelativePath())
+//     window.history.back()
+//   }
+// }
 
 function getType (e) {
   var file = this.file
@@ -81,7 +80,7 @@ var model = {
   onContentChange: debounce(onContentChange, 500),
   getRelativePath: getRelativePath,
   isFullscreen: isFullscreen,
-  onCloseClick: onCloseClick,
+  // onCloseClick: onCloseClick,
   requestFullscreen: requestFullscreen,
   getFilesize: getFilesize
 }

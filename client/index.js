@@ -3,6 +3,7 @@ require('document-register-element')
 var client = require('./client')
 var Files = require('./files')
 var util = require('./util')
+var projectPath = window.UCO.path
 
 require('./notify')
 require('./db')
@@ -14,9 +15,10 @@ client.connect(function (err) {
     return util.handleError(err)
   }
 
-  var watcher = require('./watcher')
-
-  watcher.getWatched(function (err, payload) {
+  client.request({
+    path: '/fs/watched?path=' + projectPath,
+    method: 'GET'
+  }, function (err, payload) {
     if (err) {
       return util.handleError(err)
     }
@@ -25,15 +27,8 @@ client.connect(function (err) {
     window.files = payload.watched
     window.UCO.files = files
 
-    watcher.watch(payload.id, files)
-
     require('./main')
     require('./tree')
-    require('./ace')
-    require('./file')
     require('./sidebar')
-    // require('./workspace')
-
-    console.log('connect')
   })
 })

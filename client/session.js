@@ -1,28 +1,29 @@
 var supermodels = require('supermodels.js')
-var util = require('./util')
-var prop = require('./prop')
-var Fso = require('./fso')
+var File = require('./file')
 var service = require('./file-service')
 
 var sessionSchema = {
-  file: Fso,
-  manager: prop(Object).enumerable(false),
-  isDirty: prop(Boolean).value(false),
+  file: File,
+  edit: Object,
+  isDirty: Boolean,
   setDirty: function (value) {
     if (this.isDirty !== value) {
       this.isDirty = value
     }
   },
+  markClean: function () {
+    this.setDirty(false)
+    this.edit.getUndoManager().markClean()
+  },
   save: function (callback) {
-    service.writeFile(this.file.path, this.manager.getValue(), function (err, result) {
+    service.writeFile(this.file.path, this.edit.getValue(), function (err, result) {
       if (err) {
-        util.handleError(err)
-        if (callback) callback(err)
+        return callback(err)
       }
 
       // Mark clean
-      this.setDirty(false)
-      if (callback) callback(null, result)
+      this.markClean()
+      callback(null, result)
     }.bind(this))
   }
 }

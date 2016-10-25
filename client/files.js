@@ -1,5 +1,5 @@
 var supermodels = require('supermodels.js')
-var File = require('./fso')
+var File = require('./file')
 
 var Files = supermodels([File])
 
