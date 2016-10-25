@@ -3,7 +3,7 @@ var args = require('./cli').args
 var config = {
   ace: {
     tabSize: 2,
-    fontSize: 14,
+    fontSize: 12,
     useSoftTabs: true
   }
 }

@@ -8,6 +8,9 @@ var service = require('./file-service')
 var supermodels = require('supermodels.js')
 var Files = require('./files')
 var File = require('./file')
+var workspace = document.getElementById('workspace')
+var db = document.getElementById('db')
+var routes = document.getElementById('routes')
 
 /**
  * Declare the controller
@@ -30,20 +33,42 @@ function getDirtyFiles () {
   })
 }
 
+function getFileEditorClass (file) {
+  if (file.name.endsWith('routes.json')) {
+    return 'routes'
+  } else if (file.name.endsWith('db.json')) {
+    return 'db'
+  }
+  return 'ace'
+}
+
 function setCurrentFile (file) {
   var main = this
 
   if (!file) {
     main.current = null
-    return editor.container.classList.add('hide')
+    return workspace.setAttribute('class', 'hide')
   }
 
   function loadFile () {
     // Load the current file
+    var editorClass = getFileEditorClass(file)
     main.current = file
-    editor.container.classList.remove('hide')
-    editor.setSession(file.session.edit)
-    editor.focus()
+    workspace.setAttribute('class', editorClass)
+    switch (editorClass) {
+      case 'ace':
+        editor.setSession(file.session.edit)
+        editor.focus()
+        break
+      case 'db':
+        db.setAttribute('contents', file.session.edit.getValue())
+        db.focus()
+        break
+      case 'routes':
+        routes.setAttribute('contents', file.session.edit.getValue())
+        routes.focus()
+        break
+    }
   }
 
   var isSessionLoaded = !!file.session

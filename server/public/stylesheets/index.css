@@ -66,8 +66,37 @@ vsd-routes table {
   cursor: pointer;
 }
 
-html, body, .wrapper, .content-wrapper, section.content, vsd-file {
+html, body, .wrapper, .content-wrapper,
+section.content, #workspace, #ace, #db, #routes {
   height: 100% !important;
+}
+
+#workspace #ace {
+  -webkit-font-smoothing: auto;
+  display: none;
+}
+
+#workspace.ace #ace {
+  display: block;
+}
+
+#workspace #db {
+  display: none;
+  overflow: auto;
+}
+
+#workspace.db #db {
+  display: block;
+}
+
+#workspace #routes {
+  display: none;
+  overflow: auto;
+  background-color: #fff;
+}
+
+#workspace.routes #routes {
+  display: block;
 }
 
 .sidebar .open-editors .clear, .sidebar .open-editors .save, .sidebar .open-editors .clear-all, .sidebar .open-editors .save-all {

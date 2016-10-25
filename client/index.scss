@@ -2,8 +2,45 @@
 @import './routes/index.scss'; 
 @import './file-menu/index.scss';
 
-html, body, .wrapper, .content-wrapper, section.content, vsd-file {
+html, body, .wrapper, .content-wrapper, 
+  section.content, #workspace, #ace, #db, #routes {
   height: 100%!important;
+}
+
+#workspace {
+  #ace {
+    -webkit-font-smoothing: auto;
+    display: none;
+  }
+
+  &.ace {
+    #ace {
+      display: block;
+    }
+  }
+
+  #db {
+    display: none;
+    overflow: auto;
+  }
+
+  &.db {
+    #db {
+      display: block;
+    }
+  }
+  
+  #routes {
+    display: none;
+    overflow: auto;
+    background-color: #fff;
+  }
+
+  &.routes {
+    #routes {
+      display: block;
+    }
+  } 
 }
 
 .sidebar {

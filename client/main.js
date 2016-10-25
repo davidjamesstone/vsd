@@ -131,9 +131,6 @@ main.on('change', function (e) {
   window.localStorage.setItem(storageKey, state)
 })
 
-main.on('change', function (e) {
-})
-
 // Set initial current file
 if (storage.current) {
   var initialFile = main.findFile(storage.current)

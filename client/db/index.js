@@ -19,6 +19,14 @@ var Db = document.registerElement('vsd-db', {
         })
       }
     },
+    data: {
+      get: {
+        
+      },
+      set: {
+
+      }
+    },
     attributeChangedCallback: {
       value: function (name, previousValue, value) {
         if (name === 'contents') {
