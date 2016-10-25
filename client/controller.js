@@ -38,7 +38,6 @@ function setCurrentFile (file) {
     return editor.container.classList.add('hide')
   }
 
-
   function loadFile () {
     // Load the current file
     main.current = file
