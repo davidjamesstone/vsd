@@ -17,7 +17,7 @@
           <h4 class="text-danger">Errors</h4>
           <ul>
             <li each="item in model.errors">
-              <a href="javascript:void(0)" onclick="{ctrl.onClickErrorNode(item)}" class="text-danger">{item.error}</a>
+              <a onclick="{ctrl.onClickErrorNode(item)}" class="text-danger">{item.error}</a>
             </li>
           </ul>
         </div>

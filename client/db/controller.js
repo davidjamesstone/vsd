@@ -3,7 +3,7 @@ var Model = require('./model')
 var prop = require('../prop')
 var staticTypes = 'String Boolean Number Date Array Mixed NestedDocument ForeignKey ObjectId Buffer ChildDocument'.split(' ')
 
-var model = {
+var schema = {
   id: prop(String).required().uuid(),
   expandedItems: [],
   model: Model,
@@ -62,14 +62,6 @@ var model = {
     }
     this.onClickTreeNode(node)
   },
-  // onClickExpandGraph: function () {
-  //   var $svg = this.$svg
-  //   $svg.parent().addClass('expanded')
-  // },
-  // onClickCollapseGraph: function () {
-  //   var $svg = this.$svg
-  //   $svg.removeClass('expanded')
-  // },
   get staticTypes () {
     return staticTypes
   },
@@ -138,4 +130,4 @@ var model = {
   }
 }
 
-module.exports = supermodels(model)
+module.exports = supermodels(schema)

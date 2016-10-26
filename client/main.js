@@ -8,6 +8,8 @@ var projectPath = window.UCO.path
 var files = window.UCO.files
 var storageKey = 'vsd-' + projectPath
 var storage = window.localStorage.getItem(storageKey)
+var db = document.getElementById('db')
+var routes = document.getElementById('routes')
 storage = storage ? JSON.parse(storage) : {}
 var recent = storage.recent || []
 
@@ -143,5 +145,25 @@ if (storage.current) {
 setInterval(function () {
   lint(editor.getSession())
 }, 1000)
+
+// Handle custom editors' data change event
+function onData (e) {
+  var current = main.current
+  if (current && current.session) {
+    var value = e.detail.data
+    current.session.edit.setValue(value)
+
+    // Need to do this manually since although the editSession
+    // 'change' event is emitted, the Undo stack is still clean.
+    // Do this on the next tick though because otherwise it get overwritten
+    // in main.js from the editSession 'change' event.
+    setTimeout(function () {
+      current.session.setDirty(true)
+    }, 0)
+  }
+}
+
+db.addEventListener('data', onData)
+routes.addEventListener('data', onData)
 
 module.exports = main

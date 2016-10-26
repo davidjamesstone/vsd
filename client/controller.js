@@ -61,7 +61,12 @@ function setCurrentFile (file) {
         editor.focus()
         break
       case 'db':
-        db.setAttribute('contents', file.session.edit.getValue())
+        // Cache the file and only update if necessary. This ensures
+        // that files can be switched without losing the editor state
+        if (db._file !== file) {
+          db._file = file
+          db.data = file.session.edit.getValue()
+        }
         db.focus()
         break
       case 'routes':
@@ -88,6 +93,8 @@ function setCurrentFile (file) {
       })
 
       edit.on('change', function () {
+        // Do on the next tick to allow
+        // the UndoManager to catch up
         setTimeout(function () {
           var isClean = edit.getUndoManager().isClean()
           session.setDirty(!isClean)

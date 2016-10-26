@@ -11,6 +11,13 @@ var Controller = require('./controller')
 
 var Db = document.registerElement('vsd-db', {
   prototype: Object.create(window.HTMLElement.prototype, {
+    createdCallback: {
+      value: function () {
+        $('a.graph', this).on('shown.bs.tab', function (e) {
+          graph(this.querySelector('svg'), this.ctrl)
+        })
+      }
+    },
     render: {
       value: function () {
         var ctrl = this.ctrl
@@ -20,47 +27,31 @@ var Db = document.registerElement('vsd-db', {
       }
     },
     data: {
-      get: {
-        
+      get: function () {
+        return this._data
       },
-      set: {
+      set: function (value) {
+        this._data = value
+        var data = JSON.parse(value)
+        var ctrl = new Controller({ model: data })
+        ctrl.currentItem = ctrl.model
 
-      }
-    },
-    attributeChangedCallback: {
-      value: function (name, previousValue, value) {
-        if (name === 'contents') {
-          var data = JSON.parse(value)
-          var ctrl = new Controller({ model: data })
-
-          ctrl.currentItem = ctrl.model
-
-          ctrl.on('change', function (e) {
-            this.render()
-          }.bind(this))
-
-          ctrl.model.on('change', function (e) {
-            if (this.oncontentchange) {
-              var event = new window.CustomEvent('contentchange', {
-                detail: {
-                  originalEvent: e,
-                  contents: JSON.stringify(ctrl.model, null, 2)
-                }
-              })
-
-              this.oncontentchange(event)
-            }
-          }.bind(this))
-
-          this.ctrl = ctrl
+        ctrl.on('change', function (e) {
           this.render()
+        }.bind(this))
 
-          var $svg = this.querySelector('svg')
-          $('a.graph', this).on('shown.bs.tab', function (e) {
-            graph($svg, ctrl)
-            // ctrl.$svg = $svg
+        ctrl.model.on('change', function (e) {
+          var event = new window.CustomEvent('data', {
+            detail: {
+              originalEvent: e,
+              data: JSON.stringify(ctrl.model, null, 2)
+            }
           })
-        }
+          this.dispatchEvent(event)
+        }.bind(this))
+
+        this.ctrl = ctrl
+        this.render()
       }
     }
   })
