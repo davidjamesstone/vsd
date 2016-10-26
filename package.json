@@ -53,6 +53,7 @@
     "document-register-element": "0.5.4",
     "exorcist": "0.4.0",
     "incremental-dom": "0.4.1",
+    "mousetrap": "1.6.0",
     "node-sass": "3.7.0",
     "page": "1.7.1",
     "supermodels.js": "0.2.1",

@@ -1,3 +1,4 @@
+var Mousetrap = require('mousetrap')
 var File = require('./file')
 var util = require('./util')
 var lint = require('./lint')
@@ -83,40 +84,49 @@ client.subscribe('/fs/' + id + '/unlink', onFileRemoved, subscribeError)
 client.subscribe('/fs/' + id + '/unlinkDir', onFileRemoved, subscribeError)
 client.subscribe('/fs/' + id + '/change', onFileChanged, subscribeError)
 
+function save () {
+  console.log('Saving')
+  var session = main.current && main.current.session
+  if (session && session.isDirty) {
+    session.save(function (err, result) {
+      if (err) {
+        return util.handleError(err)
+      }
+    })
+  }
+}
+
+function saveAll () {
+  console.log('Saving all')
+  main.getDirtyFiles().forEach(function (item) {
+    item.session.save(function (err, result) {
+      if (err) {
+        return util.handleError(err)
+      }
+    })
+  })
+}
+
 editor.commands.addCommands([{
   name: 'save',
-  bindKey: {
-    win: 'Ctrl-S',
-    mac: 'Command-S'
-  },
-  exec: function (editor) {
-    var session = main.current && main.current.session
-    if (session && session.isDirty) {
-      session.save(function (err, result) {
-        if (err) {
-          return util.handleError(err)
-        }
-      })
-    }
-  },
+  bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
+  exec: save,
   readOnly: false
 }, {
   name: 'saveall',
-  bindKey: {
-    win: 'Ctrl-Shift-S',
-    mac: 'Command-Option-S'
-  },
-  exec: function (editor) {
-    main.getDirtyFiles().forEach(function (item) {
-      item.session.save(function (err, result) {
-        if (err) {
-          return util.handleError(err)
-        }
-      })
-    })
-  },
+  bindKey: { win: 'Ctrl-Shift-S', mac: 'Command-Option-S' },
+  exec: saveAll,
   readOnly: false
 }])
+
+Mousetrap.bind(['command+s', 'ctrl+s'], function () {
+  save()
+  return false
+})
+Mousetrap.bind(['command+alt+s', 'ctrl+shift+s'], function () {
+  saveAll()
+  return false
+})
 
 // On change, upload the localStorage state
 main.on('change', function (e) {
