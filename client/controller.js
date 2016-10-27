@@ -70,7 +70,12 @@ function setCurrentFile (file) {
         db.focus()
         break
       case 'routes':
-        routes.setAttribute('contents', file.session.edit.getValue())
+        // Cache the file and only update if necessary. This ensures
+        // that files can be switched without losing the editor state
+        if (routes._file !== file) {
+          routes._file = file
+          routes.data = file.session.edit.getValue()
+        }
         routes.focus()
         break
     }

@@ -1,4 +1,4 @@
-var Mousetrap = require('mousetrap')
+/* global $ */
 var File = require('./file')
 var util = require('./util')
 var lint = require('./lint')
@@ -107,26 +107,44 @@ function saveAll () {
   })
 }
 
-editor.commands.addCommands([{
-  name: 'save',
-  bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
-  exec: save,
-  readOnly: false
-}, {
-  name: 'saveall',
-  bindKey: { win: 'Ctrl-Shift-S', mac: 'Command-Option-S' },
-  exec: saveAll,
-  readOnly: false
-}])
+$(window).bind('keydown', function (e) {
+  if (e.ctrlKey || e.metaKey) {
+    var key = String.fromCharCode(e.which).toLowerCase()
+    switch (key) {
+      case 's':
+        e.preventDefault()
+        var shift = e.shiftKey
+        if (!shift) {
+          save()
+        } else {
+          saveAll()
+        }
+        break
+    }
+  }
+})
 
-Mousetrap.bind(['command+s', 'ctrl+s'], function () {
-  save()
-  return false
-})
-Mousetrap.bind(['command+alt+s', 'ctrl+shift+s'], function () {
-  saveAll()
-  return false
-})
+// editor.commands.addCommands([{
+//   name: 'save',
+//   bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
+//   exec: save,
+//   readOnly: false
+// }, {
+//   name: 'saveall',
+//   bindKey: { win: 'Ctrl-Shift-S', mac: 'Command-Option-S' },
+//   exec: saveAll,
+//   readOnly: false
+// }])
+
+// Mousetrap.bind(['command+s', 'ctrl+s'], function () {
+//   save()
+//   return false
+// })
+
+// Mousetrap.bind(['command+alt+s', 'ctrl+shift+s'], function () {
+//   saveAll()
+//   return false
+// })
 
 // On change, upload the localStorage state
 main.on('change', function (e) {
