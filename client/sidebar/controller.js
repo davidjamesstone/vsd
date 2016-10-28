@@ -27,17 +27,17 @@ function getLinks () {
 
   file = findFile('README.md')
   if (file) {
-    links.push({ icon: 'info', text: 'README.md', href: '#readme.md' })
+    links.push({ icon: 'info', text: 'README.md', file: file })
   }
 
   file = findFile('package.json')
   if (file) {
-    links.push({ icon: 'cog', text: 'package.json', href: '#package.json' })
+    links.push({ icon: 'cog', text: 'package.json', file: file })
   }
 
   file = findFile('index.js')
   if (file) {
-    links.push({ icon: 'play-circle', text: 'Start', href: '#index.js' })
+    links.push({ icon: 'play-circle', text: 'Start', file: file })
   }
 
   file = findFile('config')
@@ -45,23 +45,23 @@ function getLinks () {
     var config = { icon: 'cogs', text: 'Config', children: [] }
     file = findFile('config/index.js')
     if (file) {
-      config.children.push({ icon: 'circle-o', text: 'index.js', href: '#config/index.js' })
+      config.children.push({ icon: 'circle-o', text: 'index.js', file: file })
     }
     file = findFile('config/schema.js')
     if (file) {
-      config.children.push({ icon: 'circle-o', text: 'schema.js', href: '#config/schema.js' })
+      config.children.push({ icon: 'circle-o', text: 'schema.js', file: file })
     }
     file = findFile('config/client.json"')
     if (file) {
-      config.children.push({ icon: 'circle-o', text: 'client.json"', href: '#config/client.json"' })
+      config.children.push({ icon: 'circle-o', text: 'client.json"', file: file })
     }
     file = findFile('config/server.json')
     if (file) {
-      config.children.push({ icon: 'circle-o', text: 'server.json', href: '#config/server.json' })
+      config.children.push({ icon: 'circle-o', text: 'server.json', file: file })
     }
     file = findFile('config/pm2.json')
     if (file) {
-      config.children.push({ icon: 'circle-o', text: 'pm2.json', href: '#config/pm2.json' })
+      config.children.push({ icon: 'circle-o', text: 'pm2.json', file: file })
     }
 
     if (config.children.length) {
@@ -71,7 +71,7 @@ function getLinks () {
 
   file = findFile('server/manifest.js')
   if (file) {
-    links.push({ icon: 'cubes', text: 'Manifest', href: '#server/manifest.js' })
+    links.push({ icon: 'cubes', text: 'Manifest', file: file })
   }
 
   file = findFiles('db.json')
@@ -80,12 +80,12 @@ function getLinks () {
       var dbs = { icon: 'database', text: 'DB', children: [] }
 
       file.forEach(function (item) {
-        dbs.children.push({ icon: 'circle-o', text: item.name, href: '#' + item.getRelativePath() })
+        dbs.children.push({ icon: 'circle-o', text: item.name, file: item })
       })
 
       links.push(dbs)
     } else {
-      links.push({ icon: 'database', text: 'DB', href: '#' + file[0].getRelativePath() })
+      links.push({ icon: 'database', text: 'DB', file: file[0] })
     }
   }
 
@@ -95,34 +95,22 @@ function getLinks () {
       var routes = { icon: 'exchange', text: 'Routes', children: [] }
 
       file.forEach(function (item) {
-        routes.children.push({ icon: 'circle-o', text: item.name, href: '#' + item.getRelativePath() })
+        routes.children.push({ icon: 'circle-o', text: item.name, file: item })
       })
 
       links.push(routes)
     } else {
-      links.push({ icon: 'exchange', text: 'Routes', href: '#' + file[0].getRelativePath() })
+      links.push({ icon: 'exchange', text: 'Routes', file: file[0] })
     }
   }
 
   file = findFile('server/views/index.js')
   if (file) {
-    links.push({ icon: 'code', text: 'Views', href: '#server/views/index.js' })
+    links.push({ icon: 'code', text: 'Views', file: file })
   }
 
   return links
 }
-
-// function closeAll (e) {
-//   e.stopPropagation()
-
-//   var dirty = recent.dirty()
-//   if (dirty.length && window.confirm('There are unsaved changes to ' +
-//     dirty.length + ' file' + (dirty.length > 1 ? 's' : '') + '. Save changes?')) {
-//     sessions.saveAll()
-//   }
-//   recent.clear()
-//   sessions.clear()
-// }
 
 var schema = {
   main: Main,

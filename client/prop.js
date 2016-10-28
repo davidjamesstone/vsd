@@ -13,14 +13,6 @@ prop.register('required', function () {
   }
 })
 
-prop.register('requiredIf', function (predicate) {
-  return function (val, name) {
-    if (!val && predicate.call(this, val, name)) {
-      return name + ' is required'
-    }
-  }
-})
-
 prop.register('range', function (min, max) {
   return function (val, name) {
     if (val > max || val < min) {

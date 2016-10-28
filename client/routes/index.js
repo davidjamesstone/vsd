@@ -1,32 +1,10 @@
 var patch = require('../patch')
 var Controller = require('./controller')
-var Model = require('./model')
 var view = require('./view.html')
-
-function setModel (el, value) {
-  var data = JSON.parse(value)
-  var model = new Model(data)
-
-  model.on('change', function (e) {
-    if (this.oncontentchange) {
-      // Raise a contentchange event
-      var event = new window.CustomEvent('contentchange', {
-        detail: {
-          originalEvent: e,
-          contents: JSON.stringify(model, null, 2)
-        }
-      })
-
-      this.oncontentchange(event)
-    }
-  }.bind(el))
-
-  el.ctrl.model = model
-}
+var main = require('../main')
 
 var Routes = document.registerElement(
-  'vsd-routes',
-  {
+  'vsd-routes', {
     prototype: Object.create(
       window.HTMLElement.prototype, {
         render: {
@@ -34,34 +12,37 @@ var Routes = document.registerElement(
             patch(this, view, this.ctrl)
           }
         },
-        createdCallback: {
-          value: function () {
-            var path = this.getAttribute('path')
-
+        data: {
+          get: function () {
+            return this._data
+          },
+          set: function (value) {
+            this._data = value
+            var data = JSON.parse(value)
             var ctrl = new Controller({
-              path: path
+              main: main,
+              path: this.file.path,
+              model: data
             })
 
-            this.ctrl = ctrl
-
+            // Render on changes to the controller
             ctrl.on('change', function (e) {
               this.render()
             }.bind(this))
 
-            var contents = this.getAttribute('contents')
+            // Emit data changes when the model changes
+            ctrl.model.on('change', function (e) {
+              var event = new window.CustomEvent('data', {
+                detail: {
+                  originalEvent: e,
+                  data: JSON.stringify(ctrl.model, null, 2)
+                }
+              })
+              this.dispatchEvent(event)
+            }.bind(this))
 
-            if (contents) {
-              setModel(this, contents)
-            }
-          }
-        },
-        attributeChangedCallback: {
-          value: function (name, previousValue, value) {
-            if (name === 'contents') {
-              setModel(this, value)
-            } else if (name === 'path') {
-              this.ctrl.path = value
-            }
+            this.ctrl = ctrl
+            this.render()
           }
         }
       })

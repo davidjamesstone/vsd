@@ -42,7 +42,7 @@
                 <td>{route.path}</td>
                 <td>{route.description}</td>
                 <td>
-                  <a if="route.resourceDisplay" href="#{ctrl.getRelativePath(route)}" class="file">{route.resourceDisplay}</a>
+                  <a if="route.resourceDisplay" onclick="{ctrl.openRouteResourceFile(route)}" class="file">{route.resourceDisplay}</a>
                 </td>
               </tr>
             </tbody>

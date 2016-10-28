@@ -63,8 +63,8 @@ function setCurrentFile (file) {
       case 'db':
         // Cache the file and only update if necessary. This ensures
         // that files can be switched without losing the editor state
-        if (db._file !== file) {
-          db._file = file
+        if (db.file !== file) {
+          db.file = file
           db.data = file.session.edit.getValue()
         }
         db.focus()
@@ -72,8 +72,8 @@ function setCurrentFile (file) {
       case 'routes':
         // Cache the file and only update if necessary. This ensures
         // that files can be switched without losing the editor state
-        if (routes._file !== file) {
-          routes._file = file
+        if (routes.file !== file) {
+          routes.file = file
           routes.data = file.session.edit.getValue()
         }
         routes.focus()

@@ -32,13 +32,17 @@ var Db = document.registerElement('vsd-db', {
       set: function (value) {
         this._data = value
         var data = JSON.parse(value)
-        var ctrl = new Controller({ model: data })
+        var ctrl = new Controller({
+          model: data
+        })
         ctrl.currentItem = ctrl.model
 
+        // Render on changes to the controller
         ctrl.on('change', function (e) {
           this.render()
         }.bind(this))
 
+        // Emit data changes when the model changes
         ctrl.model.on('change', function (e) {
           var event = new window.CustomEvent('data', {
             detail: {

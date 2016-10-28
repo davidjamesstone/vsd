@@ -65,14 +65,13 @@
               </span>
             </a>
             <ul class="treeview-menu">
-              <li each="child, child.href in link.children">
-                <a class="file" href="{child.href}"><i class="fa fa-circle-o"></i> {child.text}</a>
+              <li each="child, child.file.path in link.children">
+                <a onclick="{ctrl.main.setCurrentFile(child.file)}"><i class="fa fa-circle-o"></i> {child.text}</a>
               </li>
             </ul>
           <else>
-            <a class="file" href="{link.href}">
+            <a onclick="{ctrl.main.setCurrentFile(link.file)}">
               <i class="fa fa-{link.icon}"></i> <span>{link.text}</span>
-              <!--<small class="label pull-right bg-green">Hot</small>-->
             </a>
           </if>
         </li>

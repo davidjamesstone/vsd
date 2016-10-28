@@ -1,15 +1,16 @@
 var path = require('path')
 var supermodels = require('supermodels.js')
-var prop = require('../prop')
 var Route = require('./route')
 var Model = require('./model')
+var Main = require('../controller')
 
 var controller = {
-  path: prop(String),
-  currentRoute: prop(Route),
-  query: prop(String),
+  main: Main,
+  path: String,
+  currentRoute: Route,
+  query: String,
   model: Model,
-  filtered: prop().get(function () {
+  get filtered () {
     var query = this.query
     var routes = this.model.routes
 
@@ -25,7 +26,7 @@ var controller = {
         (item.resource.path && ~item.resource.path.toLowerCase().indexOf(query)) ||
         (item.resource.name && ~item.resource.name.toLowerCase().indexOf(query))
     })
-  }),
+  },
   addRoute: function () {
     var route = new Route({
       method: 'GET'
@@ -69,6 +70,16 @@ var controller = {
     }
 
     return projectRelativePath
+  },
+  openRouteResourceFile: function (route) {
+    var relativePath = this.getRelativePath(route)
+    var file = this.main.findFile(relativePath)
+
+    if (!file) {
+      window.alert('404: File not found')
+    } else {
+      this.main.setCurrentFile(file)
+    }
   }
 }
 

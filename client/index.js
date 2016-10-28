@@ -6,9 +6,6 @@ var util = require('./util')
 var projectPath = window.UCO.path
 
 require('./notify')
-require('./db')
-require('./breadcrumbs')
-require('./routes')
 
 client.connect(function (err) {
   if (err) {
@@ -30,5 +27,9 @@ client.connect(function (err) {
     require('./main')
     require('./tree')
     require('./sidebar')
+
+    require('./db')
+    require('./breadcrumbs')
+    require('./routes')
   })
 })

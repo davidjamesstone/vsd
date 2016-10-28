@@ -8,9 +8,7 @@ var route = {
   description: prop(String).value(''),
   ignore: prop(Boolean),
   resource: {
-    inline: prop(Boolean).value(true),
-    config: prop(String).requiredIf(() => this.inline),
-    path: prop(String).value('').name('Resource path').requiredIf(() => !this.inline),
+    path: prop(String).value('').name('Resource path').required(),
     name: prop(String).value('')
   },
   pathDisplay: prop(String).enumerable(false).get(function () {
