@@ -188,5 +188,3 @@ db.addEventListener('data', onData)
 routes.addEventListener('data', onData)
 
 module.exports = main
-
-
