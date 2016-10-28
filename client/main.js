@@ -107,13 +107,16 @@ function saveAll () {
   })
 }
 
+/**
+ * Save/Save all
+ */
 $(window).bind('keydown', function (e) {
   if (e.ctrlKey || e.metaKey) {
     var key = String.fromCharCode(e.which).toLowerCase()
     switch (key) {
       case 's':
         e.preventDefault()
-        var shift = e.shiftKey
+        var shift = e.shiftKey || e.altKey
         if (!shift) {
           save()
         } else {
@@ -124,27 +127,17 @@ $(window).bind('keydown', function (e) {
   }
 })
 
-// editor.commands.addCommands([{
-//   name: 'save',
-//   bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
-//   exec: save,
-//   readOnly: false
-// }, {
-//   name: 'saveall',
-//   bindKey: { win: 'Ctrl-Shift-S', mac: 'Command-Option-S' },
-//   exec: saveAll,
-//   readOnly: false
-// }])
-
-// Mousetrap.bind(['command+s', 'ctrl+s'], function () {
-//   save()
-//   return false
-// })
-
-// Mousetrap.bind(['command+alt+s', 'ctrl+shift+s'], function () {
-//   saveAll()
-//   return false
-// })
+editor.commands.addCommands([{
+  name: 'save',
+  bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
+  exec: save,
+  readOnly: false
+}, {
+  name: 'saveall',
+  bindKey: { win: 'Ctrl-Shift-S', mac: 'Command-Option-S' },
+  exec: saveAll,
+  readOnly: false
+}])
 
 // On change, upload the localStorage state
 main.on('change', function (e) {
@@ -195,3 +188,5 @@ db.addEventListener('data', onData)
 routes.addEventListener('data', onData)
 
 module.exports = main
+
+
