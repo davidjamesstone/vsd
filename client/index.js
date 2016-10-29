@@ -23,6 +23,7 @@ client.connect(function (err) {
     var files = new Files(payload.watched)
     window.files = payload.watched
     window.UCO.files = files
+    window.UCO.watchId = payload.id
 
     require('./main')
     require('./tree')

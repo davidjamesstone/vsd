@@ -7,6 +7,7 @@ var editor = require('./ace/editor')
 var Controller = require('./controller')
 var projectPath = window.UCO.path
 var files = window.UCO.files
+var watchId = window.UCO.watchId
 var storageKey = 'vsd-' + projectPath
 var storage = window.localStorage.getItem(storageKey)
 var db = document.getElementById('db')
@@ -77,12 +78,11 @@ function onFileChanged (payload) {
 // that happen on the file system
 // Reload the session if the changes
 // do not match the state of the file
-var id = 0
-client.subscribe('/fs/' + id + '/add', onFileAdded, subscribeError)
-client.subscribe('/fs/' + id + '/addDir', onFileAdded, subscribeError)
-client.subscribe('/fs/' + id + '/unlink', onFileRemoved, subscribeError)
-client.subscribe('/fs/' + id + '/unlinkDir', onFileRemoved, subscribeError)
-client.subscribe('/fs/' + id + '/change', onFileChanged, subscribeError)
+client.subscribe('/fs/' + watchId + '/add', onFileAdded, subscribeError)
+client.subscribe('/fs/' + watchId + '/addDir', onFileAdded, subscribeError)
+client.subscribe('/fs/' + watchId + '/unlink', onFileRemoved, subscribeError)
+client.subscribe('/fs/' + watchId + '/unlinkDir', onFileRemoved, subscribeError)
+client.subscribe('/fs/' + watchId + '/change', onFileChanged, subscribeError)
 
 function save () {
   console.log('Saving')
