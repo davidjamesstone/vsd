@@ -42,6 +42,11 @@ var definition = {
     description: 'Use hard tabsize',
     alias: 'hardtabs',
     type: 'boolean'
+  },
+  m: {
+    description: 'Editor theme',
+    alias: 'theme',
+    type: 'string'
   }
 }
 
