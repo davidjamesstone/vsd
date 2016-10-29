@@ -28,10 +28,20 @@ var definition = {
     alias: 'type',
     type: 'string'
   },
+  b: {
+    description: 'Tab size (2)',
+    alias: 'tabsize',
+    type: 'number'
+  },
   f: {
-    description: 'Client config file',
-    alias: 'config',
-    type: 'string'
+    description: 'Font size (12)',
+    alias: 'fontsize',
+    type: 'number'
+  },
+  d: {
+    description: 'Use hard tabsize',
+    alias: 'hardtabs',
+    type: 'boolean'
   }
 }
 

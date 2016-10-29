@@ -1,15 +1,13 @@
 var args = require('./cli').args
 
+console.log(args)
+
 var config = {
   ace: {
-    tabSize: 2,
-    fontSize: 12,
-    useSoftTabs: true
+    tabSize: args.b || 2,
+    fontSize: args.f || 12,
+    useSoftTabs: !args.d
   }
-}
-
-if (args.f) {
-  config = require(args.f)
 }
 
 module.exports = config
