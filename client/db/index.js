@@ -1,22 +1,15 @@
-/* global $ */
 var view = require('./view.html')
+var Model = require('./model')
 var patch = require('../patch')
 var keyView = require('./key.html')
 var keysView = require('./keys.html')
 var modelView = require('./model.html')
 var schemaView = require('./schema.html')
-var graph = require('./graph')
 var Controller = require('./controller')
+var graph = require('./graph')
 
 var Db = document.registerElement('vsd-db', {
   prototype: Object.create(window.HTMLElement.prototype, {
-    createdCallback: {
-      value: function () {
-        $('a.graph', this).on('shown.bs.tab', function (e) {
-          graph(this.querySelector('svg'), this.ctrl)
-        })
-      }
-    },
     render: {
       value: function () {
         var ctrl = this.ctrl
@@ -31,8 +24,9 @@ var Db = document.registerElement('vsd-db', {
       },
       set: function (value) {
         this._data = value
-        var data = JSON.parse(value)
+        var data = value ? JSON.parse(value) : new Model()
         var ctrl = new Controller({
+          el: this,
           model: data
         })
         ctrl.currentItem = ctrl.model
@@ -55,6 +49,10 @@ var Db = document.registerElement('vsd-db', {
 
         this.ctrl = ctrl
         this.render()
+
+        $('a.graph', this).on('shown.bs.tab', function (e) {
+          graph(this.querySelector('svg'), this.ctrl)
+        })
       }
     }
   })

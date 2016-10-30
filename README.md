@@ -16,11 +16,15 @@ An example [Todo List](https://github.com/davidjamesstone/vsd-example-todo) can 
 ```
 Options:
 
-  -h, --help      Show help
-  -p, --port      Port number (3002)
-  -s, --server    Host ip address (127.0.0.1)
-  -c, --create    Name of new project to create
-  -t, --type      New project type (vsd-web) [vsd-web, api, web, gov]
+  -h, --help          Show help
+  -p, --port          Port number (3002)
+  -s, --server        Host ip address (127.0.0.1)
+  -c, --create        Name of new project to create
+  -t, --type          New project type (vsd-web) [vsd-web, api, web, gov]
+  -b, --tabsize       Tab size (2)
+  -f, --fontsize      Font size (12)
+  -m, --theme         Editor theme
+  -d, --hardtabs      Use hard tabs (false)
 ```
 
 ## Quick start

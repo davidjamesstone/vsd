@@ -39,7 +39,7 @@ var definition = {
     type: 'number'
   },
   d: {
-    description: 'Use hard tabsize',
+    description: 'Use hard tabs',
     alias: 'hardtabs',
     type: 'boolean'
   },
