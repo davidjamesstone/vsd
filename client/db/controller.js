@@ -2,7 +2,6 @@ var supermodels = require('supermodels.js')
 var Model = require('./model')
 var prop = require('../prop')
 var staticTypes = 'String Boolean Number Date Array Mixed NestedDocument ForeignKey ObjectId Buffer ChildDocument'.split(' ')
-var graph = require('./graph')
 
 var schema = {
   el: Object,
@@ -129,9 +128,6 @@ var schema = {
     } else {
       return t
     }
-  },
-  onClickDiagram: function () {
-    graph(this.el.querySelector('svg'), this)
   }
 }
 

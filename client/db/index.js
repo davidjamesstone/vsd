@@ -1,3 +1,4 @@
+/* global $ */
 var view = require('./view.html')
 var Model = require('./model')
 var patch = require('../patch')
@@ -10,6 +11,18 @@ var graph = require('./graph')
 
 var Db = document.registerElement('vsd-db', {
   prototype: Object.create(window.HTMLElement.prototype, {
+    attachedCallback: {
+      value: function () {
+        var el = this
+        // Attach the tab change handler after a
+        // short delay to ensure the svg is loaded
+        setTimeout(function () {
+          $('a.graph', el).on('shown.bs.tab', function (e) {
+            graph(document.querySelector('svg#model-graph'), el.ctrl)
+          })
+        }, 100)
+      }
+    },
     render: {
       value: function () {
         var ctrl = this.ctrl
@@ -49,10 +62,6 @@ var Db = document.registerElement('vsd-db', {
 
         this.ctrl = ctrl
         this.render()
-
-        $('a.graph', this).on('shown.bs.tab', function (e) {
-          graph(this.querySelector('svg'), this.ctrl)
-        })
       }
     }
   })

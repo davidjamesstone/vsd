@@ -7,7 +7,7 @@
   <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
       <li class="active"><a href="#_{ctrl.id}_1" data-toggle="tab">Editor</a></li>
-      <li><a href="#_{ctrl.id}_2" class="graph" data-toggle="tab" onclick="{ctrl.onClickDiagram()}">Diagram</a></li>
+      <li><a href="#_{ctrl.id}_2" class="graph" data-toggle="tab">Diagram</a></li>
       <li><a href="#_{ctrl.id}_3" data-toggle="tab">JSON</a></li>
     </ul>
     <div class="tab-content">
@@ -73,9 +73,12 @@
           <button type="button" class="btn btn-box-tool collapse"
             onclick="{ctrl.isGraphExpanded = false}"><i class="fa fa-compress"></i>
           </button>
-          <svg class="model-graph">
+          <svg class="model-graph" id="model-graph">
             <g skip/>
           </svg>
+          <!--<svg class="model-graph" width1="500px" height1="500px" id="grapg">
+            <g/>
+          </svg>-->
         </div>
       </div>
       <!-- /.tab-pane -->
@@ -87,6 +90,4 @@
     <!-- /.tab-content -->
   </div>
   <!-- nav-tabs-custom -->
-  </div>
-  </div>
 </template>
