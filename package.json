@@ -13,11 +13,11 @@
     "build:css": "bin/build-css",
     "build": "bin/build",
     "lint": "standard",
-    "create:example": "cd docs && ../bin/vsd.js -c demo",
+    "create:demo": "cd docs && ../bin/vsd.js -c demo",
     "clone:todo": "cd docs && git clone https://github.com/davidjamesstone/vsd-example-todo",
     "test": "npm run lint",
     "prepublish": "npm run build",
-    "postinstall": "npm run create:example && npm run clone:todo",
+    "postinstall": "npm run create:demo && npm run clone:todo",
     "start": "node index"
   },
   "license": "ISC",

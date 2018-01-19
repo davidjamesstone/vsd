@@ -15,8 +15,8 @@
           "name": "Squeeze",
           "args": [
             {
-              "log": "*",
-              "response": "*"
+              "log": "error",
+              "error": "*"
             }
           ]
         },
