@@ -1,7 +1,7 @@
-var Joi = require('joi')
-var schema = require('./schema')
-var args = require('./cli').args
-var config = require('./server.json')
+const Joi = require('joi')
+const schema = require('./schema')
+const args = require('./cli').args
+const config = require('./server.json')
 
 // Apply command line overrides
 if (args.p) {
@@ -13,7 +13,7 @@ if (args.s) {
 }
 
 // Validate config
-var result = Joi.validate(config, schema, {
+const result = Joi.validate(config, schema, {
   abortEarly: false
 })
 

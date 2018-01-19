@@ -13,12 +13,6 @@ function FileMenu (el) {
     hide()
   })
 
-  function callback (err, payload) {
-    if (err) {
-      return util.handleError(err)
-    }
-  }
-
   function resetPasteBuffer () {
     copied = null
   }
@@ -68,9 +62,11 @@ function FileMenu (el) {
       var pastePath = file.isDirectory ? file.path : file.dir
 
       if (action === 'copy') {
-        service.copy(source.path, path.resolve(pastePath, source.name), callback)
+        service.copy(source.path, path.resolve(pastePath, source.name))
+          .catch(util.handleError)
       } else if (action === 'cut') {
-        service.rename(source.path, path.resolve(pastePath, source.name), callback)
+        service.rename(source.path, path.resolve(pastePath, source.name))
+          .catch(util.handleError)
       }
     }
   }
@@ -95,7 +91,8 @@ function FileMenu (el) {
     hide()
     resetPasteBuffer()
     if (window.confirm('Delete [' + relativePath + ']')) {
-      service.remove(path, callback)
+      service.remove(path)
+        .catch(util.handleError)
     }
   }
 

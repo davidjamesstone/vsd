@@ -7,14 +7,14 @@ const readFile = util.promisify(fs.readFile)
 const pkgCache = {}
 
 function lintText (value, options) {
- return new Promise((resolve, reject) => {
-  standard.lintText(value, options, (err, data) => {
-    if (err) {
-      return reject(err)
-    }
-    resolve(data)
+  return new Promise((resolve, reject) => {
+    standard.lintText(value, options, (err, data) => {
+      if (err) {
+        return reject(err)
+      }
+      resolve(data)
+    })
   })
- })
 }
 
 function format (data) {
@@ -62,11 +62,11 @@ module.exports = {
       }
 
       try {
-        return await lint(value, pkg ? pkg.standard : null)
+        const res = await lint(value, pkg ? pkg.standard : null)
+        return res
       } catch (err) {
         return Boom.badRequest('An error occurred standardizing the code', err)
       }
-
     }
   }
 }

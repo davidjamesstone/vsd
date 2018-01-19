@@ -59,14 +59,14 @@ function getFilesize () {
 function onContentChange (e) {
   var self = this
   var file = this.file
-  service.writeFile(file.path, e.detail.contents, function (err, result) {
-    if (err) {
-      return util.handleError(err)
-    }
 
-    // Update the stat
-    self.stat = result.stat
-  })
+  service.writeFile(file.path, e.detail.contents)
+    .then(function (result) {
+      // Update the stat
+      var payload = result.payload
+      self.stat = payload.stat
+    })
+    .catch(util.handleError)
 }
 
 var model = {

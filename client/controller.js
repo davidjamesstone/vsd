@@ -86,36 +86,37 @@ function setCurrentFile (file) {
   if (isSessionLoaded) {
     loadFile()
   } else {
-    service.readFile(file.path, function (err, result) {
-      if (err) {
-        return util.handleError(err)
-      }
+    service.readFile(file.path)
+      .then(function (result) {
+        var payload = result.payload
+        var edit = makeEditSession(payload.contents, modes(file))
+        var session = new Session({
+          file: file,
+          edit: edit
+        })
 
-      var edit = makeEditSession(result.contents, modes(file))
-      var session = new Session({
-        file: file,
-        edit: edit
+        edit.on('change', function () {
+          // Do on the next tick to allow
+          // the UndoManager to catch up
+          setTimeout(function () {
+            var isClean = edit.getUndoManager().isClean()
+            session.setDirty(!isClean)
+          }, 0)
+        })
+
+        // Set the session on the file
+        file.session = session
+
+        loadFile()
+
+        // Add to to the list of recent files
+        if (this.recent.indexOf(file) === -1) {
+          this.recent.push(file)
+        }
+      }.bind(this))
+      .catch(function (err) {
+        util.handleError(err)
       })
-
-      edit.on('change', function () {
-        // Do on the next tick to allow
-        // the UndoManager to catch up
-        setTimeout(function () {
-          var isClean = edit.getUndoManager().isClean()
-          session.setDirty(!isClean)
-        }, 0)
-      })
-
-      // Set the session on the file
-      file.session = session
-
-      loadFile()
-
-      // Add to to the list of recent files
-      if (this.recent.indexOf(file) === -1) {
-        this.recent.push(file)
-      }
-    }.bind(this))
   }
 }
 

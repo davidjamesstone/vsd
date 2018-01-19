@@ -1,6 +1,6 @@
-var args = require('./cli').args
+const args = require('./cli').args
 
-var config = {
+const config = {
   ace: {
     tabSize: args.b || 2,
     fontSize: args.f || 12,

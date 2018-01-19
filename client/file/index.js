@@ -80,15 +80,14 @@ var Fs = document.registerElement(
             var file = model.file
             var src = file.path
 
-            service.readFile(src, function (err, result) {
-              if (err) {
-                return util.handleError(err)
-              }
-
-              model.stat = result.stat
-              file.stat = result.stat
-              model.contents = result.contents
-            })
+            service.readFile(src)
+              .then(function (result) {
+                var payload = result.payload
+                model.stat = payload.stat
+                file.stat = payload.stat
+                model.contents = payload.contents
+              })
+              .catch(util.handleError)
           }
         }
       })

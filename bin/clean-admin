@@ -1,2 +1,2 @@
-rm -rf server/public/admin
+rm -rf server/public/admin &&
 mkdir server/public/admin

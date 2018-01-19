@@ -7,19 +7,14 @@ var projectPath = window.UCO.path
 
 require('./notify')
 
-client.connect(function (err) {
-  if (err) {
-    return util.handleError(err)
-  }
-
+client.connect()
+.then(function () {
   client.request({
     path: '/fs/watched?path=' + projectPath,
     method: 'GET'
-  }, function (err, payload) {
-    if (err) {
-      return util.handleError(err)
-    }
-
+  })
+  .then(function (response) {
+    var payload = response.payload
     var files = new Files(payload.watched)
     window.files = payload.watched
     window.UCO.files = files
@@ -33,4 +28,10 @@ client.connect(function (err) {
     require('./breadcrumbs')
     require('./routes')
   })
+  .catch(function (err) {
+    util.handleError(err)
+  })
+})
+.catch(function (err) {
+  util.handleError(err)
 })

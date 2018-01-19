@@ -16,15 +16,14 @@ var sessionSchema = {
     this.edit.getUndoManager().markClean()
   },
   save: function (callback) {
-    service.writeFile(this.file.path, this.edit.getValue(), function (err, result) {
-      if (err) {
-        return callback(err)
-      }
-
-      // Mark clean
-      this.markClean()
-      callback(null, result)
-    }.bind(this))
+    service.writeFile(this.file.path, this.edit.getValue())
+      .then(function (result) {
+        var payload = result.payload
+        // Mark clean
+        this.markClean()
+        callback(null, payload)
+      }.bind(this))
+      .catch(callback)
   }
 }
 

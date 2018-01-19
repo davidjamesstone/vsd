@@ -10,12 +10,9 @@ function lint (session) {
         projectDir: window.UCO.path
       },
       method: 'POST'
-    }, function (err, payload) {
-      if (err) {
-        return util.handleError(err)
-      }
-      session.setAnnotations(payload)
-    })
+    }).then(function (result) {
+      session.setAnnotations(result.payload)
+    }).catch(util.handleError)
   }
 }
 

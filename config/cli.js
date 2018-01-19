@@ -2,7 +2,7 @@ const Bossy = require('bossy')
 const path = require('path')
 const spawn = require('child_process').spawn
 
-var definition = {
+const definition = {
   h: {
     description: 'Show help',
     alias: 'help',
@@ -51,7 +51,7 @@ var definition = {
 }
 
 // Parse the command line args
-var args = Bossy.parse(definition)
+const args = Bossy.parse(definition)
 
 // Throw if arg errors
 if (args instanceof Error) {
@@ -66,7 +66,7 @@ function createProject (name, type) {
   type = type || 'vsd-web'
   console.info('Creating new [' + type + '] project called ' + name)
 
-  var file = path.resolve(__dirname, '../bin/glupe-scaffold.sh')
+  const file = path.resolve(__dirname, '../bin/glupe-scaffold.sh')
   spawn(file, [type, name], { stdio: 'inherit' })
 }
 

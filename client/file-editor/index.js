@@ -14,12 +14,9 @@ function FileEditor (el) {
       var name = $event.target.rename.value.trim()
       var newPath = path.resolve(file.dir, name)
 
-      service.rename(oldPath, newPath, function (err, result) {
-        if (err) {
-          return util.handleError(err)
-        }
-        hide()
-      })
+      service.rename(oldPath, newPath)
+        .then(hide)
+        .catch(util.handleError)
     },
     mkfile: function ($event) {
       $event.preventDefault()
@@ -27,12 +24,9 @@ function FileEditor (el) {
       var name = $event.target.filename.value.trim()
       var absolutePath = path.resolve(dir, name.trim())
 
-      service.mkfile(absolutePath, function (err, payload) {
-        if (err) {
-          return util.handleError(err)
-        }
-        hide()
-      })
+      service.mkfile(absolutePath)
+        .then(hide)
+        .catch(util.handleError)
     },
     mkdir: function ($event) {
       $event.preventDefault()
@@ -40,12 +34,9 @@ function FileEditor (el) {
       var name = $event.target.dirname.value.trim()
       var absolutePath = path.resolve(dir, name.trim())
 
-      service.mkdir(absolutePath, function (err, payload) {
-        if (err) {
-          return util.handleError(err)
-        }
-        hide()
-      })
+      service.mkdir(absolutePath)
+        .then(hide)
+        .catch(util.handleError)
     }
   }
 
