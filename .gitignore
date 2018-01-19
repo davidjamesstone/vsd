@@ -3,4 +3,4 @@ node_modules
 npm-debug.log
 logs
 docs/demo
-docs/vsd-examples-todo
+docs/vsd-example-todo
