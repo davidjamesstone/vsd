@@ -3,7 +3,7 @@ const path = require('path')
 module.exports = {
   method: 'GET',
   path: '/public/{path*}',
-  config: {
+  options: {
     handler: {
       directory: {
         path: path.resolve(__dirname, '../public'),

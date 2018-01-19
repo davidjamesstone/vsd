@@ -1,16 +1,15 @@
-const config = require('../../config')
-const pkg = require('../../package.json')
+const config = require('../config')
+const pkg = require('../package.json')
 const year = (new Date()).getFullYear()
 
 module.exports = {
   engines: {
     html: require('handlebars')
   },
-  relativeTo: __dirname,
+  relativeTo: __dirname + '/views',
   layout: true,
   isCached: config.views.isCached,
   partialsPath: 'partials',
-  // helpersPath: 'helpers',
   context: {
     pkg: pkg,
     siteName: 'name.co',

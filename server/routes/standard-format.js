@@ -1,16 +1,16 @@
-var Boom = require('boom')
-var standardize = require('standard-format')
+const Boom = require('boom')
+const standardize = require('standard-format')
 
 module.exports = {
   method: 'POST',
   path: '/standard-format',
-  config: {
-    handler: function (request, reply) {
+  options: {
+    handler: (request, h) => {
       try {
-        var standardized = standardize.transform(request.payload.value)
-        return reply(standardized)
-      } catch (e) {
-        return reply(Boom.badRequest('standard-format threw an error', e))
+        const standardized = standardize.transform(request.payload.value)
+        return standardized
+      } catch (err) {
+        return Boom.badRequest('standard-format threw an error', err)
       }
     }
   }
