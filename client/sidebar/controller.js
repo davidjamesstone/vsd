@@ -69,6 +69,18 @@ function getLinks () {
     }
   }
 
+  var plugins = files.filter(function (item) {
+    return item.isFile && item.getRelativeDir() === 'server/plugins'
+  })
+
+  if (plugins.length) {
+    var pluginLinks = { icon: 'cube', text: 'Plugins', children: [] }
+    plugins.forEach(function (item) {
+      pluginLinks.children.push({ icon: 'circle-o', text: item.name, file: item })
+    })
+    links.push(pluginLinks)
+  }
+
   file = findFile('server/manifest.js')
   if (file) {
     links.push({ icon: 'cubes', text: 'Manifest', file: file })
@@ -107,6 +119,18 @@ function getLinks () {
   file = findFile('server/views/index.js')
   if (file) {
     links.push({ icon: 'code', text: 'Views', file: file })
+  }
+
+  var views = files.filter(function (item) {
+    return item.isFile && item.getRelativeDir() === 'server/views'
+  })
+
+  if (views.length) {
+    var viewsinks = { icon: 'code', text: 'Views', children: [] }
+    views.forEach(function (item) {
+      viewsinks.children.push({ icon: 'circle-o', text: item.name, file: item })
+    })
+    links.push(viewsinks)
   }
 
   return links
