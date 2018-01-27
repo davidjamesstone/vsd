@@ -34,10 +34,10 @@ Scaffold a new vsd project
 `vsd -c myapp`
 
 Start `vsd` and open the link below in your browser.
-`vsd` uses port 3002 by default. 
+`vsd` uses port 3000 by default. 
 Replace `<my-dir>` with the path where you created the project. 
 
-`http://localhost:3002/?path=/<my-dir>/myapp`
+`http://localhost:3000/?path=/<my-dir>/myapp`
 
 Read the [wiki](https://github.com/davidjamesstone/vsd/wiki) docs for more info.
 
@@ -108,9 +108,9 @@ Also, there is no authentication or security built in. That is left to you. Do n
 License
 =======
 
-visdev is released under a **MIT License**:
+vsd is released under a **MIT License**:
 
-Copyright (C) 2015-2016 by David Stone
+Copyright (C) 2015-2018 by David Stone
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
