@@ -14,7 +14,7 @@ const definition = {
     type: 'number'
   },
   s: {
-    description: 'Host ip address (127.0.0.1)',
+    description: 'Host ip address (0.0.0.0)',
     alias: 'server',
     type: 'string'
   },
